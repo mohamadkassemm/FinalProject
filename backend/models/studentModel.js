@@ -30,17 +30,4 @@ const studentModel = User.discriminator('Student',new Schema({
     },
 }));
 
-studentModel.pre('save', async function(next){
-    try{
-        if(!this.isModified('password')){
-            return next();
-        }
-        this.password = await bcrypt.hash(this.password, 'sha256');
-        this.confirmPassword = undefined;
-    }
-    catch(error){
-        console.log(error);
-    }
-})
-
 module.exports = mongoose.model('Student', studentModel);
