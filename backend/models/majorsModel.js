@@ -1,20 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const generalDataModel = require('./generalDataModel');
 
-const majorModel= new Schema({
-    name:{
-        type:String,
-        required:true,
-        unique:true,
-        minLength:3,
-        trim:true
-    },
-    description:{
-        type:String,
-        required:true,
-        minLength:10,
-        trim:true
-    },
+const majorModel= generalDataModel.discriminator('majorModel',new Schema({
     courseCount:{
         type:Number,
         required:true,
@@ -35,6 +23,6 @@ const majorModel= new Schema({
         max:14,
         default:6
     }
-})
+}));
 
 module.exports = mongoose.model('Major', majorModel);

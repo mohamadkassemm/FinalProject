@@ -1,17 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const generalDataModel = require('./generalDataModel');
 
-const bootcampModel = new Schema({
-    bootcampID:{
-        type: Number,
-        required: true,
-        unique: true
-    },
+const bootcampModel = generalDataModel.discriminator('bootcampModel',new Schema({
     name:{
-        type: String,
-        required: true,
-    },
-    description:{
         type: String,
         required: true,
     },
@@ -37,6 +29,6 @@ const bootcampModel = new Schema({
         required: true,
         ref: 'Company'
     }
-});
+}));
 
 module.exports = mongoose.model('Bootcamp', bootcampModel);
