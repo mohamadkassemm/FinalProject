@@ -16,6 +16,10 @@ const universityModel = User.discriminator('university', new Schema({
         type: [String],
         required:[true,"This field is required"],
     },
+    ranking:{
+        type: Number,
+        min: 1,
+    }
 }));
 
 module.exports = mongoose.model('University', universityModel);
