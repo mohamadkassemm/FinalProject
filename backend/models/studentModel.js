@@ -21,13 +21,17 @@ const studentModel = User.discriminator('Student',new Schema({
     jobStatus:{
         type: String,
         required:[true,"This field is required"],
-        enum:['Employed', 'Unemployed', 'Part-time','Full-time', 'Self-employed'],
+        enum:['Unemployed', 'Part-time','Full-time', 'Self-employed'],
     },
     bootcampStatus:{
         type: String,
         required:[true,"This field is required"],
         enum:['No', 'Yes'],
     },
+    major:{
+        type: String,
+        required:[true,"This field is required"],
+    }
 }));
 
 module.exports = mongoose.model('Student', studentModel);
