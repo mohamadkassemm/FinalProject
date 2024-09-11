@@ -1,3 +1,4 @@
+const User = require('../models/userModel');
 const Student = require("../models/studentModel");
 const University = require("../models/universityModel");
 const Company = require("../models/companyModel");
@@ -21,62 +22,36 @@ const createToken = (user, statusCode, res) => {
 }
 exports.signUp = async (req, res) => {
     try {
-        const emailCheck = await Student.findOne({ email: req.body.email }) || 
-                           await University.findOne({ email: req.body.email }) || 
-                           await Company.findOne({ email: req.body.email });
+        const emailCheck = await User.findOne({ email: req.body.email });
 
-        const usernameCheck = await Student.findOne({ username: req.body.username }) || 
-                              await University.findOne({ username: req.body.username }) || 
-                              await Company.findOne({ username: req.body.username });
+        const usernameCheck = await User.findOne({ username: req.body.username });
 
         if (emailCheck || usernameCheck) {
             return res.status(409).json({ error: "Email or Username already exists" });
         }
-        let Model;
-        let data = {}; 
-        switch(req.body.type) {
+        const {name, email, username, password, role} = req.body;
+        const hashedPassword = await bcrypt.hash(password, 12);
+        let data;
+        switch(role) {
             case "student":{
-                const { firstName, lastName, email, username, password, confirmPassword, phoneNumber, address, educationLevel } = req.body;
-                if (!validator.isEmail(email)) {
-                    return res.status(400).json({ message: "Invalid email address" });
-                }
-                if(password !== confirmPassword){
-                    return res.status(400).json({ message: "Passwords do not match" });
-                }
-                data = { firstName, lastName, email, username, password, phoneNumber, address, educationLevel };
-                Model=Student;
+                const {degree, university, major, jobStatus, bootcampStatus}= req.body;
+                data = new Student({name, email, username, password: hashedPassword}, degree, university, major, jobStatus, bootcampStatus);
                 break;
             }
             case "university":{
-                const { Name, email, username, password, confirmPassword, phoneNumber, address, description } = req.body;
-                if (!validator.isEmail(email)) {
-                    return res.status(400).json({ message: "Invalid email address" });
-                }
-                if(password !== confirmPassword){
-                    return res.status(400).json({ message: "Passwords do not match" });
-                }
-                data = { Name, lastName, email, username, password, phoneNumber, address, description};
-                Model=University;
-                break;
+                const {location, availableMajors, availablePosition}= req.body;
+                data = new University({name, email, username, password: hashedPassword}, location, availableMajors, availablePosition);
+                break;  
             }
             case "company":{
-                const { Name, industry, email, username, password, confirmPassword, phoneNumber, address, description } = req.body;
-                if (!validator.isEmail(email)) {
-                    return res.status(400).json({ message: "Invalid email address" });
-                }
-                if(password !== confirmPassword){
-                    return res.status(400).json({ message: "Passwords do not match" });
-                }
-                data= { Name, industry, email, username, password, phoneNumber, address, description };
-                Model=Company;
+                const {location, availablePositions, bootcampOfers, internshipOffers, linkedIn}=req.body;
+                data = new Company({name, email, username, password: hashedPassword}, location, availablePositions, bootcampOfers, internshipOffers, linkedIn);
                 break;
             }
             default:
-                return res.status(400).json({ message: "Invalid type" });
+                return res.status(400).json({message: "Invalid user type"});
         }
-        data.password=await bcrypt.hash(data.password,12);
-        const user = await Model.create(data);
-        createToken(user, 201, res);
+        createToken(User, 201, res);
         return res.status(200).json({message: "Data saved successfully", data: data});
     }catch(err){
         res.status(500).json({message: err.message});
@@ -87,7 +62,7 @@ exports.signUp = async (req, res) => {
 
 exports.logIn = async (req, res) => {
     try {    
-        const user = await (Student.findOne({ username: req.body.username }) || University.findOne({ username: req.body.username }) || Company.findOne({ username: req.body.username }));
+        const user = await User.findOne({username: req.body.username});
         if (!user) {
             return res.status(401).json({ message: "No such Username!" });
         }
