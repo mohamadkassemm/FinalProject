@@ -13,6 +13,10 @@ const generalDataModel = new Schema({
     description: {
         type: String,
         required: true,
+    },
+    industry:{
+        type: String,
+        required: true,
     }
 });
 

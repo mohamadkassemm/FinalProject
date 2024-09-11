@@ -7,7 +7,7 @@ exports.getMajors = async (req, res) => {
         const majors = await Major.find();
         if(majors.length==0)
             return res.status(404).json({ message: "No majors found" });
-        return res.json(majors);
+        return res.status(200).json(majors);
     }catch(err){
         return res.status(500).json({message: err.message});
     }
@@ -21,7 +21,7 @@ exports.getMajorsByUniversity = async (req, res) => {
         const majors = await Major.find({ university: university._id });
         if(majors.length==0)
             return res.status(404).json({ message: "No majors found for this university" });
-        return res.json(majors);
+        return res.status(200).json(majors);
     }catch(err){
         return res.status(500).json({message: err.message});
     }
@@ -35,7 +35,7 @@ exports.getMajorsByStudent = async (req, res) => {
         const majors = await Major.find({ students: student._id });
         if(majors.length==0)
             return res.status(404).json({ message: "No majors found for this student" });
-        return res.json(majors);
+        return res.status(200).json(majors);
     }catch(err){
         return res.status(500).json({message: err.message});
     }
@@ -51,3 +51,16 @@ exports.createMajor = async (req, res) => {
     }
 }
 
+exports.recommendedMajors= async (req, res) => {
+    try{
+        const student = await User.findById(req.params.studentId);
+        if(!student)
+            return res.status(404).json({ message: "Student not found" });
+        const majors = await Major.find({ students: student._id });
+        if(majors.length==0)
+            return res.status(404).json({ message: "No majors found for this student" });
+        return res.status(200).json(majors);
+    }catch(err){
+        return res.status(500).json({message: err.message});
+    }
+}
