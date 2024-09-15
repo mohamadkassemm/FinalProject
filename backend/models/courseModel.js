@@ -24,4 +24,4 @@ const courseModel = generalDataModel.discriminator('courseModel',new Schema({
     },
 }));
 
-module.exports = mongoose.model('Course', courseModel);
+module.exports = courseModel;

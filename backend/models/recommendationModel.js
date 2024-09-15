@@ -15,4 +15,4 @@ const recommendationModel = generalDataModel.discriminator('recommendationModel'
     }
 }));
 
-module.exports = mongoose.model('recommendationModel', recommendationModel);
+module.exports = recommendationModel;

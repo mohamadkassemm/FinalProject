@@ -1,11 +1,12 @@
 const University = require("../models/universityModel");
+const major = require("../models/majorsModel");
 
 exports.getUniversities = async (req, res) => {
     try {
         const universities = await University.find();
         if(universities.length==0)
             return res.status(404).json({ message: "No universities found" });
-        return res.json(universities);
+        return res.status(200).json(universities);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -13,7 +14,7 @@ exports.getUniversities = async (req, res) => {
 
 exports.getUniversityByID = async (req, res) =>{
     try{
-        const uni = await University.find(req.params.id);
+        const uni = await University.findById(req.params.id);
         if(!uni) 
             return res.status(404).json({ message: "University not found" });
         return res.json(uni);
@@ -23,7 +24,7 @@ exports.getUniversityByID = async (req, res) =>{
 }
 
 exports.getUniversitiesByMajor = async (req, res) =>{
-    const majorID = req.params.majorid;
+    const majorID = req.params.major;
     try{
         const unis = await University.find({ majors: majorID });
         if(unis.length==0)
@@ -47,7 +48,7 @@ exports.getUniversitiesByLocation = async (req, res) =>{
 }
 
 exports.sortUniversities = async (req, res) =>{
-    const sortBy = req.params.sortby;
+    const sortBy = req.query.sortby;
     try{
         const unis = await University.find();
         if(unis.length==0)

@@ -31,4 +31,4 @@ const bootcampModel = generalDataModel.discriminator('bootcampModel',new Schema(
     }
 }));
 
-module.exports = mongoose.model('Bootcamp', bootcampModel);
+module.exports = bootcampModel;

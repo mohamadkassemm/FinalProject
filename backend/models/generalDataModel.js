@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const generalDataModel = new Schema({
     id: {
-        type: number,
+        type: Number,
         required: true,
     },
     title: {

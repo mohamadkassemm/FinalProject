@@ -26,4 +26,4 @@ const companyModel = User.discriminator('company', new Schema({
     }
 }));
 
-module.exports = mongoose.model('Company', companyModel);
+module.exports = companyModel;

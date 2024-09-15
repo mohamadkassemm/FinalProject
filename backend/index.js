@@ -6,14 +6,12 @@ DB();
 
 app.use(express.json());
 
-const anyUserRouter = require('./routers/anyUserRoute');
-const getUniversities = require('./routers/getUniversitiesRoute');
+const userRoutes = require('./routers/anyUserRoute');
+const universityRoutes = require('./routers/universitiesRoutes');
 
-app.use('/universities', getUniversities);
+app.use('/', userRoutes);
+app.use('/universities', universityRoutes);
 
-app.listen(3001, ()=>{
+app.listen(3001, () => {
     console.log("Server is running on port 3001");
 });
-
-
-

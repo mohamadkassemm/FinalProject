@@ -54,8 +54,7 @@ exports.signUp = async (req, res) => {
         createToken(data, 201, res);
         return res.status(200).json({message: "Data saved successfully", data: data});
     }catch(err){
-        res.status(500).json({message: err.message});
-        console.error(err);
+        return res.status(500).json({message: err.message});
     }
 };
 
@@ -72,7 +71,6 @@ exports.logIn = async (req, res) => {
         }
         createToken(user, 200, res);
     }catch(err){
-        res.status(500).json({ message: err.message });
-        console.error(err);
+        return res.status(500).json({ message: err.message });
     }
 }

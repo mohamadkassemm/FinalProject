@@ -30,4 +30,4 @@ const jobModel = generalDataModel.discriminator('jobModel',new Schema({
     }
 }));
 
-module.exports = mongoose.model('Job', jobModel);
+module.exports = jobModel;

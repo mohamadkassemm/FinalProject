@@ -26,4 +26,4 @@ const universityModel = User.discriminator('university', new Schema({
     }
 }));
 
-module.exports = mongoose.model('University', universityModel);
+module.exports = universityModel;

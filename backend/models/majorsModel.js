@@ -25,4 +25,4 @@ const majorModel= generalDataModel.discriminator('majorModel',new Schema({
     }
 }));
 
-module.exports = mongoose.model('Major', majorModel);
+module.exports = majorModel;

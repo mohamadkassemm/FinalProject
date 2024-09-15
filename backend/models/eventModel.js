@@ -23,4 +23,4 @@ const eventModel = generalDataModel.discriminator('eventModel', new Schema({
     }
 }));
 
-module.exports = mongoose.model('eventModel', eventModel);
+module.exports = eventModel;

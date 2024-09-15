@@ -14,7 +14,7 @@ const studentModel = User.discriminator('Student',new Schema({
         required:[true,"This field is required"],
     },
     universityID:{
-        type: number,
+        type: Number,
         ref: 'University',
         required:[true,"This field is required"],
     },
@@ -34,4 +34,4 @@ const studentModel = User.discriminator('Student',new Schema({
     }
 }));
 
-module.exports = mongoose.model('Student', studentModel);
+module.exports = studentModel;
