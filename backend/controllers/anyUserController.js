@@ -35,23 +35,23 @@ exports.signUp = async (req, res) => {
         switch(role) {
             case "student":{
                 const {degree, university, major, jobStatus, bootcampStatus}= req.body;
-                data = new Student({name, email, username, password: hashedPassword}, degree, university, major, jobStatus, bootcampStatus);
+                data = new Student({name, email, username, password: hashedPassword, degree, university, major, jobStatus, bootcampStatus});
                 break;
             }
             case "university":{
                 const {location, availableMajors, availablePosition}= req.body;
-                data = new University({name, email, username, password: hashedPassword}, location, availableMajors, availablePosition);
+                data = new University({name, email, username, password: hashedPassword, location, availableMajors, availablePosition});
                 break;  
             }
             case "company":{
                 const {location, availablePositions, bootcampOfers, internshipOffers, linkedIn}=req.body;
-                data = new Company({name, email, username, password: hashedPassword}, location, availablePositions, bootcampOfers, internshipOffers, linkedIn);
+                data = new Company({name, email, username, password: hashedPassword, location, availablePositions, bootcampOfers, internshipOffers, linkedIn});
                 break;
             }
             default:
                 return res.status(400).json({message: "Invalid user type"});
         }
-        createToken(User, 201, res);
+        createToken(data, 201, res);
         return res.status(200).json({message: "Data saved successfully", data: data});
     }catch(err){
         res.status(500).json({message: err.message});

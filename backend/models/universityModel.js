@@ -19,6 +19,10 @@ const universityModel = User.discriminator('university', new Schema({
     ranking:{
         type: Number,
         min: 1,
+    },
+    students:{
+        type: [Number],
+        ref: 'Student',
     }
 }));
 
