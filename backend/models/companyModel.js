@@ -3,7 +3,12 @@ const { default: isEmail } = require('validator/lib/isEmail');
 const Schema = mongoose.Schema;
 const User = require('./userModel');
 
-const companyModel = User.discriminator('company', new Schema({
+const companyModel = new Schema({
+    userID:{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User', // Reference to the User model
+        required: true
+    },
     location:{
         type:String,
         required:true,
@@ -24,6 +29,6 @@ const companyModel = User.discriminator('company', new Schema({
         type:String,
         required:true,
     }
-}));
+});
 
 module.exports = companyModel;

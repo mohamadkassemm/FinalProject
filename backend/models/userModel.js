@@ -4,10 +4,8 @@ const Schema = mongoose.Schema;
 
 const UserModel = new Schema({
     userID:{
-        type:Number,
-        required: true,
+        type:mongoose.Schema.Types.ObjectId,
         unique: true,
-        min: 1,
     },
     name:{
         type: String,
@@ -21,11 +19,6 @@ const UserModel = new Schema({
         validate: [isEmail, 'Invalid email format'],
     },
     password:{
-        type: String,
-        required: true,
-        minlength: 8,
-    },
-    confirmPassword:{
         type: String,
         required: true,
         minlength: 8,
@@ -47,9 +40,8 @@ const UserModel = new Schema({
 
 UserModel.pre('save', async (next)=>{
     try{
-        if(this.isModified('password')){
-            this.password = await bcrypt.hash(this.password, 10);
-            this.confirmPassword = undefined;
+        if (!this.userID) {
+            this.userID = this._id; 
         }
         next();
     }

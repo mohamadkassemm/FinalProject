@@ -3,7 +3,7 @@ const { default: isEmail } = require('validator/lib/isEmail');
 const Schema = mongoose.Schema;
 const User = require('./userModel');
 
-const universityModel = User.discriminator('university', new Schema({
+const universityModel = new Schema({
     location:{
         type:String,
         required:[true,"This field is required"],
@@ -24,6 +24,6 @@ const universityModel = User.discriminator('university', new Schema({
         type: [Number],
         ref: 'Student',
     }
-}));
+});
 
 module.exports = universityModel;
