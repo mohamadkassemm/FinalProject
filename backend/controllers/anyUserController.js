@@ -29,37 +29,37 @@ exports.signUp = async (req, res) => {
         if (emailCheck || usernameCheck) {
             return res.status(409).json({ error: "Email or Username already exists" });
         }
-        const {name, email, username, password,confrimPassword, role} = req.body;
-        if(password!==confrimPassword) {
+        const {name, email, username, password,confirmPassword, role} = req.body;
+        if(password!==confirmPassword) {
             return res.status(400).json({ error: "Passwords do not match" });
         }
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const newUser = new User({ name, email, username, password: hashedPassword, role });
+        const newUser = new User({name, email, username, password: hashedPassword, role });
         await newUser.save();
 
         let data;
         switch(role) {
             case "student":{
                 const {degree, university, major, jobStatus, bootcampStatus}= req.body;
-                data = new Student({user:newUser._id,degree, university, major, jobStatus, bootcampStatus});
+                data = new Student({userID: newUser.ID,degree, university, major, jobStatus, bootcampStatus});
                 break;
             }
             case "university":{
                 const {location, availableMajors, availablePosition}= req.body;
-                data = new University({user:newUser._id,location, availableMajors, availablePosition});
+                data = new University({userID: newUser.ID,location, availableMajors, availablePosition});
                 break;  
             }
             case "company":{
                 const {location, availablePositions, bootcampOfers, internshipOffers, linkedIn}=req.body;
-                data = new Company({user:newUser._id,location, availablePositions, bootcampOfers, internshipOffers, linkedIn});
+                data = new Company({userID: newUser.ID,location, availablePositions, bootcampOfers, internshipOffers, linkedIn});
                 break;
             }
             default:
                 return res.status(400).json({message: "Invalid user type"});
         }
         await data.save();
-        createToken(data, 201, res);
+        createToken(newUser, 201, res);
         return res.status(200).json({message: "Data saved successfully", data: data});
     }catch(err){
         return res.status(500).json({message: err.message});

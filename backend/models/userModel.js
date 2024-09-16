@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 const { default: isEmail } = require('validator/lib/isEmail');
 const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
 
 const UserModel = new Schema({
-    userID:{
-        type:mongoose.Schema.Types.ObjectId,
+    ID:{
+        type:Number,
         unique: true,
+        min: 1,
     },
     name:{
         type: String,
@@ -38,18 +41,20 @@ const UserModel = new Schema({
     }
 });
 
-UserModel.pre('save', async (next)=>{
-    try{
-        if (!this.userID) {
-            this.userID = this._id; 
+UserModel.plugin(AutoIncrement, { inc_field: 'ID' });
+
+UserModel.pre('save', async function (next) {
+    try {
+        if (this.isModified('password')) {
+            this.password = await bcrypt.hash(this.password, 10);
         }
         next();
-    }
-    catch(error){
+    } catch (error) {
         console.log(error);
         next(error);
     }
 });
+
 
 
 module.exports = mongoose.model('User', UserModel);

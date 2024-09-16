@@ -1,7 +1,5 @@
 const mongoose=require('mongoose');
-const { default: isEmail } = require('validator/lib/isEmail');
 const Schema = mongoose.Schema;
-const User = require('./userModel');
 
 const companyModel = new Schema({
     userID:{
@@ -31,4 +29,4 @@ const companyModel = new Schema({
     }
 });
 
-module.exports = companyModel;
+module.exports = mongoose.model('Company',companyModel);

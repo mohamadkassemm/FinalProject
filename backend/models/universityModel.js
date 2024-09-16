@@ -1,9 +1,12 @@
 const mongoose=require('mongoose');
-const { default: isEmail } = require('validator/lib/isEmail');
 const Schema = mongoose.Schema;
-const User = require('./userModel');
 
 const universityModel = new Schema({
+    userID:{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User', // Reference to the User model
+        required: true
+    },
     location:{
         type:String,
         required:[true,"This field is required"],
@@ -26,4 +29,4 @@ const universityModel = new Schema({
     }
 });
 
-module.exports = universityModel;
+module.exports = mongoose.model('University',universityModel);
