@@ -36,15 +36,13 @@ exports.signUp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 12);
 
         const newUser = new User({name, email, username, password: hashedPassword, role });
-        ID=newUser._id;
         await newUser.save();
-        console.log(newUser._id);
 
         let data;
         switch (role) {
             case "student":{
                 const {degree, university, major, jobStatus, bootcampStatus}= req.body;
-                data = new Student({userID: ID, degree, university, major, jobStatus, bootcampStatus});
+                data = new Student({userID: newUser._id, degree, university, major, jobStatus, bootcampStatus});
                 break;
             }
             case "university":{
