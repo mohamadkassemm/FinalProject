@@ -3,9 +3,16 @@ const Schema = mongoose.Schema;
 
 const studentModel = new Schema({
     userID:{
-        type: Schema.Types.ObjectId, 
-        ref: 'User', // Reference to the User model
-        required: true
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User',
+        required: true,
+        validate: {
+            validator: async function(value) {
+                const user = await mongoose.model('User').findById(value);
+                return user !== null;
+            },
+            message: 'Invalid user ID'
+        }
     },
     degree:{
         type:String,

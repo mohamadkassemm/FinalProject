@@ -5,11 +5,6 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
 const UserModel = new Schema({
-    ID:{
-        type:Number,
-        unique: true,
-        min: 1,
-    },
     name:{
         type: String,
         required: true,
@@ -20,6 +15,18 @@ const UserModel = new Schema({
         lowercase: true,
         unique: true,
         validate: [isEmail, 'Invalid email format'],
+    },
+    username:{
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        validate: [
+            {
+                validator: (username) => /^[a-z0-9]+$/.test(username),
+                message: 'Username can only contain alphanumeric characters',
+            },
+        ],
     },
     password:{
         type: String,
@@ -41,14 +48,12 @@ const UserModel = new Schema({
     }
 });
 
-UserModel.plugin(AutoIncrement, { inc_field: 'ID' });
-
 UserModel.pre('save', async function (next) {
     try {
-        if (this.isModified('password')) {
-            this.password = await bcrypt.hash(this.password, 10);
+        if (!this.isModified('password')) {
+            return next();
         }
-        next();
+        this.password = await bcrypt.hash(this.password,12);
     } catch (error) {
         console.log(error);
         next(error);

@@ -36,31 +36,32 @@ exports.signUp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 12);
 
         const newUser = new User({name, email, username, password: hashedPassword, role });
+        ID=newUser._id;
         await newUser.save();
+        console.log(newUser._id);
 
         let data;
-        switch(role) {
+        switch (role) {
             case "student":{
                 const {degree, university, major, jobStatus, bootcampStatus}= req.body;
-                data = new Student({userID: newUser.ID,degree, university, major, jobStatus, bootcampStatus});
+                data = new Student({userID: ID, degree, university, major, jobStatus, bootcampStatus});
                 break;
             }
             case "university":{
                 const {location, availableMajors, availablePosition}= req.body;
-                data = new University({userID: newUser.ID,location, availableMajors, availablePosition});
+                data = new University({userID: newUser._id, location, availableMajors, availablePosition});
                 break;  
             }
             case "company":{
                 const {location, availablePositions, bootcampOfers, internshipOffers, linkedIn}=req.body;
-                data = new Company({userID: newUser.ID,location, availablePositions, bootcampOfers, internshipOffers, linkedIn});
+                data = new Company({userID: newUser._id, location, availablePositions, bootcampOfers, internshipOffers, linkedIn});
                 break;
             }
             default:
                 return res.status(400).json({message: "Invalid user type"});
         }
         await data.save();
-        createToken(newUser, 201, res);
-        return res.status(200).json({message: "Data saved successfully", data: data});
+        return createToken(newUser, 201, res);
     }catch(err){
         return res.status(500).json({message: err.message});
     }
