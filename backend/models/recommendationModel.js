@@ -3,10 +3,17 @@ const Schema = mongoose.Schema;
 const generalDataModel = require('./generalDataModel');
 
 const recommendationModel = generalDataModel.discriminator('recommendationModel', new Schema({
-    userId:{
-        type: Schema.Types.ObjectId,
+    userID:{
+        type: mongoose.Schema.Types.ObjectId, 
         ref: 'User',
-        required: true
+        required: true,
+        validate: {
+            validator: async function(value) {
+                const user = await mongoose.model('User').findById(value);
+                return user !== null;
+            },
+            message: 'Invalid user ID'
+        }
     },
     type:{
         type: String,

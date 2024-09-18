@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const generalDataModel = new Schema({
-    id: {
-        type: Number,
-        required: true,
-    },
     title: {
         type: String,
         required: true,
@@ -14,10 +10,6 @@ const generalDataModel = new Schema({
         type: String,
         required: true,
     },
-    industry:{
-        type: String,
-        required: true,
-    }
 });
 
 module.exports = mongoose.model('GeneralData', generalDataModel);

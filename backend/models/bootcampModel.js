@@ -25,7 +25,7 @@ const bootcampModel = generalDataModel.discriminator('bootcampModel',new Schema(
         required: true
     },
     companyID:{
-        type: Number,
+        type: Schema.Types.ObjectId,
         required: true,
         ref: 'Company'
     }

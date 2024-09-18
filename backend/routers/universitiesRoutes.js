@@ -3,7 +3,7 @@ const router = express.Router();
 
 const uni = require('../controllers/universityController');
 
-router.get('/universities', uni.getUniversities);
+router.get('/', uni.getUniversities);
 
 router.get('/university/:id', uni.getUniversityByID);
 

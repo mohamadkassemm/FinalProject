@@ -13,12 +13,12 @@ const eventModel = generalDataModel.discriminator('eventModel', new Schema({
     },
     organizerID: {
         type: Schema.Types.ObjectId,
-        ref: 'userModel',
+        ref: 'User',
         required: true
     },
     booked:{
         type:[Schema.Types.ObjectId],
-        ref: 'userModel',
+        ref: 'User',
         default: []
     }
 }));

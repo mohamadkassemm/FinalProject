@@ -14,9 +14,8 @@ const courseModel = generalDataModel.discriminator('courseModel',new Schema({
         required:[true,"This field is required"],
     },
     prerequisites:{
-        type:String,
-        required:[true,"This field is required"],
-        trim:true,
+        type:[String],
+        default:[]
     },
     nbOfCredits:{
         type:Number,
@@ -24,4 +23,4 @@ const courseModel = generalDataModel.discriminator('courseModel',new Schema({
     },
 }));
 
-module.exports = courseModel;
+module.exports = mongoose.model('Course',courseModel);

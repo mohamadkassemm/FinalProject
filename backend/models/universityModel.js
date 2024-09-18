@@ -4,8 +4,15 @@ const Schema = mongoose.Schema;
 const universityModel = new Schema({
     userID:{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', // Reference to the User model
-        required: true
+        ref: 'User',
+        required: true,
+        validate: {
+            validator: async function(value) {
+                const user = await mongoose.model('User').findById(value);
+                return user !== null;
+            },
+            message: 'Invalid user ID'
+        }
     },
     location:{
         type:String,
