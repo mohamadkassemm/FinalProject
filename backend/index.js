@@ -6,17 +6,21 @@ DB();
 
 app.use(express.json());
 
-const userRoutes = require('./routers/anyUserRoute');
+const userRoutes = require('./routers/anyUserRouter');
 const studentRoutes = require('./routers/studentsRouter');
-const universityRoutes = require('./routers/universitiesRoutes');
-const bootcampRoutes = require('./routes/bootcampRouter');
-const eventRoutes = require('./routes/eventRouter');
-const jobRoutes = require('./routes/jobRouter');
-const majorRoutes = require('./routes/majorRouter');
+const universityRoutes = require('./routers/universitiesRouter');
+const companyRoutes = require('./routers/companyRouter');
+const courseRoutes = require('./routers/courseRouter');
+const bootcampRoutes = require('./routers/bootcampRouter');
+const eventRoutes = require('./routers/eventsRouter');
+const jobRoutes = require('./routers/jobRouter');
+const majorRoutes = require('./routers/majorRouter');
 
 app.use('/', userRoutes);
-app.use('/universities', universityRoutes);
 app.use('/student', studentRoutes);
+app.use('/universities', universityRoutes);
+app.use('/company', companyRoutes);
+app.use('/course', courseRoutes);
 app.use('/job', jobRoutes);
 app.use('/bootcamp', bootcampRoutes);
 app.use('/event', eventRoutes);
