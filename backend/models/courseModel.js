@@ -1,26 +1,37 @@
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const generalDataModel = require('./generalDataModel');
 
-const courseModel = generalDataModel.discriminator('courseModel',new Schema({
-    name:{
-        type:String,
-        required:[true,"This field is required"],
-        minLength:3,
-        trim:true,
+const courseModel = new Schema({
+    name: {
+        type: String,
+        required: [true, "This field is required"],
+        minLength: 3,
+        trim: true,
     },
-    duration:{
-        type:Number,
-        required:[true,"This field is required"],
+    description: {
+        type: String,
     },
-    prerequisites:{
-        type:[String],
-        default:[]
+    duration: {
+        type: Number,
+        required: [true, "This field is required"],
     },
-    nbOfCredits:{
-        type:Number,
-        required:[true,"This field is required"],
+    prerequisites: {
+        type: [String],
+        default: []
     },
-}));
+    nbOfCredits: {
+        type: Number,
+        required: [true, "This field is required"],
+    },
+    price: {
+        type: Number,
+        min: 1,
+        max: 10000,
+        validate: {
+            validator: Number.isInteger,
+            message: '{VALUE} is not an integer.'
+        }
+    }
+});
 
-module.exports = mongoose.model('Course',courseModel);
+module.exports = mongoose.model('Course', courseModel);

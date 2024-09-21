@@ -1,8 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const generalDataModel = require('./generalDataModel');
 
-const eventModel = generalDataModel.discriminator('eventModel', new Schema({
+const eventModel = new Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
     location: {
         type: String,
         required: true
@@ -16,11 +23,11 @@ const eventModel = generalDataModel.discriminator('eventModel', new Schema({
         ref: 'User',
         required: true
     },
-    booked:{
-        type:[Schema.Types.ObjectId],
+    booked: {
+        type: [Schema.Types.ObjectId],
         ref: 'User',
         default: []
     }
-}));
+});
 
-module.exports = eventModel;
+module.exports = mongoose.model('Event', eventModel);

@@ -1,45 +1,45 @@
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const studentModel = new Schema({
-    userID:{
-        type: mongoose.Schema.Types.ObjectId, 
+    userID: {
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
         validate: {
-            validator: async function(value) {
+            validator: async function (value) {
                 const user = await mongoose.model('User').findById(value);
                 return user !== null;
             },
             message: 'Invalid user ID'
         }
     },
-    degree:{
-        type:String,
-        required:[true,"This field is required"],
-        enum:['Bachelor', 'Master', 'PhD'],
+    degree: {
+        type: String,
+        required: [true, "This field is required"],
+        enum: ['Bachelor', 'Master', 'PhD'],
     },
-    interests:{
+    interests: {
         type: [String],
-        required:[true,"This field is required"],
+        required: [true, "This field is required"],
     },
-    universityID:{
+    universityID: {
         type: Number,
         ref: 'University',
     },
-    jobStatus:{
+    jobStatus: {
         type: String,
-        required:[true,"This field is required"],
-        enum:['Unemployed', 'Part-time','Full-time', 'Self-employed'],
+        required: [true, "This field is required"],
+        enum: ['Unemployed', 'Part-time', 'Full-time', 'Self-employed'],
     },
-    bootcampStatus:{
+    bootcampStatus: {
         type: String,
-        required:[true,"This field is required"],
-        enum:['No', 'Yes'],
+        required: [true, "This field is required"],
+        enum: ['No', 'Yes'],
     },
-    major:{
+    major: {
         type: String,
-        required:[true,"This field is required"],
+        required: [true, "This field is required"],
     },
     interests: {
         bootcamps: [String],

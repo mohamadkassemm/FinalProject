@@ -1,33 +1,40 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const generalDataModel = require('./generalDataModel');
 
-const jobModel = generalDataModel.discriminator('jobModel',new Schema({
-    type:{
+const jobModel = new Schema({
+    title: {
         type: String,
-        required:true,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    type: {
+        type: String,
+        required: true,
         enum: ['Full Time', 'Part Time', 'Internship']
     },
-    requirements:{
+    requirements: {
         type: String,
-        minLength:10,
+        minLength: 10,
     },
-    location:{
+    location: {
         type: String,
-        required:true,
+        required: true,
         enum: ['on-site', 'remote', 'hybrid']
     },
-    salary:{
+    salary: {
         type: Number,
-        required:true,
+        required: true,
         min: 1,
     },
-    companyID:{
+    companyID: {
         type: Number,
-        required:true,
+        required: true,
         min: 1,
         ref: 'Company'
     }
-}));
+});
 
-module.exports = jobModel;
+module.exports = mongoose.model('Job', jobModel);
