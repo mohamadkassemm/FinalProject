@@ -65,4 +65,7 @@ router.get('/:id/interests/jobs', studentController.getJobsInterestedIn);
 // Get universities student is interested in
 router.get('/:id/interests/universities', studentController.getUniversitiesInterestedIn);
 
+//get student recommendations
+router.get('/:id/recommendations', studentController.getStudentRecommendations);
+
 module.exports = router;

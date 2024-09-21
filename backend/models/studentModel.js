@@ -46,6 +46,15 @@ const studentModel = new Schema({
         jobs: [String],
         universities: [String],
     },
+    recommendations: [{
+        type: Schema.Types.ObjectId,
+        refPath: 'recommendationType', // Dynamically determines the referenced model
+    }],
+    recommendationType: [{
+        type: String,
+        required: true,
+        enum: ['Job', 'University', 'Bootcamp'], // The models to reference
+    }],
 });
 
 module.exports = mongoose.model('Student', studentModel);

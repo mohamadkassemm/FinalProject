@@ -399,3 +399,20 @@ exports.getUniversitiesInterestedIn = async (req, res) => {
         });
     }
 }
+
+exports.getStudentRecommendations = async (req, res) => {
+    try {
+        const student = await Student.findById(req.params.id);
+        if (!student) {
+            return res.status(404).json({
+                message: "Student not found"
+            });
+        }
+        const recommendations = student.recommendations;;
+        return res.status(200).json(recommendations);
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
