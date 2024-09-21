@@ -40,7 +40,12 @@ const studentModel = new Schema({
     major:{
         type: String,
         required:[true,"This field is required"],
-    }
+    },
+    interests: {
+        bootcamps: [String],
+        jobs: [String],
+        universities: [String],
+    },
 });
 
 module.exports = mongoose.model('Student', studentModel);
