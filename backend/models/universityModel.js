@@ -14,13 +14,18 @@ const universityModel = new Schema({
             message: 'Invalid user ID'
         }
     },
+    abbreviation:{
+        type: String,
+        required:[true,"This field is required"],
+    },
     location:{
         type:String,
         required:[true,"This field is required"],
     },
     availableMajors:{
-        type: [String],
+        type: [Schema.Types.ObjectId],
         required:[true,"This field is required"],
+        ref: 'Major',
     },
     availablePositions:{
         type: [String],

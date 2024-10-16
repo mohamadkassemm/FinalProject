@@ -18,7 +18,7 @@ const majorRoutes = require('./routers/majorRouter');
 
 app.use('/', userRoutes);
 app.use('/student', studentRoutes);
-app.use('/universities', universityRoutes);
+app.use('/university', universityRoutes);
 app.use('/company', companyRoutes);
 app.use('/course', courseRoutes);
 app.use('/job', jobRoutes);

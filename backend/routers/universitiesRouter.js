@@ -5,15 +5,15 @@ const uni = require('../controllers/universityController');
 
 router.get('/', uni.getUniversities);
 
-router.get('/university/:id', uni.getUniversityByID);
+router.get('/:id', uni.getUniversityByID);
 
-router.get('/university/major/:major', uni.getUniversitiesByMajor);
+router.get('/major/:major', uni.getUniversitiesByMajor);
 
-router.get('/university/location/:location', uni.getUniversitiesByLocation);
+router.get('/location/:location', uni.getUniversitiesByLocation);
 
 router.get('/sortedUniversities', uni.sortUniversities);
 
-router.get('/universities/search', uni.searchUniversities);
+router.get('/search', uni.searchUniversities);
 
 router.put('/updateUniversity/:id', uni.updateUniversity);
 

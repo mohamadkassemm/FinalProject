@@ -32,10 +32,10 @@ exports.getUniversityByID = async (req, res) => {
 }
 
 exports.getUniversitiesByMajor = async (req, res) => {
-    const majorID = req.params.major;
+    const major = req.params.major;
     try {
         const unis = await University.find({
-            majors: majorID
+            majors: major
         });
         if (unis.length == 0)
             return res.status(404).json({
@@ -97,18 +97,34 @@ exports.sortUniversities = async (req, res) => {
 
 exports.searchUniversities = async (req, res) => {
     const searchQuery = req.query.search;
-    try {
-        const unis = await University.find({
-            name: {
-                $regex: searchQuery,
-                $options: "i"
-            }
+    
+    if (!searchQuery) {
+        return res.status(400).json({
+            message: "Search query cannot be empty."
         });
-        if (unis.length == 0)
+    }
+
+    try {
+        const universities = await University.find({
+            $or: [
+                { abbreviation: { $regex: `.*${searchQuery}.*`, $options: "i" } } // Search by abbreviation
+            ]
+        })
+        .populate({
+            path: 'userID',           // 1. Field to populate
+            match: { name: { $regex: `.*${searchQuery}.*`, $options: 'i' } }, // 2. Conditions applied to populated documents
+            select: 'name',           // 3. Fields to include from the populated document
+        })
+        .exec();
+
+        const filteredUniversities = universities.filter(university => university.userID);
+        
+        if(filteredUniversities.length==0)
             return res.status(404).json({
                 message: "No universities found matching the search query"
             });
-        return res.json(unis);
+        return res.status(200).json(universities);
+
     } catch (err) {
         return res.status(500).json({
             message: err.message
