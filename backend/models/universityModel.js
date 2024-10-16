@@ -31,7 +31,7 @@ const universityModel = new Schema({
         min: 1,
     },
     students:{
-        type: [Number],
+        type: [Schema.Types.ObjectId],
         ref: 'Student',
     }
 });

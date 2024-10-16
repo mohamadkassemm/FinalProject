@@ -1,5 +1,5 @@
 const job = require('../models/jobModel');
-const Company = require('../models/company');
+const Company = require('../models/companyModel');
 const user = require('../models/userModel');
 
 exports.getJobs = async (req, res) => {
@@ -100,7 +100,7 @@ exports.getJobsByCompany = async (req, res) => {
     }
 }
 
-exports.getJobByType = async (req, req) => {
+exports.getJobByType = async (req, res) => {
     try {
         const jobs = await job.find({
             type: req.params.type

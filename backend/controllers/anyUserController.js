@@ -26,6 +26,13 @@ const createToken = (user, statusCode, res) => {
 }
 exports.signUp = async (req, res) => {
     try {
+        const email = req.body.email;
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({
+                error: "Invalid email format"
+            });
+        }
+
         const emailCheck = await User.findOne({
             email: req.body.email
         });
@@ -39,12 +46,7 @@ exports.signUp = async (req, res) => {
                 error: "Email or Username already exists"
             });
         }
-        const email = req.body.email;
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({
-                error: "Invalid email format"
-            });
-        }
+        
         const {
             name,
             username,
@@ -144,13 +146,80 @@ exports.logIn = async (req, res) => {
                 message: "No such Username!"
             });
         }
-        const isMatch = await bcrypt.compare(req.body.password, user.password);
-        if (!isMatch) {
+        const hashedPassword = await bcrypt.hash(req.body.password,12);
+        if (hashedPassword === user.password) {
             return res.status(401).json({
                 message: "Incorrect password!"
             });
         }
+        user.loginStatus = true;
         createToken(user, 200, res);
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
+exports.logout = async (req,res) => {
+    try {
+        const user = await User.findOne({username: req.params.username});
+        if (!user) {
+            return res.status(401).json({
+                message: "User not found"
+            });
+        }
+        user.loginStatus = false;
+        return res.status(200).json({
+            loginStatus: user.loginStatus,
+            message: "User logged out successfully"
+        });
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const user = await User.findOne({
+            email: req.body.email
+        });
+        if (!user) {
+            return res.status(401).json({
+                message: "No such Email!"
+            });
+        }
+        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "10m"});
+        const url = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+        await sendEmail(user.email, "Reset Password", `Click this link to reset your password: ${url}`);
+        return res.status(200).json({
+            message: "Reset password link sent to your email"
+        });
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const user = await User.findOne({
+            username: req.body.username
+        });
+        if (!user) {
+            return res.status(401).json({
+                message: "No such Username!"
+            });
+        }
+        const hashedPassword = await bcrypt.hash(req.body.newPassword, 12);
+        user.password = hashedPassword;
+        await user.save();
+        return res.status(200).json({
+            message: "Password reset successfully"
+        });
     } catch (err) {
         return res.status(500).json({
             message: err.message

@@ -144,7 +144,7 @@ exports.getStudentsByInterests = async (req, res) => {
 exports.getStudentsAvailableForJob = async (req, res) => {
     try {
         const students = await Student.find({
-            jobStatus: "Unemplyed"
+            jobStatus: "Unemployed"
         });
         if (students.length <= 0)
             return res.status(400).json({

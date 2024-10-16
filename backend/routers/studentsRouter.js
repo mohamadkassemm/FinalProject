@@ -21,28 +21,28 @@ router.get('/major/:major', studentController.getStudentsByMajor);
 router.get('/university/:UniversityID', studentController.getStudentsByUniversity);
 
 // Get students by degree
-router.get('/degree/:degree', studentController.getStudentsByDegree);
+router.get('/degree/:degree', studentController.getStudentByDegree);
 
 // Get students by interests
 router.get('/interests/:interests', studentController.getStudentsByInterests);
 
 // Get students available for a job (Unemployed)
-router.get('/available-for-job', studentController.getStudentsAvailableForJob);
+router.get('/job/availableForJob', studentController.getStudentsAvailableForJob);
 
 // Get employed students (not Unemployed)
-router.get('/employed', studentController.getEmployedStudents);
+router.get('/job/employed', studentController.getEmployedStudents);
 
 // Get students working part-time
-router.get('/working-part-time', studentController.getStudentsWorkingPartTime);
+router.get('/job/working-part-time', studentController.getStudentsWorkingPartTime);
 
 // Get students working full-time
-router.get('/working-full-time', studentController.getStudentsWorkingFullTime);
+router.get('/job/working-full-time', studentController.getStudentsWorkingFullTime);
 
 // Get self-employed students
-router.get('/self-employed', studentController.getStudentsSelfEmployed);
+router.get('/job/self-employed', studentController.getStudentsSelfEmployed);
 
 // Get students by bootcamp status
-router.get('/bootcamp-status/:bootcampStatus', studentController.getStudentsByBootcampStatus);
+router.get('/bootcampStatus/:bootcampStatus', studentController.getStudentsByBootcampStatus);
 
 // Get student's interests by user ID
 router.get('/:id/interests', studentController.getInterestsByUserID);
