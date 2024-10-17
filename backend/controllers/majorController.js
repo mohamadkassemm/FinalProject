@@ -1,6 +1,7 @@
 const Major = require('../models/majorsModel');
 const University = require('../models/universityModel');
 const User = require('../models/userModel');
+const Student = require('../models/studentModel');
 
 exports.getMajors = async (req, res) => {
     try {
@@ -41,7 +42,7 @@ exports.getMajorsByUniversity = async (req, res) => {
 
 exports.getMajorsByStudent = async (req, res) => {
     try {
-        const student = await User.findById(req.params.studentId);
+        const student = await Student.findById(req.params.studentId);
         if (!student)
             return res.status(404).json({
                 message: "Student not found"
@@ -49,7 +50,7 @@ exports.getMajorsByStudent = async (req, res) => {
         const majors = await Major.find({
             students: student._id
         });
-        if (majors.length == 0)
+        if (majors.length === 0)
             return res.status(404).json({
                 message: "No majors found for this student"
             });
@@ -75,7 +76,7 @@ exports.createMajor = async (req, res) => {
 
 exports.recommendedMajors = async (req, res) => {
     try {
-        const student = await User.findById(req.params.studentId);
+        const student = await Student.findById(req.params.studentId);
         if (!student)
             return res.status(404).json({
                 message: "Student not found"
@@ -85,7 +86,7 @@ exports.recommendedMajors = async (req, res) => {
         });
         if (majors.length == 0)
             return res.status(404).json({
-                message: "No majors found for this student"
+                message: "No recommended majors found for this student"
             });
         return res.status(200).json(majors);
     } catch (err) {

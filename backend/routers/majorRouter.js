@@ -18,3 +18,4 @@ router.post('/', majorController.createMajor);
 router.get('/recommended/:studentId', majorController.recommendedMajors);
 
 module.exports = router;
+    
