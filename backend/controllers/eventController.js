@@ -1,5 +1,6 @@
 const event = require('../models/eventModel');
 const user = require('../models/userModel');
+const University = require('../models/universityModel');
 
 exports.getEvents = async (req, res) => {
     try {
@@ -79,15 +80,16 @@ exports.getEventById = async (req, res) => {
 
 exports.getEventsByUniversity = async (req, res) => {
     try {
-        const university = await user.findById(req.params.universityId);
-        if (!university)
+        const uni = await University.findById(req.params.universityId);
+
+        if (!uni)
             return res.status(404).json({
                 message: "University not found"
             });
         const events = await event.find({
             university: university._id
         });
-        res.json(events);
+        return res.status(201).json(events);
     } catch (error) {
         return res.status(500).json({
             message: error.message
