@@ -30,6 +30,11 @@ const bootcampModel = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'Company'
+    },
+    students:{
+        type: [Schema.Types.ObjectId],
+        ref: 'Student',
+        default: []
     }
 });
 
