@@ -106,17 +106,19 @@ exports.signUp = async (req, res) => {
             }
             case "company": {
                 const {
+                    industry,
                     location,
                     availablePositions,
-                    bootcampOfers,
+                    bootcampOffers,
                     internshipOffers,
                     linkedIn
                 } = req.body;
                 data = new Company({
                     userID: newUser._id,
+                    industry,
                     location,
                     availablePositions,
-                    bootcampOfers,
+                    bootcampOffers,
                     internshipOffers,
                     linkedIn
                 });

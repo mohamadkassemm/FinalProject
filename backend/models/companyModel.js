@@ -17,6 +17,28 @@ const companyModel = new Schema({
     industry: {
         type: String,
         required: true,
+        enum:[
+        "Information Technology",
+        "Healthcare",
+        "Finance",
+        "Education",
+        "Manufacturing",
+        "Retail",
+        "Construction",
+        "Transportation & Logistics",
+        "Hospitality",
+        "Telecommunications",
+        "Media & Entertainment",
+        "Energy",
+        "Real Estate",
+        "Agriculture",
+        "Government & Public Services",
+        "Automotive",
+        "Aerospace & Defense",
+        "Pharmaceuticals",
+        "Biotechnology",
+        "Nonprofit & Social Services"
+        ]
     },
     location: {
         type: String,
@@ -30,7 +52,7 @@ const companyModel = new Schema({
         type: [String],
         required: true,
     },
-    InternshipOffers: {
+    internshipOffers: {
         type: [String],
         required: true,
     },
