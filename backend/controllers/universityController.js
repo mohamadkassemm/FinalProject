@@ -1,4 +1,5 @@
 const University = require("../models/universityModel");
+const User = require("../models/userModel");
 const major = require("../models/majorsModel");
 
 exports.getUniversities = async (req, res) => {
@@ -105,27 +106,26 @@ exports.searchUniversities = async (req, res) => {
     }
 
     try {
-        const universities = await University.find({
-            $or: [
-                { abbreviation: { $regex: `.*${searchQuery}.*`, $options: "i" } } // Search by abbreviation
-            ]
+        const unis = await User.find({
+            name: {$regex: `.*${searchQuery}.*`, $options: 'i'},
+            role: 'university'
         })
-        .populate({
-            path: 'userID',           // 1. Field to populate
-            match: { name: { $regex: `.*${searchQuery}.*`, $options: 'i' } }, // 2. Conditions applied to populated documents
-            select: 'name',           // 3. Fields to include from the populated document
-        })
-        .exec();
 
-        const filteredUniversities = universities.filter(university => university.userID);
-        
-        if(filteredUniversities.length==0)
+        const abbUnis = await University.find({
+            abbreviation: {$regex: `.*${searchQuery}.*`, $options: 'i'}
+        })
+
+        if(unis.length===0 && abbUnis.length===0)
             return res.status(404).json({
-                message: "No universities found matching the search query"
+                message: "No universities found for this search query"
             });
-        return res.status(200).json(universities);
-
+        const results = [
+            ...unis.map(user => ({ type: 'User', data: user })), 
+            ...abbUnis.map(uni => ({ type: 'University', data: uni }))
+        ];
+        return res.status(200).json(results);
     } catch (err) {
+        console.error("Error occurred at:", err.stack);
         return res.status(500).json({
             message: err.message
         });

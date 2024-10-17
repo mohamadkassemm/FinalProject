@@ -13,7 +13,7 @@ router.get('/location/:location', uni.getUniversitiesByLocation);
 
 router.get('/sortedUniversities', uni.sortUniversities);
 
-router.get('/search', uni.searchUniversities);
+router.post('/search', uni.searchUniversities);
 
 router.put('/updateUniversity/:id', uni.updateUniversity);
 
