@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 const {
     default: isEmail
 } = require('validator/lib/isEmail');
@@ -37,28 +38,36 @@ const UserModel = new Schema({
         required: true,
         enum: ['student', 'university', 'company'],
     },
-    loginStatus: {
-        type: Boolean,
-        default: false,
-    },
     createdAt: {
         type: Date,
         default: Date.now,
-    }
+    },
+    passwordChangedAt:Date,
+    passwordResetToken:String,
+    passwordResetExpires:Date
 });
 
 UserModel.pre('save', async function (next) {
     try {
         if (!this.isModified('password')) {
-            return next();
+            next();
         }
         this.password = await bcrypt.hash(this.password, 12);
+        if(this.isNew)
+            next();
+        this.passwordChangedAt=Date.now()-1000;
     } catch (error) {
         console.log(error);
         next(error);
     }
 });
 
+UserModel.methods.generatePasswordResetToken = function(){
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    this.passwordResetExpires = Date.now() + 10*60*1000;
 
+    return resetToken;
+}
 
 module.exports = mongoose.model('User', UserModel);

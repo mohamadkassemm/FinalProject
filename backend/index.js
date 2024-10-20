@@ -16,15 +16,15 @@ const eventRoutes = require('./routers/eventsRouter');
 const jobRoutes = require('./routers/jobRouter');
 const majorRoutes = require('./routers/majorRouter');
 
-app.use('/', userRoutes);
-app.use('/student', studentRoutes);
-app.use('/university', universityRoutes);
-app.use('/company', companyRoutes);
-app.use('/course', courseRoutes);
-app.use('/job', jobRoutes);
-app.use('/bootcamp', bootcampRoutes);
-app.use('/event', eventRoutes);
-app.use('/major/', majorRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/student', studentRoutes);
+app.use('/api/university', universityRoutes);
+app.use('/api/company', companyRoutes);
+app.use('/api/course', courseRoutes);
+app.use('/api/job', jobRoutes);
+app.use('/api/bootcamp', bootcampRoutes);
+app.use('/api/event', eventRoutes);
+app.use('/api/major/', majorRoutes);
 
 
 app.listen(3001, () => {

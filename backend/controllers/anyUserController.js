@@ -5,8 +5,15 @@ const Company = require("../models/companyModel");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer")
+const crypto = require("crypto");
 
-
+const userCheck = async (req) => {
+    const user = await User.findOne({
+        $or:[{username:req.body["username"]},{email:req.body["email"]}]
+    })
+    return user;
+}
 
 const signToken = (user) => {
     return jwt.sign({
@@ -24,48 +31,48 @@ const createToken = (user, statusCode, res) => {
         data: user,
     });
 }
+
+const sendEmail = async (email, subject, message) => {
+    try{
+        
+    }catch(err){
+        console.error("Error sending email:", err);
+        throw new Error("Email could not be sent.");
+    }
+}
+
 exports.signUp = async (req, res) => {
     try {
-        const email = req.body.email;
+
+        const user = await userCheck(req);
+        if(user)
+            return res.status(409).json({message: "username or email is already in use!"});
+
+        const {
+            name,
+            email,
+            username,
+            password,
+            confirmPassword,
+            role
+        } = req.body;
+
         if (!validator.isEmail(email)) {
             return res.status(400).json({
                 error: "Invalid email format"
             });
         }
 
-        const emailCheck = await User.findOne({
-            email: req.body.email
-        });
-
-        const usernameCheck = await User.findOne({
-            username: req.body.username
-        });
-
-        if (emailCheck || usernameCheck) {
-            return res.status(409).json({
-                error: "Email or Username already exists"
-            });
-        }
-        
-        const {
-            name,
-            username,
-            password,
-            confirmPassword,
-            role
-        } = req.body;
         if (password !== confirmPassword) {
             return res.status(400).json({
                 error: "Passwords do not match"
             });
         }
-        const hashedPassword = await bcrypt.hash(password, 12);
-
         const newUser = new User({
             name,
             email,
             username,
-            password: hashedPassword,
+            password,
             role
         });
         await newUser.save();
@@ -130,7 +137,7 @@ exports.signUp = async (req, res) => {
                 });
         }
         await data.save();
-        return createToken(newUser, 201, res);
+        return res.status(201).json({message:"Your account is created successfully!"})
     } catch (err) {
         return res.status(500).json({
             message: err.message
@@ -140,22 +147,15 @@ exports.signUp = async (req, res) => {
 
 exports.logIn = async (req, res) => {
     try {
-        const user = await User.findOne({
-            username: req.body.username
-        });
-        if (!user) {
+        const user = await userCheck(req);
+        if(!user)
+            return res.status(404).json({messaege:"Invalid credentials!"})
+        if (!bcrypt.compare(req.body["password"], user.password)) {
             return res.status(401).json({
-                message: "No such Username!"
+                message: "Invalid credentials!"
             });
         }
-        const hashedPassword = await bcrypt.hash(req.body.password,12);
-        if (hashedPassword === user.password) {
-            return res.status(401).json({
-                message: "Incorrect password!"
-            });
-        }
-        user.loginStatus = true;
-        createToken(user, 200, res);
+        return res.status(200).json({message:"Logged in Successfuly!"});
     } catch (err) {
         return res.status(500).json({
             message: err.message
@@ -171,7 +171,6 @@ exports.logout = async (req,res) => {
                 message: "User not found"
             });
         }
-        user.loginStatus = false;
         return res.status(200).json({
             loginStatus: user.loginStatus,
             message: "User logged out successfully"
@@ -185,20 +184,31 @@ exports.logout = async (req,res) => {
 
 exports.forgotPassword = async (req, res) => {
     try {
-        const user = await User.findOne({
-            email: req.body.email
-        });
+        const user = await userCheck(req);
         if (!user) {
-            return res.status(401).json({
-                message: "No such Email!"
+            return res.status(404).json({
+                message: "No such Email or username!"
             });
         }
-        const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "10m"});
-        const url = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-        await sendEmail(user.email, "Reset Password", `Click this link to reset your password: ${url}`);
-        return res.status(200).json({
-            message: "Reset password link sent to your email"
-        });
+        const resetToken = user.generatePasswordResetToken();
+        await user.save({validateBeforeSave:false});
+
+        const url = `${req.protocol}://${req.get("host")}/api/user/resetPassword/${resetToken}`;
+
+        const message =`Forgot your password? Reset it using this URL:${url}`;
+        try{
+            await sendEmail({
+                email:user.email,
+                subject:"Reset your password",
+                message:message
+            });
+        }catch(err){
+            user.passwordResetToken = undefined;
+            user.passwordResetExpires = undefined;
+            await user.save({validateBeforeSave:false});
+
+        }
+        return res.status(200).json({message:"Password reset link was sent to your email!"})
     } catch (err) {
         return res.status(500).json({
             message: err.message
@@ -223,6 +233,35 @@ exports.resetPassword = async (req, res) => {
             message: "Password reset successfully"
         });
     } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
+exports.updatePassword = async (req, res) => {
+    try{
+        const user = await User.findById(req.params.userID);
+        if(!user)
+            return res.status(404).json({message:"User not found!"});
+        if(req.body["password"] !== req.body["confirmPassword"])
+            return res.status(209).json({message:"Passwords doesn't match!"});
+        if(bcrypt.compare(req.body["password"],user.password))
+            return res.status(409).json({message:"You can't use the old password"})
+        user.psasword = req.body["password"];
+        await user.save();
+        return res.status(200).json({message: "Password changed successfully!"})
+    }catch(err){
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
+exports.protect = async (req, res)=>{
+    try{
+        
+    }catch(err){
         return res.status(500).json({
             message: err.message
         });
