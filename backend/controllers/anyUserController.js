@@ -5,8 +5,8 @@ const Company = require("../models/companyModel");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer")
 const crypto = require("crypto");
+const sendEmail= require("../utils/email").sendEmail;
 
 const userCheck = async (req) => {
     const user = await User.findOne({
@@ -15,20 +15,23 @@ const userCheck = async (req) => {
     return user;
 }
 
-const signToken = (user) => {
-    return jwt.sign({
-        id: user._id
-    }, process.env.JWT_SECRET, {
+const signToken = (id) => {
+    return jwt.sign({id},
+        process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 }
 
-const createToken = (user, statusCode, res) => {
-    const token = signToken(user);
+const createSendToken = (user, statusCode, message, res) => {
+    const token = signToken(user._id);
+
     res.status(statusCode).json({
         status: "Success",
         token,
-        data: user,
+        message,
+        data:{
+            user
+        }
     });
 }
 
@@ -137,7 +140,8 @@ exports.signUp = async (req, res) => {
                 });
         }
         await data.save();
-        return res.status(201).json({message:"Your account is created successfully!"})
+
+        createSendToken(newUser, 201, "Your account is created successfully!", res);
     } catch (err) {
         return res.status(500).json({
             message: err.message
@@ -155,7 +159,7 @@ exports.logIn = async (req, res) => {
                 message: "Invalid credentials!"
             });
         }
-        return res.status(200).json({message:"Logged in Successfuly!"});
+        createSendToken(user, 200, "Logged in successfuly!", res);
     } catch (err) {
         return res.status(500).json({
             message: err.message
@@ -218,20 +222,29 @@ exports.forgotPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
     try {
-        const user = await User.findOne({
-            username: req.body.username
+        const hashedToken = crypto.createHash("sha256").update(req.params.token).digest("hex");
+        const tokenHolder = await User.findOne({
+            passwordResetToken:hashedToken,
+            passwordResetExpires: {$gt:Date.now()}
         });
-        if (!user) {
-            return res.status(401).json({
-                message: "No such Username!"
-            });
-        }
-        const hashedPassword = await bcrypt.hash(req.body.newPassword, 12);
-        user.password = hashedPassword;
-        await user.save();
-        return res.status(200).json({
-            message: "Password reset successfully"
-        });
+
+        if(!tokenHolder)
+            return res.status(400).json({message:"Token has expired"});
+
+        if(req.body["password"]!==req.body["confirmPassword"])
+            return res.status(400).json({message:"Password and confirmPassword do not match"});
+
+        hashedPassword= bcrypt.hash(req.body["password"],12);
+        if(tokenHolder.password === hashedPassword)
+            return res.status(400).json({message:"New password cannot be the same as the previous one! Please use another password"})
+
+        tokenHolder.password= req.body["password"];
+        tokenHolder.passwordResetToken= undefined;
+        tokenHolder.passwordResetExpires= undefined;
+
+        await tokenHolder.save();
+        
+        createSendToken(tokenHolder, 200, "Password changde successfully!", res);
     } catch (err) {
         return res.status(500).json({
             message: err.message
@@ -250,7 +263,7 @@ exports.updatePassword = async (req, res) => {
             return res.status(409).json({message:"You can't use the old password"})
         user.psasword = req.body["password"];
         await user.save();
-        return res.status(200).json({message: "Password changed successfully!"})
+        createSendToken(user, 200, "Password changed successfully!", res);
     }catch(err){
         return res.status(500).json({
             message: err.message
