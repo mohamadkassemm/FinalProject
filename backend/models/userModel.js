@@ -70,4 +70,12 @@ UserModel.methods.generatePasswordResetToken = function(){
     return resetToken;
 }
 
+UserModel.methods.passwordChangeAfterIssuingToken = function(JWTtimestamp){
+    if(this.passwordChangedAt){
+        const passwordChangedTime = parseInt(this.passwordChangedAt.getTime()/1000,10);
+        return passwordChangedTime > JWTtimestamp;
+    }
+    return false;
+}
+
 module.exports = mongoose.model('User', UserModel);

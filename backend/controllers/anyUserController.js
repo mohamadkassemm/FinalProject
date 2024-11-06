@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail= require("../utils/email").sendEmail;
+const {promisify} = require("util")
 
 const userCheck = async (req) => {
     const user = await User.findOne({
@@ -271,9 +272,35 @@ exports.updatePassword = async (req, res) => {
     }
 }
 
-exports.protect = async (req, res)=>{
+exports.protect = async (req, res, next)=>{
     try{
-        
+        let token;
+        if(req.headers.authorization && req.headers.authorization.startsWith("Bearer"))
+            token= req.headers.authorization.split(" ")[1]
+        if(!token.trim())
+            return res.status(401).json({message:"Log in to get access"})
+
+        let decoded;
+        try{
+            decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+        }catch(err){
+            if(err.name === "JsonwebTokenError")
+                return res.status(401).json({message:"Invalid token, please login again"})
+            else if(err.name === "TokenExpiredError")
+                return res.status(401).json({message:"Your session has expired, please login again"})
+        }
+
+        const user = await User.findById(decoded.id)
+        if(!user)
+            return res.status(404).json({message:"User doesn't exist anymore!"})
+
+        if(user.passwordChangeAfterIssuingToken(decoded.iat)){
+            return res.status(401).json({message:"You recently changed your password, please login again!"})
+        }
+
+        req.user=user;
+        next();
     }catch(err){
         return res.status(500).json({
             message: err.message
