@@ -14,18 +14,34 @@ const studentModel = new Schema({
             message: 'Invalid user ID'
         }
     },
+    completedProfile:{
+        type:Boolean,
+        default:false,
+    },
+    gender:{
+        type:[String],
+        enum:[Male,Female]
+    },
     degree: {
         type: String,
         required: [true, "This field is required"],
-        enum: ['Bachelor', 'Master', 'PhD'],
+        enum: ['Terminal', 'Bachelor', 'Master', 'PhD'],
     },
-    interests: {
-        type: [String],
+    major: {
+        type: String,
         required: [true, "This field is required"],
     },
-    universityID: {
-        type: Number,
-        ref: 'University',
+    university: {
+        type: String,
+    },
+    experience:{
+        type:[String],
+    },
+    certification:{
+        type:[String],
+    },
+    linkedIn:{
+        type:String,
     },
     jobStatus: {
         type: String,
@@ -37,24 +53,20 @@ const studentModel = new Schema({
         required: [true, "This field is required"],
         enum: ['No', 'Yes'],
     },
-    major: {
-        type: String,
-        required: [true, "This field is required"],
+    favorites: {
+        type: [{
+            item: { type: mongoose.Schema.Types.ObjectId, required: true },
+            itemType: {
+                type: String,
+                enum: ['University', 'Bootcamp', 'Event', 'Company'],
+                required: true
+            }
+        }],
+        default: [] 
     },
-    interests: {
-        bootcamps: [String],
-        jobs: [String],
-        universities: [String],
-    },
-    recommendations: [{
-        type: Schema.Types.ObjectId,
-        refPath: 'recommendationType', // Dynamically determines the referenced model
-    }],
-    recommendationType: [{
-        type: String,
-        required: true,
-        enum: ['Job', 'University', 'Bootcamp'], // The models to reference
-    }],
+    career:{
+        type:String,
+    }
 });
 
 module.exports = mongoose.model('Student', studentModel);

@@ -16,10 +16,9 @@ const universityModel = new Schema({
     },
     abbreviation:{
         type: String,
-        required:[true,"This field is required"],
     },
     location:{
-        type:String,
+        type:[String],
         required:[true,"This field is required"],
     },
     availableMajors:{
@@ -38,6 +37,7 @@ const universityModel = new Schema({
     students:{
         type: [Schema.Types.ObjectId],
         ref: 'Student',
+        default:[]
     }
 });
 

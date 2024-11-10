@@ -81,23 +81,39 @@ exports.signUp = async (req, res) => {
         });
         await newUser.save();
 
-        let data;
+        
+
+        createSendToken(newUser, 201, "Your account is created successfully!", res);
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+};
+
+exports.completeProfile = async(req, res)=>{
+    try{
+        loggedInUser = userCheck(req);
+    if(!loggedInUser)
+        res.redirect('/login')
+    if(loggedInUser.completeProfile === true)
+        response.redirect('/home')
+    role=loggedInUser.role;
+    let data;
         switch (role) {
             case "student": {
-                const {
-                    degree,
-                    university,
-                    major,
-                    jobStatus,
-                    bootcampStatus
-                } = req.body;
                 data = new Student({
-                    userID: newUser._id,
-                    degree,
-                    university,
-                    major,
-                    jobStatus,
-                    bootcampStatus
+                    userID: loggedInUser._id,
+                    gender:req.body.gender,
+                    degree:req.body.degree,
+                    major:req.body.major,
+                    university:req.body.university,
+                    experience:req.body.experience,
+                    certification:req.body.certification,
+                    linkedIn:req.body.linkedIn,
+                    jobStatus:req.body.jobStatus,
+                    bootcampStatus:req.body.bootcampStatus,
+                    career:req.body.career,
                 });
                 break;
             }
@@ -108,7 +124,7 @@ exports.signUp = async (req, res) => {
                     availablePosition
                 } = req.body;
                 data = new University({
-                    userID: newUser._id,
+                    userID: loggedInUser._id,
                     location,
                     availableMajors,
                     availablePosition
@@ -125,7 +141,7 @@ exports.signUp = async (req, res) => {
                     linkedIn
                 } = req.body;
                 data = new Company({
-                    userID: newUser._id,
+                    userID: loggedInUser._id,
                     industry,
                     location,
                     availablePositions,
@@ -141,14 +157,11 @@ exports.signUp = async (req, res) => {
                 });
         }
         await data.save();
-
-        createSendToken(newUser, 201, "Your account is created successfully!", res);
-    } catch (err) {
-        return res.status(500).json({
-            message: err.message
-        });
+    }catch(error){
+        return res.status(500).json({message:error.message})
     }
-};
+    
+}
 
 exports.logIn = async (req, res) => {
     try {

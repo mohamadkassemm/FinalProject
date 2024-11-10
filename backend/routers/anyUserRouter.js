@@ -6,6 +6,8 @@ router.post('/signup', anyUser.signUp);
 
 router.post('/login', anyUser.logIn);
 
+router.post('/completeProfile', anyUser.completeProfile);
+
 router.patch('/updatePassword/:userID', anyUser.updatePassword);
 
 router.patch('/forgotPassword/', anyUser.forgotPassword);
