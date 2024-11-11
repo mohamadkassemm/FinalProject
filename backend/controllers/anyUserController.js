@@ -113,41 +113,35 @@ exports.completeProfile = async(req, res)=>{
                     linkedIn:req.body.linkedIn,
                     jobStatus:req.body.jobStatus,
                     bootcampStatus:req.body.bootcampStatus,
+                    companyWorkingFor:req.body.companyWorkingFor,
                     career:req.body.career,
                 });
                 break;
             }
             case "university": {
-                const {
-                    location,
-                    availableMajors,
-                    availablePosition
-                } = req.body;
                 data = new University({
                     userID: loggedInUser._id,
-                    location,
-                    availableMajors,
-                    availablePosition
+                    abbreviation:req.body.abbreviation,
+                    governorate:req.body.governorate,
+                    numberOfBranches:req.body.numberOfBranches,
+                    availableMajors:req.body.availableMajors,
+                    availablePositions:req.body.availablePositions
                 });
                 break;
             }
             case "company": {
-                const {
-                    industry,
-                    location,
-                    availablePositions,
-                    bootcampOffers,
-                    internshipOffers,
-                    linkedIn
-                } = req.body;
                 data = new Company({
                     userID: loggedInUser._id,
-                    industry,
-                    location,
-                    availablePositions,
-                    bootcampOffers,
-                    internshipOffers,
-                    linkedIn
+                    description:req.body.description,
+                    industry:req.body.industry,
+                    governorate:req.body.governorate,
+                    website:req.body.website,
+                    socialMediaLinks:req.body.socialMediaLinks,
+                    awards:req.body.awards,
+                    availablePositions:req.body.availablePositions,
+                    bootcampOffers:req.body.bootcampOffers,
+                    internshipOffers:req.body.internshipOffers,
+                    linkedIn:req.body.linkedIn
                 });
                 break;
             }

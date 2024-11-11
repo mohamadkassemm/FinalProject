@@ -14,29 +14,48 @@ const companyModel = new Schema({
             message: 'Invalid user ID'
         }
     },
+    description: {
+        type: String,
+    },
     industry: {
         type: String,
         required: true,
     },
-    location: {
+    governorate:{
         type: String,
-        required: true,
+        enum:['North','South','Bekaa','Mount Lebanon','Beirut','Akkar','Baalbek-Hermel','Nabatieh']
+    },
+    website:{
+        type:String,
+    },
+    socialMediaLinks: {
+        facebook: { type: String },
+        X: { type: String },
+        instagram: { type: String }
+    },
+    awards: {
+        type: [String],
+        default: []
     },
     availablePositions: {
         type: [String],
-        required: true,
+        default:[]
     },
     bootcampOffers: {
         type: [String],
-        required: true,
+        default:[]
     },
     internshipOffers: {
         type: [String],
-        required: true,
+        default:[]
     },
     linkedIn: {
         type: String,
-        required: true,
+    },
+    workingUsersFromSite:{
+        type:[Schema.Types.ObjectId],
+        ref:'User',
+        default:[]
     }
 });
 

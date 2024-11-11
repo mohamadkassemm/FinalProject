@@ -22,6 +22,10 @@ const studentModel = new Schema({
         type:[String],
         enum:[Male,Female]
     },
+    governorate:{
+        type:String,
+        enum:['North','South','Bekaa','Mount Lebanon','Beirut','Akkar','Baalbek-Hermel','Nabatieh']
+    },
     degree: {
         type: String,
         required: [true, "This field is required"],
@@ -47,6 +51,16 @@ const studentModel = new Schema({
         type: String,
         required: [true, "This field is required"],
         enum: ['Unemployed', 'Part-time', 'Full-time', 'Self-employed'],
+    },
+    companyWorkingFor:{
+        type:Schema.Types.ObjectId,
+        ref:'Company',
+        validate: {
+            validator: function (value) {
+                return (this.jobStatus === 'Part-time' || this.jobStatus === 'Full-time') ? !!value : true;//!!means that there should be a value and not null or undefined
+            },
+            message: 'CompanyWorkingFor is required if job status is Part-time or Full-time'
+        }
     },
     bootcampStatus: {
         type: String,

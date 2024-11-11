@@ -17,9 +17,12 @@ const universityModel = new Schema({
     abbreviation:{
         type: String,
     },
-    location:{
-        type:[String],
-        required:[true,"This field is required"],
+    governorate:{
+        type: String,
+        enum:['North','South','Bekaa','Mount Lebanon','Beirut','Akkar','Baalbek-Hermel','Nabatieh']
+    },
+    numberOfBranches:{
+        type: Number,
     },
     availableMajors:{
         type: [Schema.Types.ObjectId],
@@ -29,6 +32,7 @@ const universityModel = new Schema({
     availablePositions:{
         type: [String],
         required:[true,"This field is required"],
+        default:[],
     },
     ranking:{
         type: Number,
