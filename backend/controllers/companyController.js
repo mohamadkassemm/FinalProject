@@ -1,5 +1,8 @@
 const Company = require('../models/companyModel');
 const User = require('../models/userModel');
+const Bootcamp = require('../models/bootcampModel');
+const Job = require('../models/jobModel');
+
 
 exports.getCompanies = async (req, res) => {
     try {
@@ -52,23 +55,6 @@ exports.searchCompany = async (req, res) => {
     }catch(err){
         return res.status(500).json({
             message: err.message
-        });
-    }
-}
-
-exports.deleteCompany = async (req, res) => {
-    try {
-        const company = await Company.findByIdAndDelete(req.params.id);
-        if (!company)
-            return res.status(404).json({
-                message: "Company not found"
-            });
-        res.json({
-            message: "Company deleted successfully"
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message
         });
     }
 }
@@ -141,7 +127,7 @@ exports.getCompaniesOfferBootcamps = async (req, res) => {
 
 exports.addCompanyInternship = async (req, res) => {
     try {
-        const company = await Company.findByIdAndUpdate(req.params.id, {
+        const company = await Company.findByIdAndUpdate(req.body.id, {
             $push: {
                 internshipOffers:  { $each: req.body.internshipOffers }
             }
@@ -152,6 +138,7 @@ exports.addCompanyInternship = async (req, res) => {
             return res.status(404).json({
                 message: "Company not found"
             });
+        await company.save();
         return res.status(200).json(company);
     } catch (error) {
         return res.status(500).json({
@@ -160,9 +147,27 @@ exports.addCompanyInternship = async (req, res) => {
     }
 }
 
+exports.removeInternshipFromCompany = async (req, res)=>{
+    try{
+        const company = await Company.findById(req.body.id);
+        if(!company)
+            return res.status(404).json({message:"Something wrong happened! Please try again later."});
+        const internship= await Job.findById(req.params.inernshipId);
+        if(!internship)
+            return res.status(404).json({message:"Internship not found!"})
+        await company.updateOne({
+            $pull:{internshipOffers:internship}
+        })
+        await company.save();
+        return res.status(201).json({message:"Internship removed successfully!"})
+    }catch(err){
+        return res.status(400).json({message:err.message})
+    }
+}
+
 exports.addCompanyJob = async (req, res) => {
     try {
-        const company = await Company.findByIdAndUpdate(req.params.id, {
+        const company = await Company.findByIdAndUpdate(req.body.id, {
             $push: {
                 availablePositions: { $each: req.body.availablePositions }
             }
@@ -173,6 +178,7 @@ exports.addCompanyJob = async (req, res) => {
             return res.status(404).json({
                 message: "Company not found"
             });
+        await company.save();
         return res.status(200).json(company);
     } catch (error) {
         return res.status(500).json({
@@ -181,9 +187,27 @@ exports.addCompanyJob = async (req, res) => {
     }
 }
 
+exports.removeJobFromCompany = async (req, res)=>{
+    try{
+        const company = await Company.findById(req.body.id);
+        if(!company)
+            return res.status(404).json({message:"Something wrong happened! Please try again later."});
+        const job= await Job.findById(req.params.jobID);
+        if(!job)
+            return res.status(404).json({message:"Position not found!"})
+        await company.updateOne({
+            $pull:{availablePositions:job}
+        })
+        await company.save();
+        return res.status(201).json({message:"Position removed successfully!"})
+    }catch(err){
+        return res.status(400).json({message:err.message})
+    }
+}
+
 exports.addCompanyBootcamp = async (req, res) => {
     try {
-        const company = await Company.findByIdAndUpdate(req.params.id, {
+        const company = await Company.findByIdAndUpdate(req.body.id, {
             $push: {
                 bootcampOffers: { $each: req.body.bootcampOffers }
             }
@@ -194,6 +218,7 @@ exports.addCompanyBootcamp = async (req, res) => {
             return res.status(404).json({
                 message: "Company not found"
             });
+        await company.save();
         return res.status(200).json(company);
     } catch (error) {
         return res.status(500).json({
@@ -202,10 +227,28 @@ exports.addCompanyBootcamp = async (req, res) => {
     }
 }
 
-exports.getCompaniesByLocation = async (req, res) => {
+exports.removeBootcampFromCompany = async (req, res)=>{
+    try{
+        const company = await Company.findById(req.body.id);
+        if(!company)
+            return res.status(404).json({message:"Something wrong happened! Please try again later."});
+        const bootcamp= await Bootcamp.findById( req.params.bootcampID);
+        if(!bootcamp)
+            return res.status(404).json({message:"Bootcamp not found!"})
+        await company.updateOne({
+            $pull:{bootcampOffers:bootcamp}
+        })
+        await company.save();
+        return res.status(201).json({message:"Bootcamp removed successfully!"})
+    }catch(err){
+        return res.status(400).json({message:err.message})
+    }
+}
+
+exports.getCompaniesByGovernorate = async (req, res) => {
     try {
         const companies = await Company.find({
-            location: req.query.location
+            governorate: req.query.governorate
         });
         if (companies.length == 0)
             return res.status(404).json({

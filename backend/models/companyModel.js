@@ -33,10 +33,6 @@ const companyModel = new Schema({
         X: { type: String },
         instagram: { type: String }
     },
-    awards: {
-        type: [String],
-        default: []
-    },
     availablePositions: {
         type: [String],
         default:[]
