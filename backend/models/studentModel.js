@@ -72,7 +72,7 @@ const studentModel = new Schema({
             item: { type: mongoose.Schema.Types.ObjectId, required: true },
             itemType: {
                 type: String,
-                enum: ['University', 'Bootcamp', 'Event', 'Company'],
+                enum: ['University', 'Bootcamp', 'Event', 'Company','Job'],
                 required: true
             }
         }],

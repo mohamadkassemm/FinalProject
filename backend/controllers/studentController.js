@@ -245,113 +245,6 @@ exports.getStudentsByBootcampStatus = async (req, res) => {
     }
 }
 
-exports.getInterestsByUserID = async (req, res) => {
-    try {
-        const student = await Student.findById(req.params.id);
-        if (!student || !student.interests) {
-            return res.status(404).json({
-                message: "No interests found for this user"
-            });
-        }
-        return res.status(200).json(student.interests);
-    } catch (err) {
-        return res.status(500).json({
-            message: err.message
-        });
-    }
-};
-
-
-exports.addInterest = async (req, res) => {
-    const {
-        type,
-        interest
-    } = req.body;
-    try {
-        const student = await Student.findById(req.params.id);
-        if (!student) {
-            return res.status(404).json({
-                message: "Student not found"
-            });
-        }
-        if (!['bootcamps', 'jobs', 'universities'].includes(type)) {
-            return res.status(400).json({
-                message: "Invalid interest type"
-            });
-        }
-        student.interests[type].push(interest);
-        await student.save();
-        return res.status(201).json(student.interests[type]);
-    } catch (err) {
-        return res.status(500).json({
-            message: err.message
-        });
-    }
-};
-
-
-exports.deleteInterest = async (req, res) => {
-    const {
-        type,
-        interest
-    } = req.body;
-    try {
-        const student = await Student.findById(req.params.id);
-        if (!student) {
-            return res.status(404).json({
-                message: "Student not found"
-            });
-        }
-        const index = student.interests[type].indexOf(interest);
-        if (index > -1) {
-            student.interests[type].splice(index, 1);
-            await student.save();
-            return res.status(200).json({
-                message: "Interest deleted successfully"
-            });
-        } else {
-            return res.status(404).json({
-                message: "Interest not found"
-            });
-        }
-    } catch (err) {
-        return res.status(500).json({
-            message: err.message
-        });
-    }
-};
-
-
-exports.updateInterest = async (req, res) => {
-    const {
-        type,
-        oldInterest,
-        newInterest
-    } = req.body;
-    try {
-        const student = await Student.findById(req.params.id);
-        if (!student) {
-            return res.status(404).json({
-                message: "Student not found"
-            });
-        }
-        const index = student.interests[type].indexOf(oldInterest);
-        if (index > -1) {
-            student.interests[type][index] = newInterest;
-            await student.save();
-            return res.status(200).json(student.interests[type]);
-        } else {
-            return res.status(404).json({
-                message: "Interest not found"
-            });
-        }
-    } catch (err) {
-        return res.status(500).json({
-            message: err.message
-        });
-    }
-};
-
 exports.getBootcampsInterestedIn = async (req, res) => {
     try {
         const student = await Student.findById(req.params.id);
@@ -359,7 +252,7 @@ exports.getBootcampsInterestedIn = async (req, res) => {
             return res.status(404).json({
                 message: "No bootcamps found for this user"
             });
-        const bootcamps = student.interests.bootcamps;
+            const bootcamps = student.favorites.filter(fav => fav.itemType === 'Bootcamp');
         return res.status(200).json(bootcamps);
     } catch (err) {
         return res.status(500).json({
@@ -375,7 +268,7 @@ exports.getJobsInterestedIn = async (req, res) => {
             return res.status(404).json({
                 message: "No jobs found for this user"
             });
-        const jobs = student.interests.jobs;
+            const jobs = student.favorites.filter(fav => fav.itemType === 'Job');
         return res.status(200).json(jobs);
     } catch (err) {
         return res.status(500).json({
@@ -391,7 +284,7 @@ exports.getUniversitiesInterestedIn = async (req, res) => {
             return res.status(404).json({
                 message: "No universities found for this user"
             });
-        const universities = student.interests.universities;
+            const universities = student.favorites.filter(fav => fav.itemType === 'University');
         return res.status(200).json(universities);
     } catch (err) {
         return res.status(500).json({
@@ -400,19 +293,16 @@ exports.getUniversitiesInterestedIn = async (req, res) => {
     }
 }
 
-exports.getStudentRecommendations = async (req, res) => {
-    try {
-        const student = await Student.findById(req.params.id);
-        if (!student) {
-            return res.status(404).json({
-                message: "Student not found"
-            });
-        }
-        const recommendations = student.recommendations;;
-        return res.status(200).json(recommendations);
-    } catch (err) {
-        return res.status(500).json({
-            message: err.message
-        });
+exports.getFavorites = async (req, res) => {
+    try{
+        const student = await Student.findById(req.body.id);
+        if(!student)
+            return res.status(404).json({message:"Something wrong happened! Please try again."})
+        const favorites = student.favorites;
+        return res.status(200).json(favorites);
+    }catch(err){
+        return res.status(401).json({
+            message:err.message
+        })
     }
 }

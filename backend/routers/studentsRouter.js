@@ -45,26 +45,17 @@ router.get('/job/self-employed',anyUserController.protect, studentController.get
 // Get students by bootcamp status
 router.get('/bootcampStatus/:bootcampStatus',anyUserController.protect, studentController.getStudentsByBootcampStatus);
 
-// Get student's interests by user ID
-router.get('/:id/interests',anyUserController.protect, studentController.getInterestsByUserID);
+// Get favorites
+router.get('/favorites',anyUserController.protect, studentController.getFavorites);
 
-// Add an interest to a student by user ID
-router.post('/:id/interests',anyUserController.protect, studentController.addInterest);
+//Get fav jobs
+router.get('/favorite/jobs', anyUserController.protect, studentController.getJobsInterestedIn);
 
-// Delete an interest from a student by user ID
-router.delete('/:id/interests',anyUserController.protect, studentController.deleteInterest);
+//Get fav bootcamps
+router.get('/favorite/bootcamps', anyUserController.protect, studentController.getBootcampsInterestedIn);
 
-// Update an interest for a student by user ID
-router.put('/:id/interests',anyUserController.protect, studentController.updateInterest);
-
-// Get bootcamps student is interested in
-router.get('/:id/interests/bootcamps',anyUserController.protect, studentController.getBootcampsInterestedIn);
-
-// Get jobs student is interested in
-router.get('/:id/interests/jobs',anyUserController.protect, studentController.getJobsInterestedIn);
-
-// Get universities student is interested in
-router.get('/:id/interests/universities',anyUserController.protect, studentController.getUniversitiesInterestedIn);
+//Get fav universities
+router.get('/favorite/university', anyUserController.protect, studentController.getUniversitiesInterestedIn);
 
 //get student recommendations
 router.get('/:id/recommendations',anyUserController.protect, studentController.getStudentRecommendations);
