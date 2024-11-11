@@ -50,17 +50,17 @@ exports.getUniversitiesByMajor = async (req, res) => {
     }
 }
 
-exports.getUniversitiesByLocation = async (req, res) => {
-    const location = req.params.location;
+exports.getUniversitiesByGovernorate = async (req, res) => {
+    const governorate = req.params.governorate;
     try {
         const unis = await University.find({
-            location: location
+            governorate: governorate
         });
         if (unis.length == 0)
             return res.status(404).json({
                 message: "No universities found in this location"
             });
-        return res.json(unis);
+        return res.status(200).json(unis);
     } catch (err) {
         return res.status(500).json({
             message: err.message
@@ -132,43 +132,9 @@ exports.searchUniversities = async (req, res) => {
     }
 }
 
-exports.updateUniversity = async (req, res) => {
-    try {
-        const uni = await University.findByIdAndUpdate(req.params.id, req.body, {
-            new: true
-        });
-        if (!uni)
-            return res.status(404).json({
-                message: "University not found"
-            });
-        return res.json(uni);
-    } catch (err) {
-        return res.status(500).json({
-            message: err.message
-        });
-    }
-}
-
-exports.deleteUniversity = async (req, res) => {
-    try {
-        const uni = await University.findByIdAndDelete(req.params.id);
-        if (!uni)
-            return res.status(404).json({
-                message: "University not found"
-            });
-        return res.status(200).json({
-            message: "University deleted successfully"
-        });
-    } catch (err) {
-        return res.status(500).json({
-            message: err.message
-        });
-    }
-}
-
 exports.addMajorToUniversity = async (req, res) => {
     try {
-        const uni = await University.findByIdAndUpdate(req.params.id, {
+        const uni = await University.findByIdAndUpdate(req.body.id, {
             $push: {
                 majors: req.body.majorid
             }
@@ -189,7 +155,7 @@ exports.addMajorToUniversity = async (req, res) => {
 
 exports.removeMajorFromUniversity = async (req, res) => {
     try {
-        const uni = await University.findByIdAndUpdate(req.params.id, {
+        const uni = await University.findByIdAndUpdate(req.body.id, {
             $pull: {
                 majors: req.body.majorid
             }
@@ -210,7 +176,7 @@ exports.removeMajorFromUniversity = async (req, res) => {
 
 exports.addBootcampToUniversity = async (req, res) => {
     try {
-        const uni = await University.findByIdAndUpdate(req.params.id, {
+        const uni = await University.findByIdAndUpdate(req.body.id, {
             $push: {
                 bootcamps: req.body.bootcampid
             }
@@ -231,7 +197,7 @@ exports.addBootcampToUniversity = async (req, res) => {
 
 exports.removeBootcampFromUniversity = async (req, res) => {
     try {
-        const uni = await University.findByIdAndUpdate(req.params.id, {
+        const uni = await University.findByIdAndUpdate(req.body.id, {
             $pull: {
                 bootcamps: req.body.bootcampid
             }
@@ -252,7 +218,7 @@ exports.removeBootcampFromUniversity = async (req, res) => {
 
 exports.addStudentToUniversity = async (req, res) => {
     try {
-        const uni = await University.findByIdAndUpdate(req.params.id, {
+        const uni = await University.findByIdAndUpdate(req.body.id, {
             $push: {
                 students: req.body.studentid
             }
@@ -273,7 +239,7 @@ exports.addStudentToUniversity = async (req, res) => {
 
 exports.removeStudentFromUniversity = async (req, res) => {
     try {
-        const uni = await University.findByIdAndUpdate(req.params.id, {
+        const uni = await University.findByIdAndUpdate(req.body.id, {
             $pull: {
                 students: req.body.studentid
             }

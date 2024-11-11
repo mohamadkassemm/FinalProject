@@ -9,26 +9,22 @@ router.get('/:id',anyUserController.protect, uni.getUniversityByID);
 
 router.get('/major/:major',anyUserController.protect, uni.getUniversitiesByMajor);
 
-router.get('/location/:location',anyUserController.protect, uni.getUniversitiesByLocation);
+router.get('/governorate/:governorate',anyUserController.protect, uni.getUniversitiesByGovernorate);
 
 router.get('/sortedUniversities',anyUserController.protect, uni.sortUniversities);
 
 router.post('/search',anyUserController.protect, uni.searchUniversities);
 
-router.put('/updateUniversity/:id',anyUserController.protect, uni.updateUniversity);
+router.post('/university/major',anyUserController.protect, uni.addMajorToUniversity);
 
-router.delete('/deleteUniversity/:id',anyUserController.protect, uni.deleteUniversity);
+router.delete('/university/major/:majorid',anyUserController.protect, uni.removeMajorFromUniversity);
 
-router.post('/university/:id/major',anyUserController.protect, uni.addMajorToUniversity);
+router.post('/university/bootcamp',anyUserController.protect, uni.addBootcampToUniversity);
 
-router.delete('/university/:uniid/major/:majorid',anyUserController.protect, uni.removeMajorFromUniversity);
+router.delete('/university/bootcamp/:bootcampid',anyUserController.protect, uni.removeBootcampFromUniversity);
 
-router.post('/university/:id/bootcamp',anyUserController.protect, uni.addBootcampToUniversity);
+router.post('/university/student',anyUserController.protect, uni.addStudentToUniversity);
 
-router.delete('/university/:uniid/bootcamp/:bootcampid',anyUserController.protect, uni.removeBootcampFromUniversity);
-
-router.post('/university/:id/student',anyUserController.protect, uni.addStudentToUniversity);
-
-router.delete('/university/:uniid/student/:studentid',anyUserController.protect, uni.removeStudentFromUniversity);
+router.delete('/university/student/:studentid',anyUserController.protect, uni.removeStudentFromUniversity);
 
 module.exports = router;
