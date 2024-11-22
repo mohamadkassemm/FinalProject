@@ -1,0 +1,110 @@
+body {
+    margin: 0; /* Remove default margin */
+    height: 100vh; /* Full viewport height */
+    background-image: url('../assets/SignUpBackground.jpg');
+    background-size: cover; /* Ensures the image covers the area */
+    background-repeat: no-repeat;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    position: relative; 
+}
+
+.container {
+    width: 100%;
+    max-width: 350px; /* Set the max-width of the form */
+    padding: 10px;
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
+    background-color: #647060; /* Dark background */
+    font-family: Arial, sans-serif;
+    position: absolute; 
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%); 
+}
+
+
+/* Heading styling */
+.container h2 {
+    text-align: center;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.inputsContainer label {
+    display: block;
+    margin: 5px; /* Spacing for labels */
+    font-weight: bold;
+    color: white;
+}
+
+.inputsContainer input,
+.inputsContainer select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px; /* Space between inputs */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    box-sizing: border-box; /* Includes padding in width */
+    font-size: 14px;
+    color:#41443d;
+}
+
+.inputsContainer input::placeholder,
+.inputsContainer select::placeholder {
+    color: rgb(194, 193, 193); /* Grey color for the placeholder */
+}
+
+input[type="email"],#username{
+    text-transform: lowercase;
+}
+
+.inputsContainer input:focus,
+.inputsContainer select:focus {
+    border-color:black ;
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px black; /* Subtle glow */
+}
+
+.inputsContainer input,.inputsContainer select {
+    margin-bottom: 15px;
+}
+
+input[type="submit"] {
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #c9543a; /* Blue button */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #fef1ce;
+    color:#c9543a;
+}
+
+input[type="submit"]:active{
+    scale:0.9;
+}
+
+/* Responsive styling */
+@media (max-width: 500px) {
+    .container {
+        padding: 15px;
+    }
+
+    .inputsContainer input,
+    .inputsContainer select {
+        font-size: 13px;
+    }
+
+    .inputsContainer button {
+        font-size: 14px;
+    }
+}
