@@ -35,7 +35,6 @@ body {
 .inputsContainer label {
     display: block;
     margin: 5px; /* Spacing for labels */
-    font-weight: bold;
     color: white;
 }
 
@@ -91,6 +90,15 @@ input[type="submit"]:hover {
 
 input[type="submit"]:active{
     scale:0.9;
+}
+
+p{
+    color: white;
+}
+
+.links{
+    text-decoration: none;
+    color: black;
 }
 
 /* Responsive styling */

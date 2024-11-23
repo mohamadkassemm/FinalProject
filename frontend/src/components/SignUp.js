@@ -1,5 +1,6 @@
 import React from 'react';
-import './SignUp.css';
+import { Link } from 'react-router-dom';
+import './Forms.css';
 
 const SignUp = () => {
   return (
@@ -29,7 +30,8 @@ const SignUp = () => {
                 <option>Company</option>
             </select>
 
-            <input type='submit' value='Sign Up'/>  
+            <input type='submit' value='Sign Up'/> 
+            <p>Already have an account?<Link className='links' to='/login'>Log In</Link></p> 
         </div>
     </div>
   )
