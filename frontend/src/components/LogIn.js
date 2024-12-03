@@ -4,20 +4,22 @@ import './Forms.css';
 
 const LogIn = () => {
   return (
-    <div className='container'>
-        <h2>Log In</h2>
-        <div className='inputsContainer'>
-            <label>Username or Email:</label>
-            <input type='text' placeholder='johndoe  johndoe@example.com'/>
+    <div className='body'>
+      <div className='container'>
+          <h2>Log In</h2>
+          <div className='inputsContainer'>
+              <label>Username or Email:</label>
+              <input type='text' placeholder='johndoe@example.com'/>
 
-            <label>Password:</label>
-            <input type='password' placeholder='password'/>
+              <label>Password:</label>
+              <input type='password' placeholder='password'/>
 
-            <p>Forgot password? <Link className='links'>Reset Password</Link></p>
+              <p>Forgot password? <Link className='links' to={'/resetPassword'}>Reset Password</Link></p>
 
-            <input type='submit' value='Login'/>
-            <p>Don't have an account? <Link className='links' to='/signup'>Sign Up</Link></p>    
-        </div>
+              <input type='submit' value='Login'/>
+              <p>Don't have an account? <Link className='links' to='/signup'>Sign Up</Link></p>    
+          </div>
+      </div>
     </div>
   )
 }

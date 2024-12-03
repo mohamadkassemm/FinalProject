@@ -1,4 +1,4 @@
-body {
+.body {
     margin: 0; /* Remove default margin */
     height: 100vh; /* Full viewport height */
     background-image: url('../assets/SignUpBackground.jpg');
@@ -97,7 +97,7 @@ p{
 }
 
 .links{
-    text-decoration: none;
+    text-decoration: underline;
     color: black;
 }
 
