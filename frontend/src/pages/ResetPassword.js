@@ -1,9 +1,13 @@
 import React from 'react'
 import ResetPass from '../components/ResetPass'
+import EmailCheck from '../components/EmailCheck'
 
 const ResetPasswordPage = () => {
   return (
-    <ResetPass/>
+    <div>
+      <EmailCheck/>
+      <ResetPass/>
+    </div>
   )
 }
 

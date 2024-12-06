@@ -1,16 +1,20 @@
 import React from 'react'
-import './navBar.css'
+import './NavBar.css'
 
-const navBar = () => {
+const NavBar = () => {
   return (
-    <div>
+    <div className='navBar'>
+      <div>
         <button>961EduWay</button>
-        <button>Companies</button>
+      </div>
+      <div className='rightNav'>
+        <button>Companies</button>  
         <button>Universities</button>
         <button>Favorites</button>
         <button>Profile</button>
+      </div>
     </div>
   )
 }
 
-export default navBar;
+export default NavBar;

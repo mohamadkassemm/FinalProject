@@ -1,0 +1,29 @@
+.heroContainer{
+    margin-top: 10vh;
+    background-color: transparent;
+    display: inline-block;
+}
+
+.heroContainer img{
+    height: 250px;
+    width: 900px;
+    display: block;
+    border-radius: 100px;
+}
+
+.imageDescription{
+    display: flex;
+    align-items: center;
+    background-color: #cfd6c89e;
+}
+
+.heroContainer p{
+    color: black;
+    padding: 20px;
+    line-height: 1.8;
+}
+
+.heroContainer p:hover{
+    scale: 0.9;
+    cursor: pointer;
+}

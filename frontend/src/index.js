@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import SignUpPage from './pages/SignUp';
 import LogInPage from './pages/LogIn';
 import HomePage from './pages/Home';
-import ResetPassPage from './components/ResetPass';
+import ResetPassPage from './pages/ResetPassword';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
