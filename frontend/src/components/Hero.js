@@ -1,5 +1,6 @@
 import React from 'react';
 import './Hero.css';
+import Card from './Card';
 
 const universities = [
   {
@@ -46,6 +47,12 @@ const Hero = () => {
           )}
         </div>
       ))}
+      <div id='viewAll'>
+        <button>View all...</button>
+      </div>
+      <div className='everything'>
+        <Card universities/>
+      </div>
     </div>
   );
 };

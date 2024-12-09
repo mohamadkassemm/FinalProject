@@ -5,10 +5,15 @@
 }
 
 .heroContainer img{
-    height: 250px;
-    width: 900px;
+    height: 200px;
+    width: 700px;
     display: block;
     border-radius: 100px;
+}
+
+.heroContainer img:hover{
+    cursor: pointer;
+    scale:0.9;
 }
 
 .imageDescription{
@@ -26,4 +31,21 @@
 .heroContainer p:hover{
     scale: 0.9;
     cursor: pointer;
+}
+
+#viewAll{
+    text-align: center;
+}
+
+#viewAll button{
+    border: none;
+    background: none;
+    position: absolute;
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+#viewAll button:hover{
+    cursor: pointer;
+    scale: 0.9;
 }
