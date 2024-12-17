@@ -10,17 +10,17 @@ const Hero = () => {
   
   useEffect(() => {
     // Fetch universities data
-    fetch('https://example.com/api/universities') // Replace with your API endpoint
+    fetch('') 
       .then(response => response.json())
       .then(data => setUniversities(data))
       .catch(error => console.error('Error fetching universities:', error));
     
     // Fetch companies data
-    fetch('https://example.com/api/companies') // Replace with your API endpoint
+    fetch('') 
       .then(response => response.json())
       .then(data => setCompanies(data))
       .catch(error => console.error('Error fetching companies:', error));
-  }, []); // Empty dependency array ensures this runs once when the component mounts
+  }, []); 
   
   return (
     <div>
