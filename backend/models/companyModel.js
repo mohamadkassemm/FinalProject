@@ -17,6 +17,10 @@ const companyModel = new Schema({
     description: {
         type: String,
     },
+    logo:{
+        type:String,
+        required:false,
+    },
     industry: {
         type: String,
         required: true,

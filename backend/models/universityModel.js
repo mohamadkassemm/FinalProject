@@ -14,6 +14,13 @@ const universityModel = new Schema({
             message: 'Invalid user ID'
         }
     },
+    logo:{
+        type:String,
+        required:false
+    },
+    description:{
+        type:String,
+    },
     abbreviation:{
         type: String,
     },

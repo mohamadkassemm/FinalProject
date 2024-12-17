@@ -1,51 +1,66 @@
-.heroContainer{
-    margin-top: 10vh;
-    background-color: transparent;
-    display: inline-block;
-}
-
-.heroContainer img{
-    height: 200px;
-    width: 700px;
-    display: block;
-    border-radius: 100px;
-}
-
-.heroContainer img:hover{
-    cursor: pointer;
-    scale:0.9;
-}
-
-.imageDescription{
+/* Hero Section Styles */
+.heroContainer {
+    position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    background-color: #cfd6c89e;
-}
-
-.heroContainer p{
-    color: black;
-    padding: 20px;
-    line-height: 1.8;
-}
-
-.heroContainer p:hover{
-    scale: 0.9;
-    cursor: pointer;
-}
-
-#viewAll{
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: #f7f7f7;
+    min-height: 100vh; /* Ensures full screen height */
+    background-image: url("../assets/herobackground.png");
+  }
+  
+  /* Empty Div for Site Information */
+  .heroContainer > div:first-child {
     text-align: center;
-}
+    margin-bottom: 40px; /* Adds space below the introductory section */
+  }
+  
+  .heroContainer h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .heroContainer p {
+    font-size: 1.2rem;
+    color: #555;
+    max-width: 600px; /* Ensures the text doesn't stretch too wide */
+    line-height: 1.5;
+    margin: 0 auto;
+  }
 
-#viewAll button{
-    border: none;
-    background: none;
-    position: absolute;
+  .heroText {
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: #96bfcf;
+    opacity: 0.8;
+    border-radius: 20px;
+      }
+  
+  .heroText h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #c9543a;
+    margin-bottom: 15px;
+  }
+  
+  .heroText p {
+    font-size: 1.2rem;
+    color: #000000;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 3;
+  }
+
+  .everything {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     margin-top: 20px;
-    font-size: 20px;
-}
-
-#viewAll button:hover{
-    cursor: pointer;
-    scale: 0.9;
-}
+  }
