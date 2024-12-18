@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './Hero.css';
 import Card from './Card';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import axios from 'axios';
 
 const Hero = () => {
   const [universities, setUniversities] = useState([]);
@@ -10,15 +9,15 @@ const Hero = () => {
   
   useEffect(() => {
     // Fetch universities data
-    fetch('') 
-      .then(response => response.json())
-      .then(data => setUniversities(data))
+    axios
+      .get('http://localhost:3001/api/v1/university')
+      .then(response => setUniversities(response.data))
       .catch(error => console.error('Error fetching universities:', error));
     
     // Fetch companies data
-    fetch('') 
-      .then(response => response.json())
-      .then(data => setCompanies(data))
+    axios
+    .get('http://localhost:3001/api/v1/company') 
+      .then(response => setCompanies(response.data))
       .catch(error => console.error('Error fetching companies:', error));
   }, []); 
   
@@ -35,7 +34,7 @@ const Hero = () => {
           </p>
         </div>
       </div>
-      <div className='everything'>
+      <div className='content'>
         <Card universities={universities} companies={companies}/>
       </div>
     </div>

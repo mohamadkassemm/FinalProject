@@ -5,6 +5,7 @@ const major = require("../models/majorsModel");
 exports.getUniversities = async (req, res) => {
     try {
         const universities = await University.find();
+        console.log(universities);
         if (universities.length == 0)
             return res.status(404).json({
                 message: "No universities found"
@@ -97,7 +98,7 @@ exports.sortUniversities = async (req, res) => {
 }
 
 exports.searchUniversities = async (req, res) => {
-    const searchQuery = req.query.search;
+    const searchQuery = req.query.search?.trim() || '';
     
     if (!searchQuery) {
         return res.status(400).json({

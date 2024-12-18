@@ -1,8 +1,11 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const DB = require("./database").connectDB;
 
+require('dotenv').config();
 DB();
+app.use(cors());
 
 app.use(express.json());
 
@@ -16,15 +19,15 @@ const eventRoutes = require('./routers/eventsRouter');
 const jobRoutes = require('./routers/jobRouter');
 const majorRoutes = require('./routers/majorRouter');
 
-app.use('/api/user', userRoutes);
-app.use('/api/student', studentRoutes);
-app.use('/api/university', universityRoutes);
-app.use('/api/company', companyRoutes);
-app.use('/api/course', courseRoutes);
-app.use('/api/job', jobRoutes);
-app.use('/api/bootcamp', bootcampRoutes);
-app.use('/api/event', eventRoutes);
-app.use('/api/major/', majorRoutes);
+app.use(`/api/${process.env.API_VERSION}/user`, userRoutes);
+app.use(`/api/${process.env.API_VERSION}/student`, studentRoutes);
+app.use(`/api/${process.env.API_VERSION}/university`, universityRoutes);
+app.use(`/api/${process.env.API_VERSION}/company`, companyRoutes);
+app.use(`/api/${process.env.API_VERSION}/course`, courseRoutes);
+app.use(`/api/${process.env.API_VERSION}/job`, jobRoutes);
+app.use(`/api/${process.env.API_VERSION}/bootcamp`, bootcampRoutes);
+app.use(`/api/${process.env.API_VERSION}/event`, eventRoutes);
+app.use(`/api/${process.env.API_VERSION}/major/`, majorRoutes);
 
 
 app.listen(3001, () => {

@@ -36,14 +36,14 @@ const createSendToken = (user, statusCode, message, res) => {
     });
 }
 
-const sendEmail = async (email, subject, message) => {
-    try{
+// const sendEmail = async (email, subject, message) => {
+//     try{
         
-    }catch(err){
-        console.error("Error sending email:", err);
-        throw new Error("Email could not be sent.");
-    }
-}
+//     }catch(err){
+//         console.error("Error sending email:", err);
+//         throw new Error("Email could not be sent.");
+//     }
+// }
 
 exports.signUp = async (req, res) => {
     try {

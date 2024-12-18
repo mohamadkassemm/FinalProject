@@ -58,6 +58,6 @@ router.get('/favorite/bootcamps', anyUserController.protect, studentController.g
 router.get('/favorite/university', anyUserController.protect, studentController.getUniversitiesInterestedIn);
 
 //get student recommendations
-router.get('/:id/recommendations',anyUserController.protect, studentController.getStudentRecommendations);
+// router.get('/:id/recommendations',anyUserController.protect, studentController.getStudentRecommendations);
 
 module.exports = router;

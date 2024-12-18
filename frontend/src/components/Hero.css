@@ -56,7 +56,7 @@
     line-height: 3;
   }
 
-  .everything {
+  .content {
     display: flex;
     flex-direction: column;
     justify-content: center;

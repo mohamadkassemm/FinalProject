@@ -20,7 +20,7 @@ const studentModel = new Schema({
     },
     gender:{
         type:[String],
-        enum:[Male,Female]
+        enum:["Male","Female"]
     },
     governorate:{
         type:String,

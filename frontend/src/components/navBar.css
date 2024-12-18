@@ -1,82 +1,95 @@
 /* NavBar Styles */
 *{
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .navBar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px; /* Increased padding for better spacing */
-    background-color: #c9543a;
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: 18px; /* Increased font size */
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: #c9543a;
+height: 10vh;
+color: white;
+font-family: Arial, sans-serif;
+font-size: 18px; 
+position: fixed; 
+top: 0; 
+width: 100%;
+z-index: 1000; 
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+}
+
+.navBar p{
+  color:white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
+  margin: 0 10px;
+}
+
+.navBar button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
+  padding: 10px 15px;
+  margin: 0 10px;
+}
+
+.navBar button:hover {
+  color: #333;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+/* Right-aligned buttons (Companies, Universities, Favorites, Profile) */
+.rightNav {
+  display: flex;
+  align-items: center;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .navBar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
   }
   
-  .navBar button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s, background-color 0.3s;
-    padding: 10px 15px;
-    margin: 0 10px;
-  }
-  
-  .navBar button:hover {
-    color: #333;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-  }
-  
-  /* Right-aligned buttons (Companies, Universities, Favorites, Profile) */
   .rightNav {
-    display: flex;
-    align-items: center;
-  }
-  
-  /* Mobile Styles */
-  @media (max-width: 768px) {
-    .navBar {
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 20px;
-    }
-    
-    .rightNav {
-      display: none;
-      width: 100%;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .navBar button {
-      width: 100%;
-      padding: 12px 0;
-      text-align: left;
-      margin: 5px 0;
-    }
-  
-    .navBar.open .rightNav {
-      display: flex;
-    }
-  
-    .hamburger {
-      display: block;
-      background-color: #333;
-      color: white;
-      font-size: 2rem;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-    }
-  }
-  
-  /* Hamburger menu (appears on mobile) */
-  .hamburger {
     display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
+
+  .navBar button {
+    width: 100%;
+    padding: 12px 0;
+    text-align: left;
+    margin: 5px 0;
+  }
+
+  .navBar.open .rightNav {
+    display: flex;
+  }
+
+  .hamburger {
+    display: block;
+    background-color: #333;
+    color: white;
+    font-size: 2rem;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+}
+
+/* Hamburger menu (appears on mobile) */
+.hamburger {
+  display: none;
+}

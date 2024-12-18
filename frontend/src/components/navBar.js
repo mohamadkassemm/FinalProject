@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import './NavBar.css';
+import {useNavigate} from 'react-router-dom'
 
 const NavBar = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+
+  const logoHandler = ()=>{
+    navigate("/home")
+  };
 
   const toggleMenu = () => {
     setIsOpen(prevState => !prevState);
@@ -11,7 +17,7 @@ const NavBar = () => {
   return (
     <div className={`navBar ${isOpen ? 'open' : ''}`}>
       <div>
-        <button>961EduWay</button> {/* Brand name, should ideally redirect to homepage */}
+        <p onClick={logoHandler}>961EduWay</p>
       </div>
       <div className='rightNav'>
         <button>Companies</button>

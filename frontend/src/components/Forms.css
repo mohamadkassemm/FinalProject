@@ -101,6 +101,14 @@ p{
     color: black;
 }
 
+.error{
+    color: rgb(88, 18, 18);
+}
+
+.success{
+    color: green;
+}
+
 /* Responsive styling */
 @media (max-width: 500px) {
     .container {
