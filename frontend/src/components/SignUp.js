@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Forms.css';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,11 +37,19 @@ const SignUp = () => {
         email: formData.email,
         username: formData.username,
         password: formData.password,
-        role: formData.role,
+        confirmPassword: formData.confirmPassword,
+        role: formData.role.toLowerCase(),
       });
 
       setSuccess(response.data.message);
       setError('');
+      formData.name=""
+      formData.email=""
+      formData.username=""
+      formData.password=""
+      formData.confirmPassword=""
+      formData.role=""
+      navigate("/login")
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred');
     }

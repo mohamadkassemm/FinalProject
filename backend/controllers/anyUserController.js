@@ -11,7 +11,7 @@ const {promisify} = require("util")
 
 const userCheck = async (req) => {
     const user = await User.findOne({
-        $or:[{username:req.body["username"]},{email:req.body["email"]}]
+        $or:[{username:req.body.usernameOrEmail}, {email:req.body.usernameOrEmail}, {username:req.body.username}, {email: req.body.email}]
     })
     return user;
 }
@@ -93,13 +93,20 @@ exports.signUp = async (req, res) => {
 
 exports.completeProfile = async(req, res)=>{
     try{
-        loggedInUser = userCheck(req);
-    if(!loggedInUser)
-        res.redirect('/login')
-    if(loggedInUser.completeProfile === true)
-        response.redirect('/home')
-    role=loggedInUser.role;
-    let data;
+        const token = req.headers['authorization']?.split(' ')[1];
+        if(!token)
+            return res.status(404).json({message:"No token for user"})
+        
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);  // Verifying the token and getting the user ID
+        const user = await User.findById(decoded.id);  // Assuming the decoded token has an 'id' field
+
+        if(!user)
+            return res.status(404).json({message:"no such user"})
+        if(user.completeProfile === true)
+            return res.status(201).json({message:"profile is already completed"})
+        role=loggedInUser.role;
+        console.log(role);
+        let data;
         switch (role) {
             case "student": {
                 data = new Student({
@@ -147,7 +154,7 @@ exports.completeProfile = async(req, res)=>{
             }
             default:
                 return res.status(400).json({
-                    message: "Invalid user type"
+                    message: "Invalid user type " + role,
                 });
         }
         await data.save();
@@ -311,6 +318,55 @@ exports.protect = async (req, res, next)=>{
     }catch(err){
         return res.status(500).json({
             message: err.message
+        });
+    }
+}
+
+exports.isAuthenticated = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1]; // Extract token from "Bearer TOKEN"
+        if (!token) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
+        const user = await User.findById(decoded.id); // Fetch user from database
+        if (!user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        req.user = user; // Attach user to request object
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+};
+
+exports.getUserRole = async (req, res)=>{
+    try {
+        // Check if the user is authenticated (you might have a middleware to attach `req.user`)
+        if (!req.user) {
+            return res.status(401).json({
+                message: 'Unauthorized access',
+            });
+        }
+
+        // Retrieve the user's role from the database
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        // Respond with the user's role
+        return res.status(200).json({
+            role: user.role,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message,
         });
     }
 }

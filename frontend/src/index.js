@@ -7,6 +7,7 @@ import SignUpPage from './pages/SignUp';
 import LogInPage from './pages/LogIn';
 import HomePage from './pages/Home';
 import ResetPassPage from './pages/ResetPassword';
+import CompleteProfilePage from './components/CompleteProfile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,6 +19,7 @@ root.render(
         <Route path="/signup" element={<SignUpPage/>} />
         <Route path="/home" element={<HomePage/>} />
         <Route path="/resetPassword" element={<ResetPassPage/>} />
+        <Route path="/completeProfile" element={<CompleteProfilePage/>} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
