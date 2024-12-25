@@ -33,12 +33,10 @@ const universityModel = new Schema({
     },
     availableMajors:{
         type: [Schema.Types.ObjectId],
-        required:[true,"This field is required"],
         ref: 'Major',
     },
     availablePositions:{
         type: [String],
-        required:[true,"This field is required"],
         default:[],
     },
     ranking:{

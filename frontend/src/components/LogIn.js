@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import './Forms.css';
 
 const LogIn = () => {
@@ -13,15 +15,21 @@ const LogIn = () => {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarType, setSnackbarType] = useState('success'); // 'success' or 'error'
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError("");
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!formData.usernameOrEmail || !formData.password) {
+      setError('Please enter both username/email and password');
+      setOpenSnackbar(true)
+      setSuccess('');
+    }
     try {
       const response = await axios.post('http://localhost:3001/api/v1/user/login', {
         usernameOrEmail: formData.usernameOrEmail,
@@ -30,12 +38,23 @@ const LogIn = () => {
 
       setSuccess(response.data.message);
       setError('');
-      
+      setSnackbarType('success');
+      setOpenSnackbar(true);
+
+      const token = response.data.token;
+      localStorage.setItem('token', token);
       navigate('/completeProfile');
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid credentials');
+      const errorMessage = err.response?.data?.message || 'Invalid credentials';
+      setError(errorMessage);
       setSuccess('');
+      setSnackbarType('error');
+      setOpenSnackbar(true);
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -69,8 +88,6 @@ const LogIn = () => {
           </p>
 
           <input type="submit" value="Login" />
-          {error && <p className="error">{error}</p>}
-          {success && <p className="success">{success}</p>}
           <p>
             Don't have an account?{' '}
             <Link className="links" to="/signup">
@@ -79,6 +96,18 @@ const LogIn = () => {
           </p>
         </form>
       </div>
+
+      {/* Snackbar Component */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarType} sx={{ width: '100%' }}>
+          {snackbarType === 'success' ? success : error}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

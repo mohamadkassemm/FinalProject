@@ -64,15 +64,33 @@ exports.getMajorsByStudent = async (req, res) => {
 
 exports.createMajor = async (req, res) => {
     try {
-        const major = new Major(req.body);
+        
+        const { name, description, courseCount, totalCost, studentCount, nbOfSemester } = req.body;
+        const majorData = {
+            name: name, 
+            description: description, 
+            courseCount,
+            totalCost,
+            studentCount: studentCount , 
+            nbOfSemester: nbOfSemester , 
+        };
+
+        const major = new Major(majorData);
+
         await major.save();
-        return res.status(201).json(major);
+
+        return res.status(201).json({
+            message: "Major created successfully",
+            major: major
+        });
+
     } catch (err) {
-        return res.status(400).json({
-            message: err.message
+        return res.status(500).json({
+            message: "An error occurred while creating the major: " + err.message
         });
     }
-}
+};
+
 
 exports.recommendedMajors = async (req, res) => {
     try {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import './Forms.css';
 
 const CompleteProfile = () => {
@@ -9,39 +11,88 @@ const CompleteProfile = () => {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarType, setSnackbarType] = useState('success'); // 'success' or 'error'
+  const [majors, setMajors] = useState([]);
+  const [selectedMajors, setSelectedMajors] = useState([]); // Store selected majors
 
   useEffect(() => {
+    // Fetch user role and available majors when the component mounts
     const fetchUserRole = async () => {
       try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Token not found');
+        }
         const response = await axios.get('http://localhost:3001/api/v1/user/role', {
-          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
         });
-        const roleData=response.data.role;
-        setRole(roleData.toLowerCase());
+        const roleData = response.data.role.toLowerCase();
+        setRole(roleData);
       } catch (err) {
         setError('Unable to fetch user role. Please log in.');
+        handleSnackbar('error', 'Unable to fetch user role. Please log in.');
         navigate('/login');
       }
     };
+
+    const fetchMajors = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/v1/majors'); // Fetch majors
+        setMajors(response.data); // Assuming majors is an array of major objects
+      } catch (err) {
+        console.error('Error fetching majors:', err);
+      }
+    };
+
     fetchUserRole();
+    fetchMajors();
   }, [navigate]);
 
+  const handleSnackbar = (type, message) => {
+    setSnackbarType(type);
+    type === 'error' ? setError(message) : setSuccess(message);
+    setSnackbarOpen(true);
+  };
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, checked } = e.target;
+
+    if (name === 'selectedMajors') {
+      // Update the selected majors (add/remove from array)
+      setSelectedMajors((prevSelectedMajors) => 
+        checked
+          ? [...prevSelectedMajors, value]
+          : prevSelectedMajors.filter(major => major !== value)
+      );
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:3001/api/v1/user/completeProfile', formData, {
-        withCredentials: true,
-      });
-      setSuccess(response.data.message || 'Profile completed successfully!');
-      setError('');
-      navigate('/home');
-    } catch (err) {
-      setError(err.response?.data?.message || 'An error occurred while completing your profile.');
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token not found');
     }
+
+    // Include selected majors in the form data before submission
+    const updatedFormData = { ...formData, selectedMajors };
+
+    try {
+      const response = await axios.post('http://localhost:3001/api/v1/user/completeProfile', updatedFormData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      handleSnackbar('success', response.data.message || 'Profile completed successfully!');
+      setTimeout(() => navigate('/home'), 2000); // Redirect after a delay
+    } catch (err) {
+      handleSnackbar('error', err.response?.data?.message || 'An error occurred while completing your profile.');
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const renderFields = () => {
@@ -54,10 +105,21 @@ const CompleteProfile = () => {
 
             <label>Degree:</label>
             <input type="text" name="degree" placeholder="Degree" onChange={handleChange} />
-
             <label>Major:</label>
-            <input type="text" name="major" placeholder="Major" onChange={handleChange} />
-
+            <div>
+              {majors.map((major) => (
+                <div key={major._id}>
+                  <input
+                    type="checkbox"
+                    name="selectedMajors"
+                    value={major._id}
+                    checked={selectedMajors.includes(major._id)}
+                    onChange={handleChange}
+                  />
+                  <label>{major.name}</label>
+                </div>
+              ))}
+            </div>
             <label>University:</label>
             <input type="text" name="university" placeholder="University" onChange={handleChange} />
 
@@ -73,7 +135,7 @@ const CompleteProfile = () => {
         );
       case 'university':
         return (
-          <>
+            <>
             <label>Abbreviation:</label>
             <input type="text" name="abbreviation" placeholder="Abbreviation" onChange={handleChange} />
 
@@ -82,17 +144,28 @@ const CompleteProfile = () => {
 
             <label>Number of Branches:</label>
             <input type="number" name="numberOfBranches" placeholder="Number of Branches" onChange={handleChange} />
-
             <label>Available Majors:</label>
-            <textarea name="availableMajors" placeholder="Available Majors" onChange={handleChange}></textarea>
-
+            <div>
+              {majors.map((major) => (
+                <div key={major._id}>
+                  <input
+                    type="checkbox"
+                    name="selectedMajors"
+                    value={major._id}
+                    checked={selectedMajors.includes(major._id)}
+                    onChange={handleChange}
+                  />
+                  <label>{major.name}</label>
+                </div>
+              ))}
+            </div>
             <label>Available Positions:</label>
             <textarea name="availablePositions" placeholder="Available Positions" onChange={handleChange}></textarea>
           </>
         );
       case 'company':
         return (
-          <>
+            <>
             <label>Description:</label>
             <textarea name="description" placeholder="Company Description" onChange={handleChange}></textarea>
 
@@ -126,12 +199,16 @@ const CompleteProfile = () => {
         <h2>Complete Your Profile</h2>
         <form onSubmit={handleSubmit} className="inputsContainer">
           {renderFields()}
-
           <input type="submit" value="Complete Profile" />
-          {error && <p className="error">{error}</p>}
-          {success && <p className="success">{success}</p>}
         </form>
       </div>
+
+      {/* Snackbar for feedback */}
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarType} sx={{ width: '100%' }}>
+          {snackbarType === 'error' ? error : success}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

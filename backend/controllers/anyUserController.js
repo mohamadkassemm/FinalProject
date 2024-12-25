@@ -97,20 +97,19 @@ exports.completeProfile = async(req, res)=>{
         if(!token)
             return res.status(404).json({message:"No token for user"})
         
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);  // Verifying the token and getting the user ID
-        const user = await User.findById(decoded.id);  // Assuming the decoded token has an 'id' field
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);  
+        const user = await User.findById(decoded.id);  
 
         if(!user)
             return res.status(404).json({message:"no such user"})
         if(user.completeProfile === true)
             return res.status(201).json({message:"profile is already completed"})
-        role=loggedInUser.role;
-        console.log(role);
+        role=user.role;
         let data;
         switch (role) {
             case "student": {
                 data = new Student({
-                    userID: loggedInUser._id,
+                    userID: user._id,
                     gender:req.body.gender,
                     degree:req.body.degree,
                     major:req.body.major,
@@ -127,7 +126,7 @@ exports.completeProfile = async(req, res)=>{
             }
             case "university": {
                 data = new University({
-                    userID: loggedInUser._id,
+                    userID: user._id,
                     abbreviation:req.body.abbreviation,
                     governorate:req.body.governorate,
                     numberOfBranches:req.body.numberOfBranches,
@@ -138,7 +137,7 @@ exports.completeProfile = async(req, res)=>{
             }
             case "company": {
                 data = new Company({
-                    userID: loggedInUser._id,
+                    userID: user._id,
                     description:req.body.description,
                     industry:req.body.industry,
                     governorate:req.body.governorate,
@@ -169,7 +168,9 @@ exports.logIn = async (req, res) => {
         const user = await userCheck(req);
         if(!user)
             return res.status(404).json({messaege:"Invalid credentials!"})
-        if (!bcrypt.compare(req.body["password"], user.password)) {
+        const isPasswordValid = await bcrypt.compare(req.body["password"], user.password);
+
+        if (!isPasswordValid) {
             return res.status(401).json({
                 message: "Invalid credentials!"
             });
@@ -324,15 +325,17 @@ exports.protect = async (req, res, next)=>{
 
 exports.isAuthenticated = async (req, res, next) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1]; // Extract token from "Bearer TOKEN"
+        let token
+        if(req.headers.authorization && req.headers.authorization.startsWith("Bearer"))
+            token= req.headers.authorization.split(" ")[1]
         if (!token) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ message: 'Unauthorized token' });
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
         const user = await User.findById(decoded.id); // Fetch user from database
         if (!user) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ message: 'Unauthorized user' });
         }
 
         req.user = user; // Attach user to request object
@@ -344,14 +347,12 @@ exports.isAuthenticated = async (req, res, next) => {
 
 exports.getUserRole = async (req, res)=>{
     try {
-        // Check if the user is authenticated (you might have a middleware to attach `req.user`)
         if (!req.user) {
             return res.status(401).json({
                 message: 'Unauthorized access',
             });
         }
 
-        // Retrieve the user's role from the database
         const user = await User.findById(req.user._id);
 
         if (!user) {
@@ -360,7 +361,6 @@ exports.getUserRole = async (req, res)=>{
             });
         }
 
-        // Respond with the user's role
         return res.status(200).json({
             role: user.role,
         });
