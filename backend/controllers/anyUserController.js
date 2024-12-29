@@ -102,7 +102,7 @@ exports.completeProfile = async(req, res)=>{
 
         if(!user)
             return res.status(404).json({message:"no such user"})
-        if(user.completeProfile === true)
+        if(user.completedProfile === true)
             return res.status(201).json({message:"profile is already completed"})
         role=user.role;
         let data;
@@ -117,10 +117,6 @@ exports.completeProfile = async(req, res)=>{
                     experience:req.body.experience,
                     certification:req.body.certification,
                     linkedIn:req.body.linkedIn,
-                    jobStatus:req.body.jobStatus,
-                    bootcampStatus:req.body.bootcampStatus,
-                    companyWorkingFor:req.body.companyWorkingFor,
-                    career:req.body.career,
                 });
                 break;
             }
@@ -131,7 +127,6 @@ exports.completeProfile = async(req, res)=>{
                     governorate:req.body.governorate,
                     numberOfBranches:req.body.numberOfBranches,
                     availableMajors:req.body.availableMajors,
-                    availablePositions:req.body.availablePositions
                 });
                 break;
             }
@@ -143,11 +138,6 @@ exports.completeProfile = async(req, res)=>{
                     governorate:req.body.governorate,
                     website:req.body.website,
                     socialMediaLinks:req.body.socialMediaLinks,
-                    awards:req.body.awards,
-                    availablePositions:req.body.availablePositions,
-                    bootcampOffers:req.body.bootcampOffers,
-                    internshipOffers:req.body.internshipOffers,
-                    linkedIn:req.body.linkedIn
                 });
                 break;
             }
@@ -157,6 +147,10 @@ exports.completeProfile = async(req, res)=>{
                 });
         }
         await data.save();
+        user.completedProfile= true
+        console.log(user)
+        await user.save()
+        return res.status(200).json({message:data + "saved successfuly"})
     }catch(error){
         return res.status(500).json({message:error.message})
     }
@@ -292,7 +286,7 @@ exports.protect = async (req, res, next)=>{
         let token;
         if(req.headers.authorization && req.headers.authorization.startsWith("Bearer"))
             token= req.headers.authorization.split(" ")[1]
-        if(!token.trim())
+        if(!token?.trim())
             return res.status(401).json({message:"Log in to get access"})
 
         let decoded;
@@ -368,5 +362,30 @@ exports.getUserRole = async (req, res)=>{
         return res.status(500).json({
             message: err.message,
         });
+    }
+}
+
+exports.getCompletedStatus = async (req, res)=>{
+    try{
+        if (!req.user) {
+            return res.status(401).json({
+                message: 'Unauthorized access',
+            });
+        }
+
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            });
+        }
+
+        return res.status(200).json({
+            status: user.completedProfile,
+        });
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: err})
     }
 }

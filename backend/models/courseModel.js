@@ -6,7 +6,6 @@ const courseModel = new Schema({
         type: String,
         required: [true, "This field is required"],
         minLength: 3,
-        trim: true,
     },
     description: {
         type: String,

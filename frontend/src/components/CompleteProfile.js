@@ -15,9 +15,31 @@ const CompleteProfile = () => {
   const [snackbarType, setSnackbarType] = useState('success'); // 'success' or 'error'
   const [majors, setMajors] = useState([]);
   const [selectedMajors, setSelectedMajors] = useState([]); // Store selected majors
+  const [isLoading, setIsLoading] = useState(true); // To handle the loading state
 
   useEffect(() => {
-    // Fetch user role and available majors when the component mounts
+    const checkIfCompleted = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Token not found');
+      }
+      try {
+        const response = await axios.get('http://localhost:3001/api/v1/user/completedStatus', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.data.status === true) {
+          navigate('/home'); // Redirect to home if the profile is complete
+        } else {
+          setIsLoading(false); // Show the form if the profile is not complete
+        }
+      } catch (err) {
+        setError('An error occurred while checking profile status.');
+        setIsLoading(false);
+        handleSnackbar('error', 'An error occurred while checking profile status.');
+      }
+    };
+
     const fetchUserRole = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -38,13 +60,14 @@ const CompleteProfile = () => {
 
     const fetchMajors = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/v1/majors'); // Fetch majors
+        const response = await axios.get('http://localhost:3001/api/v1/major'); // Fetch majors
         setMajors(response.data); // Assuming majors is an array of major objects
       } catch (err) {
         console.error('Error fetching majors:', err);
       }
     };
 
+    checkIfCompleted();
     fetchUserRole();
     fetchMajors();
   }, [navigate]);
@@ -65,6 +88,7 @@ const CompleteProfile = () => {
           ? [...prevSelectedMajors, value]
           : prevSelectedMajors.filter(major => major !== value)
       );
+      console.log(value)
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -76,17 +100,18 @@ const CompleteProfile = () => {
     if (!token) {
       throw new Error('Token not found');
     }
-
-    // Include selected majors in the form data before submission
-    const updatedFormData = { ...formData, selectedMajors };
-
+  
+    const updatedFormData = { ...formData, availableMajors: selectedMajors };
+  
     try {
       const response = await axios.post('http://localhost:3001/api/v1/user/completeProfile', updatedFormData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      handleSnackbar('success', response.data.message || 'Profile completed successfully!');
-      setTimeout(() => navigate('/home'), 2000); // Redirect after a delay
+  
+      console.log('Received response:', response);
+      navigate('/home');
     } catch (err) {
+      console.error('Error during request:', err);
       handleSnackbar('error', err.response?.data?.message || 'An error occurred while completing your profile.');
     }
   };
@@ -102,7 +127,6 @@ const CompleteProfile = () => {
           <>
             <label>Gender:</label>
             <input type="text" name="gender" placeholder="Gender" onChange={handleChange} />
-
             <label>Degree:</label>
             <input type="text" name="degree" placeholder="Degree" onChange={handleChange} />
             <label>Major:</label>
@@ -122,32 +146,27 @@ const CompleteProfile = () => {
             </div>
             <label>University:</label>
             <input type="text" name="university" placeholder="University" onChange={handleChange} />
-
             <label>Experience:</label>
             <textarea name="experience" placeholder="Experience" onChange={handleChange}></textarea>
-
             <label>Certifications:</label>
             <input type="text" name="certification" placeholder="Certifications" onChange={handleChange} />
-
             <label>LinkedIn Profile:</label>
             <input type="url" name="linkedIn" placeholder="LinkedIn URL" onChange={handleChange} />
           </>
         );
       case 'university':
         return (
-            <>
+          <>
             <label>Abbreviation:</label>
             <input type="text" name="abbreviation" placeholder="Abbreviation" onChange={handleChange} />
-
             <label>Governorate:</label>
             <input type="text" name="governorate" placeholder="Governorate" onChange={handleChange} />
-
             <label>Number of Branches:</label>
             <input type="number" name="numberOfBranches" placeholder="Number of Branches" onChange={handleChange} />
             <label>Available Majors:</label>
             <div>
               {majors.map((major) => (
-                <div key={major._id}>
+                <div className="checkboxContainer" key={major._id}>
                   <input
                     type="checkbox"
                     name="selectedMajors"
@@ -159,39 +178,50 @@ const CompleteProfile = () => {
                 </div>
               ))}
             </div>
-            <label>Available Positions:</label>
-            <textarea name="availablePositions" placeholder="Available Positions" onChange={handleChange}></textarea>
           </>
         );
       case 'company':
         return (
-            <>
+          <>
             <label>Description:</label>
             <textarea name="description" placeholder="Company Description" onChange={handleChange}></textarea>
-
             <label>Industry:</label>
             <input type="text" name="industry" placeholder="Industry" onChange={handleChange} />
-
             <label>Governorate:</label>
             <input type="text" name="governorate" placeholder="Governorate" onChange={handleChange} />
-
             <label>Website:</label>
             <input type="url" name="website" placeholder="Website URL" onChange={handleChange} />
-
-            <label>Social Media Links:</label>
-            <textarea name="socialMediaLinks" placeholder="Social Media Links" onChange={handleChange}></textarea>
-
-            <label>Awards:</label>
-            <textarea name="awards" placeholder="Awards" onChange={handleChange}></textarea>
-
-            <label>Available Positions:</label>
-            <textarea name="availablePositions" placeholder="Available Positions" onChange={handleChange}></textarea>
+            <div className="socialMediaLinksContainer">
+              <label>Social Media Links:</label>
+              <div className="socialMediaInput">
+                <i className="fab fa-facebook"></i>
+                <input type="url" name="facebook" placeholder="Facebook URL" onChange={handleChange} />
+              </div>
+              <div className="socialMediaInput">
+                <i className="fab fa-linkedin"></i>
+                <input type="url" name="linkedin" placeholder="LinkedIn URL" onChange={handleChange} />
+              </div>
+              <div className="socialMediaInput">
+                <i className="fab fa-instagram"></i>
+                <input type="url" name="instagram" placeholder="Instagram URL" onChange={handleChange} />
+              </div>
+            </div>
           </>
         );
       default:
         return <p>Loading role-specific fields...</p>;
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p className="loading-text">Please wait, checking your profile...</p>
+      </div>
+    );
+  }
+  
 
   return (
     <div className="body">

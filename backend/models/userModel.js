@@ -7,6 +7,10 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
 const UserModel = new Schema({
+    completedProfile:{
+        type:Boolean,
+        default:false,
+    },
     name: {
         type: String,
         required: true,

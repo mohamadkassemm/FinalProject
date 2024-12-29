@@ -18,6 +18,8 @@ router.post('/logout/:username', anyUser.logout);
 
 router.get('/role', anyUser.isAuthenticated, anyUser.getUserRole);
 
+router.get('/completedStatus', anyUser.isAuthenticated, anyUser.getCompletedStatus)
+
 
 
 module.exports = router;

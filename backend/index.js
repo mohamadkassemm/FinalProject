@@ -32,7 +32,7 @@ app.use(`/api/${process.env.API_VERSION}/course`, courseRoutes);
 app.use(`/api/${process.env.API_VERSION}/job`, jobRoutes);
 app.use(`/api/${process.env.API_VERSION}/bootcamp`, bootcampRoutes);
 app.use(`/api/${process.env.API_VERSION}/event`, eventRoutes);
-app.use(`/api/${process.env.API_VERSION}/major/`, majorRoutes);
+app.use(`/api/${process.env.API_VERSION}/major`, majorRoutes);
 
 
 app.listen(3001, () => {

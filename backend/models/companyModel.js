@@ -34,7 +34,7 @@ const companyModel = new Schema({
     },
     socialMediaLinks: {
         facebook: { type: String },
-        X: { type: String },
+        linkedIn: { type: String },
         instagram: { type: String }
     },
     availablePositions: {

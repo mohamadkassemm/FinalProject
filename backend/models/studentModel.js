@@ -14,10 +14,6 @@ const studentModel = new Schema({
             message: 'Invalid user ID'
         }
     },
-    completedProfile:{
-        type:Boolean,
-        default:false,
-    },
     gender:{
         type:[String],
         enum:["Male","Female"]
