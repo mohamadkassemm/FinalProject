@@ -4,46 +4,46 @@ const anyUserController = require('../controllers/anyUserController');
 const companyController = require('../controllers/companyController');
 
 // Route to get companies that offer internships
-router.get('/internships',anyUserController.protect, companyController.getCompaniesOfferInternships);
+router.get('/internships', companyController.getCompaniesOfferInternships);
 
 // Route to get companies that offer jobs
-router.get('/jobs',anyUserController.protect, companyController.getCompaniesOfferJobs);
+router.get('/jobs', companyController.getCompaniesOfferJobs);
 
 // Route to get companies that offer bootcamps
-router.get('/bootcamps',anyUserController.protect, companyController.getCompaniesOfferBootcamps);
+router.get('/bootcamps', companyController.getCompaniesOfferBootcamps);
 
 // Route to get companies by governorate
-router.get('/governorate/', anyUserController.protect, companyController.getCompaniesByGovernorate);
+router.get('/governorate/',  companyController.getCompaniesByGovernorate);
 
 // Route to get all companies
-router.get('/',anyUserController.protect, companyController.getCompanies);
+router.get('/', companyController.getCompanies);
 
 // Route to get a company by ID
-router.get('/:companyId',anyUserController.protect, companyController.getCompanyById);
+router.get('/:companyId', companyController.getCompanyById);
 
 //Route to search for companies by name
-router.post('/search',anyUserController.protect, companyController.searchCompany);
+router.post('/search', companyController.searchCompany);
 
 // Route to add a new internship to a company
-router.put('/internships',anyUserController.protect, companyController.addCompanyInternship);
+router.put('/internships', companyController.addCompanyInternship);
 
 // Route to remove internship from company
-router.delete('/internship', anyUserController.protect, companyController.removeInternshipFromCompany);
+router.delete('/internship',  companyController.removeInternshipFromCompany);
 
 // Route to add a new job to a company
-router.put('/jobs',anyUserController.protect, companyController.addCompanyJob);
+router.put('/jobs', companyController.addCompanyJob);
 
 // Route to remove job from company
-router.delete('/job', anyUserController.protect, companyController.removeJobFromCompany);
+router.delete('/job',  companyController.removeJobFromCompany);
 
 // Route to add a new bootcamp offer to a company
-router.put('/bootcamps',anyUserController.protect, companyController.addCompanyBootcamp);
+router.put('/bootcamps', companyController.addCompanyBootcamp);
 
 // Route to remove job from company
-router.delete('/bootcamp', anyUserController.protect, companyController.removeBootcampFromCompany);
+router.delete('/bootcamp',  companyController.removeBootcampFromCompany);
 
 // Route to get companies by industry
-router.get('/industry/search',anyUserController.protect, companyController.getCompaniesByIndustry);
+router.get('/industry/search', companyController.getCompaniesByIndustry);
 
 
 module.exports = router;

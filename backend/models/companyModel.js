@@ -19,7 +19,6 @@ const companyModel = new Schema({
     },
     logo:{
         type:String,
-        required:false,
     },
     industry: {
         type: String,

@@ -25,7 +25,7 @@ const studentModel = new Schema({
     degree: {
         type: String,
         required: [true, "This field is required"],
-        enum: ['Terminal', 'Bachelor', 'Master', 'PhD'],
+        enum: ['Terminal', 'Bachelor', 'Masters', 'PhD'],
     },
     major: {
         type: String,
@@ -60,7 +60,6 @@ const studentModel = new Schema({
     },
     bootcampStatus: {
         type: String,
-        required: [true, "This field is required"],
         enum: ['No', 'Yes'],
     },
     favorites: {
@@ -69,7 +68,6 @@ const studentModel = new Schema({
             itemType: {
                 type: String,
                 enum: ['University', 'Bootcamp', 'Event', 'Company','Job'],
-                required: true
             }
         }],
         default: [] 

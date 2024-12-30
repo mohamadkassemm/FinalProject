@@ -112,10 +112,10 @@ exports.completeProfile = async(req, res)=>{
                     userID: user._id,
                     gender:req.body.gender,
                     degree:req.body.degree,
+                    governorate:req.body.governorate,
                     major:req.body.major,
+                    jobStatus:req.body.jobStatus,
                     university:req.body.university,
-                    experience:req.body.experience,
-                    certification:req.body.certification,
                     linkedIn:req.body.linkedIn,
                 });
                 break;
@@ -284,8 +284,10 @@ exports.updatePassword = async (req, res) => {
 exports.protect = async (req, res, next)=>{
     try{
         let token;
+        console.log(req.headers)
         if(req.headers.authorization && req.headers.authorization.startsWith("Bearer"))
             token= req.headers.authorization.split(" ")[1]
+        console.log(token)
         if(!token?.trim())
             return res.status(401).json({message:"Log in to get access"})
 
@@ -326,13 +328,14 @@ exports.isAuthenticated = async (req, res, next) => {
             return res.status(401).json({ message: 'Unauthorized token' });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
-        const user = await User.findById(decoded.id); // Fetch user from database
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id); 
+        console.log(user)
         if (!user) {
             return res.status(401).json({ message: 'Unauthorized user' });
         }
 
-        req.user = user; // Attach user to request object
+        req.user = user;
         next();
     } catch (err) {
         return res.status(401).json({ message: 'Unauthorized' });

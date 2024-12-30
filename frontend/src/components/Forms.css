@@ -150,14 +150,14 @@ p{
 }
 
 .socialMediaLinksContainer {
-    margin-bottom: 15px; /* Space below the container */
+    margin-bottom: 10px; /* Space below the container */
   }
   
   .socialMediaLinksContainer label {
     display: block;
     margin-bottom: 8px;
-    color: #41443d;
-    font-size: 14px;
+    color: white;
+    font-size: 16px;
   }
   
   .socialMediaInput {
@@ -165,22 +165,21 @@ p{
     align-items: center; /* Center align items vertically */
     margin-bottom: 10px; /* Space between each social media input */
     background-color: #eaeaea; /* Light grey background */
-    padding: 8px;
+    padding: 4px;
     border-radius: 5px;
   }
   
   .socialMediaInput i {
     font-size: 18px; /* Icon size */
     color: #41443d; /* Icon color */
-    margin-right: 10px; /* Space between icon and input */
+    margin: 0px 10px; /* Space between icon and input */
   }
   
   .socialMediaInput input {
+    margin: 0px;
     flex: 1; /* Take up remaining space */
-    padding: 8px;
-    border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 16px;
     color: #41443d;
   }
   

@@ -4,6 +4,7 @@ const major = require("../models/majorsModel");
 
 exports.getUniversities = async (req, res) => {
     try {
+        console.log("hello")
         const universities = await University.find();
         console.log(universities);
         if (universities.length == 0)
@@ -257,4 +258,18 @@ exports.removeStudentFromUniversity = async (req, res) => {
             message: err.message
         });
     }
+}
+
+exports.deleteUniversity = async (req, res)=>{
+    try{
+        const uni = await University.findByIdAndDelete(req.params.id);
+
+        if(!uni)
+            return res.status(404).json({message:"No university found with such id"})
+
+        return res.status(201).json({message:"University deleted successfully"})
+    }catch(err){
+        return res.status(500).json({message:err.message})
+    }
+        
 }

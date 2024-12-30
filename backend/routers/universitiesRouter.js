@@ -1,30 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const anyUserController = require('../controllers/anyUserController');
 const uni = require('../controllers/universityController');
 
-router.get('/',anyUserController.protect, uni.getUniversities);
+router.get('/', uni.getUniversities);
 
-router.get('/:id',anyUserController.protect, uni.getUniversityByID);
+router.get('/:id', uni.getUniversityByID);
 
-router.get('/major/:major',anyUserController.protect, uni.getUniversitiesByMajor);
+router.get('/major/:major', uni.getUniversitiesByMajor);
 
-router.get('/governorate/:governorate',anyUserController.protect, uni.getUniversitiesByGovernorate);
+router.get('/governorate/:governorate', uni.getUniversitiesByGovernorate);
 
-router.get('/sortedUniversities',anyUserController.protect, uni.sortUniversities);
+router.get('/sortedUniversities', uni.sortUniversities);
 
-router.post('/search',anyUserController.protect, uni.searchUniversities);
+router.post('/search', uni.searchUniversities);
 
-router.post('/university/major',anyUserController.protect, uni.addMajorToUniversity);
+router.post('/university/major', uni.addMajorToUniversity);
 
-router.delete('/university/major/:majorid',anyUserController.protect, uni.removeMajorFromUniversity);
+router.delete('/university/major/:majorid', uni.removeMajorFromUniversity);
 
-router.post('/university/bootcamp',anyUserController.protect, uni.addBootcampToUniversity);
+router.post('/university/bootcamp', uni.addBootcampToUniversity);
 
-router.delete('/university/bootcamp/:bootcampid',anyUserController.protect, uni.removeBootcampFromUniversity);
+router.delete('/university/bootcamp/:bootcampid', uni.removeBootcampFromUniversity);
 
-router.post('/university/student',anyUserController.protect, uni.addStudentToUniversity);
+router.post('/university/student', uni.addStudentToUniversity);
 
-router.delete('/university/student/:studentid',anyUserController.protect, uni.removeStudentFromUniversity);
+router.delete('/university/student/:studentid', uni.removeStudentFromUniversity);
+
+router.delete('/:id', uni.deleteUniversity)
 
 module.exports = router;

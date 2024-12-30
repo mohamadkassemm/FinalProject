@@ -101,8 +101,8 @@ const CompleteProfile = () => {
       throw new Error('Token not found');
     }
   
-    const updatedFormData = { ...formData, availableMajors: selectedMajors };
-  
+    const updatedFormData = { ...formData };
+    console.log(updatedFormData)
     try {
       const response = await axios.post('http://localhost:3001/api/v1/user/completeProfile', updatedFormData, {
         headers: { Authorization: `Bearer ${token}` },
@@ -126,30 +126,65 @@ const CompleteProfile = () => {
         return (
           <>
             <label>Gender:</label>
-            <input type="text" name="gender" placeholder="Gender" onChange={handleChange} />
+            <select name="gender" onChange={handleChange}>
+              <option value="" hidden>
+                Select Gender
+              </option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+
+            <label>Governorate:</label>
+            <select name="governorate" onChange={handleChange}>
+              <option value="" hidden>
+                Select Governorate
+              </option>
+              <option value="North">North</option>
+              <option value="South">South</option>
+              <option value="Bekaa">Bekaa</option>
+              <option value="Mount Lebanon">Mount Lebanon</option>
+              <option value="Beirut">Beirut</option>
+              <option value="Akkar">Akkar</option>
+              <option value="Baalbek-Hermel">Baalbek-Hermel</option>
+              <option value="Nabatieh">Nabatieh</option>
+            </select>
+
             <label>Degree:</label>
-            <input type="text" name="degree" placeholder="Degree" onChange={handleChange} />
-            <label>Major:</label>
+            <select name="degree" onChange={handleChange}>
+              <option value="" hidden>
+                Select Degree
+              </option>
+              <option value="Terminal">Terminal</option>
+              <option value="Bachelor">Bachelor</option>
+              <option value="Masters">Masters</option>
+              <option value="PhD">PhD</option>
+            </select>
             <div>
               {majors.map((major) => (
-                <div key={major._id}>
+                <div className="checkboxContainer" key={major._id}>
                   <input
                     type="checkbox"
-                    name="selectedMajors"
+                    name="major"
                     value={major._id}
-                    checked={selectedMajors.includes(major._id)}
                     onChange={handleChange}
                   />
                   <label>{major.name}</label>
                 </div>
               ))}
             </div>
+            <label>Job Status:</label>
+            <select name="jobStatus" onChange={handleChange} required>
+              <option value="" hidden>
+                Select Job Status
+              </option>
+              <option value="Unemployed">Unemployed</option>
+              <option value="Part-time">Part-time</option>
+              <option value="Full-time">Full-time</option>
+              <option value="Self-employed">Self-employed</option>
+            </select>
+
             <label>University:</label>
             <input type="text" name="university" placeholder="University" onChange={handleChange} />
-            <label>Experience:</label>
-            <textarea name="experience" placeholder="Experience" onChange={handleChange}></textarea>
-            <label>Certifications:</label>
-            <input type="text" name="certification" placeholder="Certifications" onChange={handleChange} />
             <label>LinkedIn Profile:</label>
             <input type="url" name="linkedIn" placeholder="LinkedIn URL" onChange={handleChange} />
           </>
@@ -160,8 +195,19 @@ const CompleteProfile = () => {
             <label>Abbreviation:</label>
             <input type="text" name="abbreviation" placeholder="Abbreviation" onChange={handleChange} />
             <label>Governorate:</label>
-            <input type="text" name="governorate" placeholder="Governorate" onChange={handleChange} />
-            <label>Number of Branches:</label>
+            <select name="governorate" onChange={handleChange}>
+              <option value="" hidden>
+                Select Governorate
+              </option>
+              <option value="North">North</option>
+              <option value="South">South</option>
+              <option value="Bekaa">Bekaa</option>
+              <option value="Mount Lebanon">Mount Lebanon</option>
+              <option value="Beirut">Beirut</option>
+              <option value="Akkar">Akkar</option>
+              <option value="Baalbek-Hermel">Baalbek-Hermel</option>
+              <option value="Nabatieh">Nabatieh</option>
+            </select>
             <input type="number" name="numberOfBranches" placeholder="Number of Branches" onChange={handleChange} />
             <label>Available Majors:</label>
             <div>
@@ -186,9 +232,28 @@ const CompleteProfile = () => {
             <label>Description:</label>
             <textarea name="description" placeholder="Company Description" onChange={handleChange}></textarea>
             <label>Industry:</label>
-            <input type="text" name="industry" placeholder="Industry" onChange={handleChange} />
+            <select name="industry" onChange={handleChange}>
+              <option value="" hidden>
+                Select Industry
+              </option>
+              <option value="Tech">Tech</option>
+              <option value="Medicine">Medicine</option>
+              <option value="Education">Education</option>
+            </select>
             <label>Governorate:</label>
-            <input type="text" name="governorate" placeholder="Governorate" onChange={handleChange} />
+            <select name="governorate" onChange={handleChange}>
+              <option value="" hidden>
+                Select Governorate
+              </option>
+              <option value="North">North</option>
+              <option value="South">South</option>
+              <option value="Bekaa">Bekaa</option>
+              <option value="Mount Lebanon">Mount Lebanon</option>
+              <option value="Beirut">Beirut</option>
+              <option value="Akkar">Akkar</option>
+              <option value="Baalbek-Hermel">Baalbek-Hermel</option>
+              <option value="Nabatieh">Nabatieh</option>
+            </select>
             <label>Website:</label>
             <input type="url" name="website" placeholder="Website URL" onChange={handleChange} />
             <div className="socialMediaLinksContainer">
