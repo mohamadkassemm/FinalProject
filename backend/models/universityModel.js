@@ -16,7 +16,6 @@ const universityModel = new Schema({
     },
     logo:{
         type:String,
-        required:false
     },
     description:{
         type:String,

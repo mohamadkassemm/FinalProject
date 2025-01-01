@@ -80,7 +80,8 @@ const CompleteProfile = () => {
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
-
+    const logo = e.target.value;
+    console.log(logo)
     if (name === 'selectedMajors') {
       // Update the selected majors (add/remove from array)
       setSelectedMajors((prevSelectedMajors) => 
@@ -192,6 +193,8 @@ const CompleteProfile = () => {
       case 'university':
         return (
           <>
+            <label>Logo:</label>
+            <input type="text" name="logo" placeholder="Enter image URL" onChange={handleChange} />
             <label>Abbreviation:</label>
             <input type="text" name="abbreviation" placeholder="Abbreviation" onChange={handleChange} />
             <label>Governorate:</label>

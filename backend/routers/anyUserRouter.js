@@ -20,6 +20,7 @@ router.get('/role', anyUser.isAuthenticated, anyUser.getUserRole);
 
 router.get('/completedStatus', anyUser.isAuthenticated, anyUser.getCompletedStatus)
 
+router.get('/getName/:id', anyUser.getName);
 
 
 module.exports = router;

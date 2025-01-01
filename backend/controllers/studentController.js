@@ -293,6 +293,14 @@ exports.getUniversitiesInterestedIn = async (req, res) => {
     }
 }
 
+exports.addFavorites = async (req, res) => {
+    try{
+        
+    }catch(err){
+        return res.status(401).json({message:err.message})
+    }
+}
+
 exports.getFavorites = async (req, res) => {
     try{
         const student = await Student.findById(req.body.id);

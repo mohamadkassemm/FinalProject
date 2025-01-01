@@ -123,6 +123,7 @@ exports.completeProfile = async(req, res)=>{
             case "university": {
                 data = new University({
                     userID: user._id,
+                    logo:req.body.logo,
                     abbreviation:req.body.abbreviation,
                     governorate:req.body.governorate,
                     numberOfBranches:req.body.numberOfBranches,
@@ -392,3 +393,35 @@ exports.getCompletedStatus = async (req, res)=>{
         return res.status(500).json({message: err})
     }
 }
+
+exports.getName = async (req, res) => {
+    try {
+      const id = req.params.id;
+  
+      // First, try to find the ID in the Company model
+      let name = await Company.findById(id).populate({
+        path: 'userID',
+        select: 'name', // Select only the `name` field from the User model
+      });
+  
+      // If not found, try to find the ID in the University model
+      if (!name) {
+        name = await University.findById(id).populate({
+          path: 'userID',
+          select: 'name', // Select only the `name` field from the User model
+        });
+      }
+  
+      // If still not found, return a 404 response
+      if (!name) {
+        return res.status(404).json({ message: "No name found for this ID" });
+      }
+  
+      // Return the name in the response
+      return res.status(200).json({ name: name.userID.name });
+    } catch (error) {
+      // Handle errors and return a 500 response
+      return res.status(500).json({ message: error.message });
+    }
+  };
+  

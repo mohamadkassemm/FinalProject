@@ -45,6 +45,8 @@ router.get('/job/self-employed', studentController.getStudentsSelfEmployed);
 // Get students by bootcamp status
 router.get('/bootcampStatus/:bootcampStatus', studentController.getStudentsByBootcampStatus);
 
+router.post('/favorites', studentController.addFavorites)
+
 // Get favorites
 router.get('/favorites', studentController.getFavorites);
 
