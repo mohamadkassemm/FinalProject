@@ -294,20 +294,69 @@ exports.getUniversitiesInterestedIn = async (req, res) => {
 }
 
 exports.addFavorites = async (req, res) => {
+    try {
+        const studentID = req.user._id; 
+        const { itemID, itemType } = req.body;
+    
+        if (!itemID || !itemType) {
+          return res.status(400).json({ message: "Item ID and Item Type are required" });
+        }
+    
+        // Find the student by their ID
+        const student = await Student.findById(studentID);
+        if (!student) {
+          return res.status(404).json({ message: "Student not found" });
+        }
+    
+        // Check if the item is already in favorites
+        const alreadyFavorite = student.favorites.some(
+          (fav) => fav.item.toString() === itemID && fav.itemType === itemType
+        );
+    
+        if (alreadyFavorite) {
+          return res.status(400).json({ message: "Item is already in favorites" });
+        }
+    
+        // Add the new favorite
+        student.favorites.push({ item: itemID, itemType });
+        await student.save();
+    
+        return res.status(200).json({ message: "Favorite added successfully" });
+      } catch (err) {
+        return res.status(500).json({ message: err.message });
+      }
+}
+
+exports.removeFavorite = async (req, res) => {
     try{
-        
+        const studentID = req.params.id;
+        const student = Student.findById(studentID)
+        if(!student)
+            return res.status(400).json({message:"no student found! login again please"})
+        const alreadyFavorite = student.favorites.some(
+            (fav) => fav.item.toString() === itemID && fav.itemType === itemType
+          );
+        if(!alreadyFavorite)
+            return res.status(409).json({message:"item is not favorite"})
+
+        student.favorites = student.favorites.filter(fav => fav.item.toString() !== itemID);
+
+        await student.save();
+
+        return res.status(200).json({message:"item removed successfuly!"})
     }catch(err){
-        return res.status(401).json({message:err.message})
+        return res.status(500).json({message:err.message})
     }
 }
 
 exports.getFavorites = async (req, res) => {
     try{
-        const student = await Student.findById(req.body.id);
+        const student = await Student.findById(req.params.id);
         if(!student)
             return res.status(404).json({message:"Something wrong happened! Please try again."})
         const favorites = student.favorites;
-        return res.status(200).json(favorites);
+
+        return res.status(200).json({favorites:favorites});
     }catch(err){
         return res.status(401).json({
             message:err.message

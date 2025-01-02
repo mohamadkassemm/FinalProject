@@ -7,16 +7,44 @@ const Card = (props) => {
   const [favorites, setFavorites] = useState({});
   const [names, setNames] = useState({});
 
-  const toggleFavorite = (userID) => {
-    setFavorites((prevFavorites) => {
-      const updatedFavorites = {
-        ...prevFavorites,
-        [userID]: !prevFavorites[userID],
-      };
-      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-      return updatedFavorites;
-    });
+
+  const toggleFav = async (studentID, itemID, itemType) => {
+    try {
+      // Get current favorites (if needed)
+      const { data: currentFavorites } = await axios.get(
+        `http://localhost:3001/api/v1/student/${studentID}/favorites`
+      );
+  
+      // Check if the item is already a favorite
+      const isFavorite = currentFavorites.some(
+        (fav) => fav.itemID === itemID && fav.itemType === itemType
+      );
+  
+      // Add or remove the favorite
+      if (!isFavorite) {
+        const response = await axios.post(
+          `http://localhost:3001/api/v1/student/${studentID}/favorites`,
+          {
+            itemID,
+            itemType,
+          }
+        );
+  
+        console.log(response.data.message); // "Favorite added successfully"
+        setFavorites((prev) => [...prev, { itemID, itemType }]); // Update state
+      } else {
+        const response = await axios.delete(
+          `http://localhost:3001/api/v1/student/${studentID}/favorites/${itemID}`
+        );
+  
+        console.log(response.data.message); // "Favorite removed successfully"
+        setFavorites((prev) => prev.filter((fav) => fav.itemID !== itemID)); // Update state
+      }
+    } catch (err) {
+      console.error(err.response?.data?.message || "Error toggling favorite");
+    }
   };
+  
 
   async function getName(id) {
     try {
@@ -58,7 +86,9 @@ const Card = (props) => {
                   alt={university.abbreviation} 
                 />
                 <h4>{names[university._id] || "Loading..."}</h4>
-                <button className="starButton" onClick={() => toggleFavorite(university.userID)}>
+  {/* const toggleFav = async (studentID, itemID, itemType) => { */}
+                
+                <button className="starButton" onClick={() => toggleFav()}>
                   <i className={`fas fa-star ${favorites[university.userID] ? 'active' : ''}`}></i>
                 </button>
               </div>
@@ -78,7 +108,7 @@ const Card = (props) => {
                   alt={company.linkedIn} 
                 />
                 <h4>{names[company._id] || "loading..."}</h4>
-                <button className="starButton" onClick={() => toggleFavorite(company.userID)}>
+                <button className="starButton" onClick={() => toggleFav(company.userID)}>
                   <i className={`fas fa-star ${favorites[company.userID] ? 'active' : ''}`}></i>
                 </button>
               </div>

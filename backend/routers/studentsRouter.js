@@ -45,10 +45,13 @@ router.get('/job/self-employed', studentController.getStudentsSelfEmployed);
 // Get students by bootcamp status
 router.get('/bootcampStatus/:bootcampStatus', studentController.getStudentsByBootcampStatus);
 
-router.post('/favorites', studentController.addFavorites)
+router.post('/:studentID/favorites', studentController.addFavorites)
 
 // Get favorites
-router.get('/favorites', studentController.getFavorites);
+router.get('/:id/favorites', studentController.getFavorites);
+
+// remove fav
+router.delete('/:studentID/favorties/:id', studentController.removeFavorite)
 
 //Get fav jobs
 router.get('/favorite/jobs',  studentController.getJobsInterestedIn);
