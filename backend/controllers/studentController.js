@@ -23,7 +23,7 @@ exports.getStudentById = async (req, res) => {
             return res.status(404).json({
                 message: "Student not found"
             });
-        return res.status(200).json(student);
+        return res.status(200).json({data:student});
     } catch (err) {
         return res.status(500).json({
             message: err.message

@@ -108,9 +108,9 @@ const CompleteProfile = () => {
       const response = await axios.post('http://localhost:3001/api/v1/user/completeProfile', updatedFormData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-  
+      const studentId = response.data._id;
       console.log('Received response:', response);
-      navigate('/home');
+      navigate('/home', { state: { studentId } });
     } catch (err) {
       console.error('Error during request:', err);
       handleSnackbar('error', err.response?.data?.message || 'An error occurred while completing your profile.');

@@ -3,16 +3,15 @@ import axios from 'axios';
 import './Card.css';
 
 const Card = (props) => {
-  const { universities, companies } = props;
+  const { universities, companies, studentId } = props;
   const [favorites, setFavorites] = useState({});
   const [names, setNames] = useState({});
 
-
-  const toggleFav = async (studentID, itemID, itemType) => {
+  const toggleFav = async (itemID, itemType) => {
     try {
       // Get current favorites (if needed)
       const { data: currentFavorites } = await axios.get(
-        `http://localhost:3001/api/v1/student/${studentID}/favorites`
+        `http://localhost:3001/api/v1/student/${studentId}/favorites`
       );
   
       // Check if the item is already a favorite
@@ -23,7 +22,7 @@ const Card = (props) => {
       // Add or remove the favorite
       if (!isFavorite) {
         const response = await axios.post(
-          `http://localhost:3001/api/v1/student/${studentID}/favorites`,
+          `http://localhost:3001/api/v1/student/${studentId}/favorites`,
           {
             itemID,
             itemType,
@@ -34,7 +33,7 @@ const Card = (props) => {
         setFavorites((prev) => [...prev, { itemID, itemType }]); // Update state
       } else {
         const response = await axios.delete(
-          `http://localhost:3001/api/v1/student/${studentID}/favorites/${itemID}`
+          `http://localhost:3001/api/v1/student/${studentId}/favorites/${itemID}`
         );
   
         console.log(response.data.message); // "Favorite removed successfully"
@@ -88,7 +87,7 @@ const Card = (props) => {
                 <h4>{names[university._id] || "Loading..."}</h4>
   {/* const toggleFav = async (studentID, itemID, itemType) => { */}
                 
-                <button className="starButton" onClick={() => toggleFav()}>
+                <button className="starButton" onClick={() => toggleFav(university._id, "university")}>
                   <i className={`fas fa-star ${favorites[university.userID] ? 'active' : ''}`}></i>
                 </button>
               </div>
@@ -108,7 +107,7 @@ const Card = (props) => {
                   alt={company.linkedIn} 
                 />
                 <h4>{names[company._id] || "loading..."}</h4>
-                <button className="starButton" onClick={() => toggleFav(company.userID)}>
+                <button className="starButton" onClick={() => toggleFav(company.userID, "company")}>
                   <i className={`fas fa-star ${favorites[company.userID] ? 'active' : ''}`}></i>
                 </button>
               </div>

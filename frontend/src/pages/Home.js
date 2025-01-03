@@ -3,12 +3,15 @@ import '../index.css'
 import NavBar from '../components/NavBar';
 import Hero from '../components/Hero';
 import Footer from '../components/footer';
+import { useLocation } from 'react-router-dom';
 
 const HomePage = () => {
+  const location = useLocation();
+  const { studentId } = location.state || {};
   return (
     <div>
       <NavBar/>
-      <Hero/>
+      <Hero studentId={studentId}/>
       <Footer/>
     </div>
   )

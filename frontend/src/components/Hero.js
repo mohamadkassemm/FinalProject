@@ -3,9 +3,10 @@ import './Hero.css';
 import Card from './Card';
 import axios from 'axios';
 
-const Hero = () => {
+const Hero = (props) => {
   const [universities, setUniversities] = useState([]);
   const [companies, setCompanies] = useState([]);
+  const studentId= props.studentId;
   
   useEffect(() => {
     // Fetch universities data
@@ -35,7 +36,7 @@ const Hero = () => {
         </div>
       </div>
       <div className='content'>
-        <Card universities={universities} companies={companies}/>
+        <Card universities={universities} companies={companies} studentId={studentId}/>
       </div>
     </div>
   );
