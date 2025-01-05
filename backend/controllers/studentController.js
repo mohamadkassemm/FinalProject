@@ -295,22 +295,21 @@ exports.getUniversitiesInterestedIn = async (req, res) => {
 
 exports.addFavorites = async (req, res) => {
     try {
-        const studentID = req.user._id; 
-        const { itemID, itemType } = req.body;
-    
-        if (!itemID || !itemType) {
-          return res.status(400).json({ message: "Item ID and Item Type are required" });
+        const userid = req.params.userID;
+        const { item, itemType } = req.body;
+        if (!item || !itemType) {
+          return res.status(400).json({ message: "Item ID and Item Type are missing!" });
         }
     
         // Find the student by their ID
-        const student = await Student.findById(studentID);
+        const student = await Student.findOne({userID:userid});
         if (!student) {
           return res.status(404).json({ message: "Student not found" });
         }
     
         // Check if the item is already in favorites
         const alreadyFavorite = student.favorites.some(
-          (fav) => fav.item.toString() === itemID && fav.itemType === itemType
+          (fav) => fav.item.toString() === item && fav.itemType === itemType
         );
     
         if (alreadyFavorite) {
@@ -318,7 +317,7 @@ exports.addFavorites = async (req, res) => {
         }
     
         // Add the new favorite
-        student.favorites.push({ item: itemID, itemType });
+        student.favorites.push({ item: item, itemType });
         await student.save();
     
         return res.status(200).json({ message: "Favorite added successfully" });
@@ -329,17 +328,22 @@ exports.addFavorites = async (req, res) => {
 
 exports.removeFavorite = async (req, res) => {
     try{
-        const studentID = req.params.id;
-        const student = Student.findById(studentID)
+        const userid = req.params.userID
+        const { item, itemType } = req.query;
+        if (!item || !itemType) {
+            return res.status(400).json({ message: "Item ID and Item Type are missing!" });
+        }
+
+        const student = await Student.findOne({userID:userid});
         if(!student)
             return res.status(400).json({message:"no student found! login again please"})
         const alreadyFavorite = student.favorites.some(
-            (fav) => fav.item.toString() === itemID && fav.itemType === itemType
+            (fav) => fav.item.toString() === item && fav.itemType === itemType
           );
         if(!alreadyFavorite)
             return res.status(409).json({message:"item is not favorite"})
 
-        student.favorites = student.favorites.filter(fav => fav.item.toString() !== itemID);
+        student.favorites = student.favorites.filter(fav => fav.item.toString() !== item);
 
         await student.save();
 
@@ -351,7 +355,7 @@ exports.removeFavorite = async (req, res) => {
 
 exports.getFavorites = async (req, res) => {
     try{
-        const student = await Student.findById(req.params.id);
+        const student = await Student.findOne({userID:req.params.id});
         if(!student)
             return res.status(404).json({message:"Something wrong happened! Please try again."})
         const favorites = student.favorites;

@@ -35,7 +35,7 @@ const LogIn = () => {
         usernameOrEmail: formData.usernameOrEmail,
         password: formData.password,
       });
-
+      console.log(response)
       setSuccess(response.data.message);
       setError('');
       setSnackbarType('success');
@@ -43,7 +43,9 @@ const LogIn = () => {
 
       const token = response.data.token;
       localStorage.setItem('token', token);
-      navigate('/completeProfile');
+      console.log(token)
+      navigate(`/completeProfile?userid=${response.data.data.user._id}`);
+
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Invalid credentials';
       setError(errorMessage);

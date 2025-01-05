@@ -7,11 +7,12 @@ import { useLocation } from 'react-router-dom';
 
 const HomePage = () => {
   const location = useLocation();
-  const { studentId } = location.state || {};
+  const queryParams = new URLSearchParams(location.search);
+  const userID = queryParams.get('userid');
   return (
     <div>
       <NavBar/>
-      <Hero studentId={studentId}/>
+      <Hero userID={userID}/>
       <Footer/>
     </div>
   )

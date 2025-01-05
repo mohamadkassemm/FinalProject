@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import './Forms.css';
+import { useLocation } from 'react-router-dom';
 
 const CompleteProfile = () => {
   const navigate = useNavigate();
@@ -16,7 +17,9 @@ const CompleteProfile = () => {
   const [majors, setMajors] = useState([]);
   const [selectedMajors, setSelectedMajors] = useState([]); // Store selected majors
   const [isLoading, setIsLoading] = useState(true); // To handle the loading state
-
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const userID = queryParams.get('userid'); 
   useEffect(() => {
     const checkIfCompleted = async () => {
       const token = localStorage.getItem('token');
@@ -28,8 +31,8 @@ const CompleteProfile = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (response.data.status === true) {
-          navigate('/home'); // Redirect to home if the profile is complete
+        if (response.data.status === true ) {
+          navigate(`/home?userid=${userID}`); // Redirect to home if the profile is complete
         } else {
           setIsLoading(false); // Show the form if the profile is not complete
         }
@@ -54,7 +57,7 @@ const CompleteProfile = () => {
       } catch (err) {
         setError('Unable to fetch user role. Please log in.');
         handleSnackbar('error', 'Unable to fetch user role. Please log in.');
-        navigate('/login');
+        navigate(`/login?userid=${userID}`);
       }
     };
 
@@ -70,7 +73,7 @@ const CompleteProfile = () => {
     checkIfCompleted();
     fetchUserRole();
     fetchMajors();
-  }, [navigate]);
+  }, [navigate, userID]);
 
   const handleSnackbar = (type, message) => {
     setSnackbarType(type);
@@ -108,9 +111,14 @@ const CompleteProfile = () => {
       const response = await axios.post('http://localhost:3001/api/v1/user/completeProfile', updatedFormData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const studentId = response.data._id;
+      const idMatch = response.data.message.match(/_id: new ObjectId\('(.+?)'\)/);
+      const studentId = idMatch ? idMatch[1] : null;
+
+      if (studentId) 
+        console.log('Student ID:', studentId);
+
       console.log('Received response:', response);
-      navigate('/home', { state: { studentId } });
+      navigate(`/home?userid=${userID}`);
     } catch (err) {
       console.error('Error during request:', err);
       handleSnackbar('error', err.response?.data?.message || 'An error occurred while completing your profile.');
@@ -127,7 +135,7 @@ const CompleteProfile = () => {
         return (
           <>
             <label>Gender:</label>
-            <select name="gender" onChange={handleChange}>
+            <select name="gender" onChange={handleChange} required>
               <option value="" hidden>
                 Select Gender
               </option>
@@ -136,7 +144,7 @@ const CompleteProfile = () => {
             </select>
 
             <label>Governorate:</label>
-            <select name="governorate" onChange={handleChange}>
+            <select name="governorate" onChange={handleChange} required>
               <option value="" hidden>
                 Select Governorate
               </option>
@@ -151,7 +159,7 @@ const CompleteProfile = () => {
             </select>
 
             <label>Degree:</label>
-            <select name="degree" onChange={handleChange}>
+            <select name="degree" onChange={handleChange} required>
               <option value="" hidden>
                 Select Degree
               </option>
