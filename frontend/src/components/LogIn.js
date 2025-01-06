@@ -47,7 +47,7 @@ const LogIn = () => {
       navigate(`/completeProfile?userid=${response.data.data.user._id}`);
 
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Invalid credentials';
+      const errorMessage = err.response?.data?.data?.message || 'Invalid credentials';
       setError(errorMessage);
       setSuccess('');
       setSnackbarType('error');

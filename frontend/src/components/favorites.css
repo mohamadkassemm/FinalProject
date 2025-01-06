@@ -1,0 +1,126 @@
+html, body {
+    height: 100%; /* Ensure the page takes full height */
+    margin: 0; /* Remove default margin */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Ensure the content takes up the remaining space */
+  body {
+    flex: 1;
+  }
+
+.favsContainer{
+    display: grid;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 10vh 10px;
+}
+
+.favsContainer h2 {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 10px;
+    background: linear-gradient(45deg, #000000, #424545);
+    background-clip: text;
+    color: transparent;
+    animation: textActive 3s ease-in-out infinite, letterMovement 1.5s alternate infinite;
+  }
+  
+  @keyframes textActive {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  @keyframes letterMovement {
+    0% {
+      letter-spacing: 10px;
+      transform: translateY(0);
+    }
+    25% {
+      letter-spacing: 15px;
+      transform: translateY(-10px);
+    }
+    50% {
+      letter-spacing: 10px;
+      transform: translateY(0);
+    }
+    75% {
+      letter-spacing: 5px;
+      transform: translateY(10px);
+    }
+    100% {
+      letter-spacing: 10px;
+      transform: translateY(0);
+    }
+  }
+  
+.favCardContainer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly; /* Distributes cards evenly with space between */
+    gap: 20px; /* Adds consistent space between cards */
+    margin-top: 20px;
+}
+
+.favCard{
+    flex: 1 1 calc(25% - 20px); /* 3 cards per row with space around */
+  max-width: calc(25% - 20px); /* Prevents cards from growing larger */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #fff; /* Background color for cards */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  overflow: hidden; /* Prevents content from overflowing the rounded corners */
+  transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth hover effect */
+  cursor: pointer;
+  padding: 15px;
+}
+
+.favCard:hover {
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
+    transform: translateY(-5px); /* Lifts the card slightly on hover */
+  }
+  
+  /* Card Image Styling */
+  .favCard img {
+    width: 100%;
+    border-radius: 8px; /* Rounded corners for the image */
+    object-fit: cover; /* Ensures the image fills the container without stretching */
+    margin-bottom: 15px; /* Adds space below the image */
+  }
+
+  @media (max-width: 768px) {
+    .favCard {
+      flex: 1 1 calc(50% - 20px); /* 2 cards per row on tablets */
+      max-width: calc(50% - 20px);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .favCard {
+      flex: 1 1 100%; /* 1 card per row on mobile */
+      max-width: 100%;
+    }
+  }
+  
+  .favButton {
+    background-color: transparent;
+    border: none;
+    color: gold; /* Star color */
+    font-size: 24px; /* Adjust icon size */
+    align-self: flex-start;
+  }
+
+  .favButton:active{
+    color: #000000;
+  }

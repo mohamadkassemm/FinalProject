@@ -21,7 +21,7 @@ exports.getCompanies = async (req, res) => {
 
 exports.getCompanyById = async (req, res) => {
     try {
-        const company = await Company.findById(req.params.id);
+        const company = await Company.findById(req.params.companyId);
         if (!company)
             return res.status(404).json({
                 message: "Company not found"

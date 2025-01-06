@@ -7,7 +7,10 @@ import SignUpPage from './pages/SignUp';
 import LogInPage from './pages/LogIn';
 import HomePage from './pages/Home';
 import ResetPassPage from './pages/ResetPassword';
-import CompleteProfilePage from './components/CompleteProfile';
+import CompleteProfilePage from './pages/CompleteProfile';
+import FavoritesPage from './pages/Favorites';
+import CompaniesPage from './pages/Companies';
+import UniversitiesPage from './pages/University'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -20,6 +23,9 @@ root.render(
         <Route path="/home" element={<HomePage/>} />
         <Route path="/resetPassword" element={<ResetPassPage/>} />
         <Route path="/completeProfile" element={<CompleteProfilePage/>} />
+        <Route path="/favorites" element={<FavoritesPage/>} />
+        <Route path="/companies" element={<CompaniesPage/>} />
+        <Route path='/universities' element={<UniversitiesPage/>} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

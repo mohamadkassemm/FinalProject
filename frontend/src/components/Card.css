@@ -7,6 +7,10 @@
   flex-wrap: wrap;
 }
 
+.cardsContainer h2{
+  animation: textActive 2s ease-in-out infinite, letterMovement 1.5s alternate infinite;
+}
+
 /* Container for Universities and Companies */
 .unisContainer, .compsContainer {
   display: flex;
@@ -38,26 +42,47 @@
   transform: translateY(-5px); /* Lifts the card slightly on hover */
 }
 
+@keyframes textActive {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes letterMovement {
+  0% {
+    letter-spacing: 10px;
+    transform: translateY(0);
+  }
+  25% {
+    letter-spacing: 15px;
+    transform: translateY(-10px);
+  }
+  50% {
+    letter-spacing: 10px;
+    transform: translateY(0);
+  }
+  75% {
+    letter-spacing: 5px;
+    transform: translateY(10px);
+  }
+  100% {
+    letter-spacing: 10px;
+    transform: translateY(0);
+  }
+}
+
 /* Card Image Styling */
 .card img {
   width: 100%;
   border-radius: 8px; /* Rounded corners for the image */
   object-fit: cover; /* Ensures the image fills the container without stretching */
   margin-bottom: 15px; /* Adds space below the image */
-}
-
-/* Card Content */
-.card-content {
-  flex: 1;
-  padding: 10px 0;
-}
-
-/* Card Footer (optional for extra details) */
-.card-footer {
-  padding-top: 10px;
-  text-align: right;
-  font-size: 0.9rem;
-  color: #777;
 }
 
 /* Media Queries for Responsiveness */
@@ -91,4 +116,3 @@
 .starButton i.active{
   color: gold;
 }
-
