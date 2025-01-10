@@ -367,3 +367,15 @@ exports.getFavorites = async (req, res) => {
         })
     }
 }
+
+exports.getStudentID = async (req, res) => {
+    try{
+        const userID = req.params.id;
+        const student = await Student.findOne({userID:userID});
+        if(!student)
+            return res.status(404).json({message:"User not found!"})
+        return res.status(202).json(student._id)
+    }catch(err){
+        return res.status(500).json({message:err.message})
+    }
+}

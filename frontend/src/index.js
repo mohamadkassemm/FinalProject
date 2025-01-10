@@ -11,6 +11,7 @@ import CompleteProfilePage from './pages/CompleteProfile';
 import FavoritesPage from './pages/Favorites';
 import CompaniesPage from './pages/Companies';
 import UniversitiesPage from './pages/University'
+import ProfilePage from './pages/Profile'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -26,6 +27,8 @@ root.render(
         <Route path="/favorites" element={<FavoritesPage/>} />
         <Route path="/companies" element={<CompaniesPage/>} />
         <Route path='/universities' element={<UniversitiesPage/>} />
+        <Route path='/profile' element={<ProfilePage/>} />
+
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

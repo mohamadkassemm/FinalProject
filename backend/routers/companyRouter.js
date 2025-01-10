@@ -45,5 +45,7 @@ router.delete('/bootcamp',  companyController.removeBootcampFromCompany);
 // Route to get companies by industry
 router.get('/industry/search', companyController.getCompaniesByIndustry);
 
+router.get('/ID/:id', companyController.getCompanyID)
+
 
 module.exports = router;

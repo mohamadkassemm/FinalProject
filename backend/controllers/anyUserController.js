@@ -331,7 +331,6 @@ exports.isAuthenticated = async (req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id); 
-        console.log(user)
         if (!user) {
             return res.status(401).json({ message: 'Unauthorized user' });
         }
@@ -425,3 +424,16 @@ exports.getName = async (req, res) => {
     }
   };
   
+exports.getUserData = async (req, res) => {
+    try{
+        const id = req.params.id;
+      let user = await User.findById(id)
+
+      if(!user)
+        return res.status(404).json({message:"No user found!"})
+
+      return res.status(200).json(user);
+    }catch(err){
+      return res.status(500).json({ message: err.message });
+    }
+}

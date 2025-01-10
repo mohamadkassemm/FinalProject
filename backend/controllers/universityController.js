@@ -271,3 +271,15 @@ exports.deleteUniversity = async (req, res)=>{
     }
         
 }
+
+exports.getCompanyID = async (req, res)=>{
+     try{
+            const userID = req.params.id;
+            const uni = await University.findOne({userID:userID});
+            if(!uni)
+                return res.status(404).json({message:"User not found!"})
+            return res.status(202).json(uni._id)
+        }catch(err){
+            return res.status(500).json({message:err.message})
+        }
+}

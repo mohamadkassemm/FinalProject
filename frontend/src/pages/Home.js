@@ -6,9 +6,11 @@ import Footer from '../components/footer';
 import { useLocation } from 'react-router-dom';
 
 const HomePage = () => {
+  const token = localStorage.getItem('token');
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const userID = queryParams.get('userid');
+  console.log(token)
   return (
     <div>
       <NavBar userID={userID}/>

@@ -278,3 +278,15 @@ exports.getCompaniesByIndustry = async (req, res) => {
         });
     }
 }
+
+exports.getCompanyID = async (req, res) => {
+     try{
+        const userID = req.params.id;
+        const company = await Company.findOne({userID:userID});
+        if(!company)
+            return res.status(404).json({message:"User not found!"})
+        return res.status(202).json(company._id)
+    }catch(err){
+        return res.status(500).json({message:err.message})
+    }
+}

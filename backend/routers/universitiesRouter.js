@@ -28,4 +28,7 @@ router.delete('/university/student/:studentid', uni.removeStudentFromUniversity)
 
 router.delete('/:id', uni.deleteUniversity)
 
+router.get('/ID/:id', uni.getCompanyID)
+
+
 module.exports = router;

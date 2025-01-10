@@ -63,4 +63,6 @@ router.get('/favorite/bootcamps',  studentController.getBootcampsInterestedIn);
 //Get fav universities
 router.get('/favorite/university',  studentController.getUniversitiesInterestedIn);
 
+router.get('/ID/:id', studentController.getStudentID)
+
 module.exports = router;
