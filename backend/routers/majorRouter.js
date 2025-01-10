@@ -18,5 +18,7 @@ router.post('/', majorController.createMajor);
 // Get recommended majors for a student
 router.get('/recommended/:studentId', majorController.recommendedMajors);
 
+router.get('/:id', majorController.getMajorName)
+
 module.exports = router;
     

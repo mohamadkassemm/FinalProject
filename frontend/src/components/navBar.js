@@ -20,7 +20,7 @@ const NavBar = (props) => {
         <button onClick={()=>navigate(`/companies?userid=${userID}`)}>Companies</button>
         <button onClick={()=>navigate(`/universities?userid=${userID}`)}>Universities</button>
         <button onClick={()=>navigate(`/favorites?userid=${userID}`)}>Favorites</button>
-        <button>Profile</button>
+        <button onClick={()=>navigate(`/profile?userid=${userID}`)}>Profile</button>
       </div>
       <button className="hamburger" onClick={toggleMenu}>
         ☰

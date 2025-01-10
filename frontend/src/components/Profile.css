@@ -13,7 +13,7 @@
 /* Container styling */
 .profilePage {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
   }
   
   /* Left Sidebar Styling */
@@ -57,14 +57,10 @@
     background-color: #f4f4f4;
   }
   
-  .profileContent h1 {
-    font-size: 32px;
-    margin-bottom: 20px;
-  }
-  
   .profileContent h2 {
     font-size: 24px;
     margin-bottom: 10px;
+    text-align: center;
   }
   
   .profileContent p {
@@ -72,3 +68,92 @@
     color: #333;
   }
   
+
+  /* input fields */
+  /* Container Styling */
+.dataContainer {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+}
+
+/* Header Styling */
+.dataContainer h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Label Styling */
+.dataContainer label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+/* Input and Select Styling */
+.dataContainer input, .dataContainer select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+/* Input Focus Styling */
+.dataContainer input:focus, .dataContainer select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Disabled Input Styling */
+.dataContainer input[disabled] {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Button Styling */
+.dataContainer button {
+  width: 100%;
+  padding: 12px;
+  background-color: #647060;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dataContainer button:not(:disabled):hover {
+  background-color: #c9543a;
+}
+
+.dataContainer button:not(:disabled):active {
+  scale: 0.9;
+}
+
+.dataContainer button:disabled{
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .dataContainer div {
+      padding: 15px;
+  }
+
+  .dataContainer input,.dataContainer select, .dataContainer button {
+      font-size: 14px;
+  }
+}

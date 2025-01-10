@@ -4,81 +4,93 @@ import { useLocation } from 'react-router-dom';
 import './Profile.css';
 
 const Profile = () => {
-  const [roleID, setRoleID] = useState('');
   const [userName, setUserName] = useState('');
   const [userData, setUserData] = useState({});
-  const [activeTab, setActiveTab] = useState('personal'); // State to manage active tab
-  const [userRoleData, setUserRoleData] = useState({})
+  const [activeTab, setActiveTab] = useState('personal');
+  const [userRoleData, setUserRoleData] = useState({});
+  const [majorName, setMajorName] = useState('')
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const userID = queryParams.get('userid');
-  // Fetch token from localStorage
   const token = localStorage.getItem('token');
+  const [hasChanged, setHasChanged] = useState(false);
 
-  // Fetch user name
+  // ✅ Fetch user details
   useEffect(() => {
-
-    const getRoleID = async(id)=>{
-        try{
-            const response = await axios.get(`http://localhost:3001/api/v1/${userData.role}/ID/${id}`,  {
-                headers: { Authorization: `Bearer ${token}` },
-              })
-              setRoleID(response.data)
-        }catch(err){
-            console.log("error getting ID:", err.message)
-        }
-    }
-
-    const getData = async (id) => {
+    const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/v1/user/data/${id}`, {
+        const response = await axios.get(`http://localhost:3001/api/v1/user/data/${userID}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        setUserData(response.data);
         setUserName(response.data.name);
-        setUserData(response.data)
       } catch (error) {
-        console.error('Error fetching user name:', error);
+        console.error('Error fetching user details:', error.message);
       }
     };
 
-    const getUserRoleData = async (roleID) => {
-        try{
-            const response = await axios.get(`http://localhost:3001/api/v1/${userData.role}/${roleID}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-            setUserRoleData(response.data)
-        }catch(error){
-            console.error('Error fetching user name:', error);
-        }
-    }
-
-    const fetchUserDetails = async (id) => {
-        try {
-          // Wait for getData to complete
-          await getData(id);
-    
-          // After getUserRoleData completes, call getRoleID
-          await getRoleID(id);
-
-          // After getData completes, call getUserRoleData
-          await getUserRoleData(roleID);
-    
-          
-    
-        } catch (error) {
-          console.error('Error fetching user details:', error);
-        }
-      };
-
     if (userID) {
-      fetchUserDetails(userID);
+      fetchUserDetails();
     }
-  }, [userID, token, userData, userRoleData, roleID]);
+  }, [userID, token]);
 
-  // Handle tab click
+  // ✅ Fetch role-specific data
+  useEffect(() => {
+    const fetchRoleData = async () => {
+      try {
+        if (userData.role && userID) {
+          const response = await axios.get(`http://localhost:3001/api/v1/${userData.role}/ID/${userID}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if(response){
+            const output = await axios.get(`http://localhost:3001/api/v1/${userData.role}/${response.data}`)
+            setUserRoleData(output.data)
+            if(userRoleData?.data?.major){
+              const response = await axios.get(`http://localhost:3001/api/v1/major/${userRoleData?.data?.major}`)
+              setMajorName(response.data)
+              }
+            }
+          }
+         
+        }catch (error) {
+          console.error('Error fetching role data:', error.message);
+        }
+    };
+
+    fetchRoleData();
+  }, [userData.role, userID, token, userRoleData?.data?.major]);
+
+  // ✅ Handle input changes
+  const handleChange = (field, value) => {
+    setHasChanged(true)
+    setUserData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+
+  // ✅ Handle tab click
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+
+    try {
+      const updatedData = { ...userData, ...userRoleData.data }; // Combine user data and role data
+      console.log(updatedData)
+      // await axios.put(`http://localhost:3001/api/v1/user/data/${userID}`, updatedData, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      setHasChanged(false); // Reset the hasChanged state
+      alert('Data has been saved successfully!');
+    } catch (error) {
+      console.error('Error saving data:', error.message);
+      alert('Error saving data');
+    }
+  };
+
   return (
     <div className="profilePage">
       <div className="leftSidebar">
@@ -106,45 +118,116 @@ const Profile = () => {
 
       <div className="profileContent">
         <h2>Hello {userName}</h2>
+
         {activeTab === 'personal' && (
-          <div>
+          <div className="dataContainer">
             <h2>Personal Details</h2>
-            {userData.role === "student" && (
-                <div>
-                    <h2>Personal Details</h2>
-                    <p>Full Name: {userData.name}</p>
-                    <p>Username: {userData.username}</p>
-                    <p>Email: {userData.email}</p>
-                    <p>Joined at: {userData.createdAt}</p>
-                </div>
-                )}
+            <form onSubmit={handleSubmit}>
+                {userData.role === 'student' && userRoleData && (
+                  <div>
+                    <label htmlFor="fullName">Full Name:</label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      value={userData?.name || ''}
+                      onChange={(e) => handleChange('name', e.target.value)}
+                    />
 
-            {userData.role === "university" && (
-                <div>
-                    <h2>University Details</h2>
-                    <p>Name: {userData.name}</p>
-                    <p>Established Year: {userData.establishedYear}</p>
-                    <p>Contact Email: {userData.contactEmail}</p>
-                    <p>Location: {userData.location}</p>
-                </div>
-                )}
+                    <label htmlFor="username">Username:</label>
+                    <input
+                      type="text"
+                      id="username"
+                      value={userData?.username || ''}
+                      onChange={(e) => handleChange('username', e.target.value)}
+                    />
 
-            {userData.role === "company" && (
-                <div>
-                    <h2>Company Details</h2>
-                    <p>Company Name: {userData.companyName}</p>
-                    <p>Contact Person: {userData.contactPerson}</p>
-                    <p>Contact Number: {userData.contactNumber}</p>
-                    <p>Email: {userData.email}</p>
-                </div>
+                    <label htmlFor="email">Email:</label>
+                    <input
+                      type="email"
+                      id="email"
+                      value={userData?.email || ''}
+                      onChange={(e) => handleChange('email', e.target.value)}
+                    />
+
+                    <label htmlFor="gender">Gender:</label>
+                    <select
+                      id="gender"
+                      value={userRoleData?.data?.gender || ''}
+                      onChange={(e) => handleChange('gender', e.target.value)}
+                    >
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+
+                    <label htmlFor="address">Address:</label>
+                    <input
+                      type="text"
+                      id="address"
+                      value={userRoleData?.data?.governorate || ''}
+                      onChange={(e) => handleChange('governorate', e.target.value)}
+                    />
+
+                    <label htmlFor="joinedAt">Joined at:</label>
+                    <input
+                      type="text"
+                      id="joinedAt"
+                      value={userData?.createdAt || ''}
+                      disabled
+                    />
+                  </div>
                 )}
+                <button type='submit' disabled={!hasChanged} >Save</button>
+            </form>
           </div>
         )}
-
+        
         {activeTab === 'educational' && (
-          <div>
+          <div className='dataContainer'>
             <h2>Educational Details</h2>
-            <p>Here are the user's educational details...</p>
+            <form onSubmit={handleSubmit}>
+            {userData.role === 'student' && userRoleData && (
+              <div>
+                <label htmlFor="degree">Degree:</label>
+                <input
+                  type="text"
+                  id="degree"
+                  value={userRoleData?.data?.degree || ''}
+                  onChange={(e) => handleChange('degree', e.target.value)}
+                />
+
+                <label htmlFor="major">Major:</label>
+                <input
+                  type="text"
+                  id="major"
+                  value={majorName || ''}
+                  onChange={(e) => handleChange('major', e.target.value)}
+                />
+
+                <label htmlFor="university">University:</label>
+                <input
+                  type="text"
+                  id="university"
+                  value={userRoleData?.data?.university || ''}
+                  onChange={(e) => handleChange('university', e.target.value)}
+                />
+
+                <label htmlFor="jobStatus">Job Status:</label>
+                <select
+                  id="jobStatus"
+                  value={userRoleData?.data?.jobStatus || ''}
+                  onChange={(e) => handleChange('jobStatus', e.target.value)}
+                >
+                  <option value="" hidden></option>
+                  <option value="Full-time">Full-time</option>
+                  <option value="Part-time">Part-time</option>
+                  <option value="Internship">Internship</option>
+                </select>
+            </div>
+            )}
+                <button type="submit" disabled={!hasChanged}>
+                  Save
+                </button>
+              </form>
           </div>
         )}
 

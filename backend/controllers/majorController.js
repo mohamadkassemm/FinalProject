@@ -113,3 +113,17 @@ exports.recommendedMajors = async (req, res) => {
         });
     }
 }
+
+exports.getMajorName = async (req, res) => {
+    try {
+        const majorID = req.params.id;
+        const major = await Major.findById(majorID).lean()
+        if(!major)
+            return res.status(404).json({message:"No major found with this ID!"})
+        return res.status(200).json(major.name);
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
