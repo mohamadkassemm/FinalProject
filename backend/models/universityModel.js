@@ -46,6 +46,9 @@ const universityModel = new Schema({
         type: [Schema.Types.ObjectId],
         ref: 'Student',
         default:[]
+    },
+    website:{
+        type:String
     }
 });
 

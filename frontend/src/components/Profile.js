@@ -107,12 +107,6 @@ const Profile = () => {
           >
             Educational
           </li>
-          <li
-            className={activeTab === 'logout' ? 'active' : ''}
-            onClick={() => handleTabClick('logout')}
-          >
-            Log Out
-          </li>
         </ul>
       </div>
 
@@ -228,13 +222,6 @@ const Profile = () => {
                   Save
                 </button>
               </form>
-          </div>
-        )}
-
-        {activeTab === 'logout' && (
-          <div>
-            <h2>Log Out</h2>
-            <p>You have been logged out.</p>
           </div>
         )}
       </div>

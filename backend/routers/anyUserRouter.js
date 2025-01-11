@@ -14,7 +14,7 @@ router.patch('/forgotPassword/', anyUser.forgotPassword);
 
 router.patch('/resetPassword/:token', anyUser.resetPassword);
 
-router.post('/logout/:username', anyUser.logout);
+router.post('/logout/:id', anyUser.logout);
 
 router.get('/role', anyUser.isAuthenticated, anyUser.getUserRole);
 
@@ -24,5 +24,6 @@ router.get('/getName/:id', anyUser.getName);
 
 router.get('/data/:id', anyUser.getUserData);
 
+router.get('/loginToken/:id', anyUser.getLoginToken)
 
 module.exports = router;

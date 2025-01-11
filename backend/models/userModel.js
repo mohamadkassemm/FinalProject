@@ -46,6 +46,9 @@ const UserModel = new Schema({
         type: Date,
         default: Date.now,
     },
+    loginToken:{
+        type:String
+    },
     passwordChangedAt:Date,
     passwordResetToken:String,
     passwordResetExpires:Date

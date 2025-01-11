@@ -3,6 +3,7 @@
     "cors": "^2.8.5",
     "mongoose-sequence": "^6.0.1",
     "react-router-dom": "^7.1.1",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "sweetalert2": "^11.15.10"
   }
 }

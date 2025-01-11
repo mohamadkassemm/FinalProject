@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './Card.css';
 
 const Card = (props) => {
+  const navigate = useNavigate();
   const { universities, companies, userID } = props;
   const [favorites, setFavorites] = useState([  ]);
   const [names, setNames] = useState({});
@@ -92,7 +94,8 @@ const Card = (props) => {
           <h2>Universities</h2>
           <div className="unisContainer">
             {universities.map((university) => (
-              <div className="card" key={university.userID}>
+              <div className="card" key={university.userID} onClick={() => navigate(`/details/university/${university._id}?userID=${userID}`)}
+              style={{ cursor: "pointer" }} >
                 <img 
                   src={university.logo || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} 
                   alt={university.abbreviation} 
@@ -119,7 +122,8 @@ const Card = (props) => {
           <h2>Companies</h2>
           <div className="compsContainer">
             {companies.map((company) => (
-              <div className="card" key={company.userID}>
+              <div className="card" key={company.userID} onClick={() => navigate(`/details/company/${company._id}?userID=${userID}`)}
+              style={{ cursor: "pointer" }} >
                 <img 
                   src={company.logo || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} 
                   alt={company.linkedIn} 

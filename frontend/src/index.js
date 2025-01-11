@@ -12,6 +12,7 @@ import FavoritesPage from './pages/Favorites';
 import CompaniesPage from './pages/Companies';
 import UniversitiesPage from './pages/University'
 import ProfilePage from './pages/Profile'
+import CardDetailsPage from './pages/CardDetails';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -28,7 +29,7 @@ root.render(
         <Route path="/companies" element={<CompaniesPage/>} />
         <Route path='/universities' element={<UniversitiesPage/>} />
         <Route path='/profile' element={<ProfilePage/>} />
-
+        <Route path='/details/:type/:id' element={<CardDetailsPage/>} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

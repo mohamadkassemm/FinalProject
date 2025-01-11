@@ -201,6 +201,8 @@ const CompleteProfile = () => {
       case 'university':
         return (
           <>
+            <label>Website:</label>
+            <input type='text' name='website' placeholder='University Website' onChange={handleChange}/>
             <label>Logo:</label>
             <input type="text" name="logo" placeholder="Enter image URL" onChange={handleChange} />
             <label>Abbreviation:</label>
@@ -219,6 +221,7 @@ const CompleteProfile = () => {
               <option value="Baalbek-Hermel">Baalbek-Hermel</option>
               <option value="Nabatieh">Nabatieh</option>
             </select>
+            <label>Number of Branches:</label>
             <input type="number" name="numberOfBranches" placeholder="Number of Branches" onChange={handleChange} />
             <label>Available Majors:</label>
             <div>

@@ -25,7 +25,7 @@ const signToken = (id) => {
 
 const createSendToken = (user, statusCode, message, res) => {
     const token = signToken(user._id);
-
+    user.loginToken=token;
     res.status(statusCode).json({
         status: "Success",
         token,
@@ -77,11 +77,10 @@ exports.signUp = async (req, res) => {
             email,
             username,
             password,
-            role
+            role,
+            loginToken:null
         });
         await newUser.save();
-
-        
 
         createSendToken(newUser, 201, "Your account is created successfully!", res);
     } catch (err) {
@@ -123,6 +122,7 @@ exports.completeProfile = async(req, res)=>{
             case "university": {
                 data = new University({
                     userID: user._id,
+                    website:req.body.website,
                     logo:req.body.logo,
                     abbreviation:req.body.abbreviation,
                     governorate:req.body.governorate,
@@ -178,16 +178,20 @@ exports.logIn = async (req, res) => {
     }
 }
 
-exports.logout = async (req,res) => {
+exports.logout = async (req, res) => {
     try {
-        const user = await User.findOne({username: req.params.username});
+        // Find the user by username
+        const user = await User.findById(req.params.id);
         if (!user) {
             return res.status(401).json({
                 message: "User not found"
             });
         }
+        // Remove the token (assuming it's stored in the user document)
+        user.loginToken = null; 
+        await user.save();
+
         return res.status(200).json({
-            loginStatus: user.loginStatus,
             message: "User logged out successfully"
         });
     } catch (err) {
@@ -195,7 +199,8 @@ exports.logout = async (req,res) => {
             message: err.message
         });
     }
-}
+};
+
 
 exports.forgotPassword = async (req, res) => {
     try {
@@ -433,6 +438,18 @@ exports.getUserData = async (req, res) => {
         return res.status(404).json({message:"No user found!"})
 
       return res.status(200).json(user);
+    }catch(err){
+      return res.status(500).json({ message: err.message });
+    }
+}
+
+exports.getLoginToken = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const user= await User.findById(id)
+        if(!user)
+            return res.status(404).json({message:"No user found!"})
+        return res.status(200).json(user)
     }catch(err){
       return res.status(500).json({ message: err.message });
     }
