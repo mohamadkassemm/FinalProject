@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import { useLocation } from 'react-router-dom';
 import './Profile.css';
 
@@ -61,13 +62,29 @@ const Profile = () => {
   }, [userData.role, userID, token, userRoleData?.data?.major]);
 
   // ✅ Handle input changes
-  const handleChange = (field, value) => {
-    setHasChanged(true)
+const handleChange = (field, value) => {
+  console.log(field, value); // Log the field and value for debugging
+  setHasChanged(true);
+
+  // Check if the field belongs to userData or userRoleData
+  if (field in userData) {
     setUserData((prevData) => ({
       ...prevData,
       [field]: value,
     }));
-  };
+  } else if (field in userRoleData?.data) {
+    setUserRoleData((prevData) => ({
+      ...prevData,
+      data: {
+        ...prevData.data,
+        [field]: value,
+      },
+    }));
+  }
+
+  console.log(userData, userRoleData); // Log the updated state for debugging
+};
+
 
   // ✅ Handle tab click
   const handleTabClick = (tab) => {
@@ -78,13 +95,17 @@ const Profile = () => {
     e.preventDefault(); // Prevent the default form submission behavior
 
     try {
-      const updatedData = { ...userData, ...userRoleData.data }; // Combine user data and role data
-      console.log(updatedData)
-      // await axios.put(`http://localhost:3001/api/v1/user/data/${userID}`, updatedData, {
-      //   headers: { Authorization: `Bearer ${token}` },
-      // });
+      await axios.put(`http://localhost:3001/api/v1/user/editProfile/${userID}`, userData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setHasChanged(false); // Reset the hasChanged state
-      alert('Data has been saved successfully!');
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Data has been saved successfully!',
+        showConfirmButton: false,
+        timer: 3000,
+      });
     } catch (error) {
       console.error('Error saving data:', error.message);
       alert('Error saving data');
@@ -153,13 +174,25 @@ const Profile = () => {
                       <option value="female">Female</option>
                     </select>
 
-                    <label htmlFor="address">Address:</label>
-                    <input
-                      type="text"
-                      id="address"
+                    <label htmlFor="governorate">Governorate:</label>
+                    <select
+                      name="governorate"
+                      id="governorate"
                       value={userRoleData?.data?.governorate || ''}
                       onChange={(e) => handleChange('governorate', e.target.value)}
-                    />
+                      required
+                    >
+                      <option value="" hidden>Select Governorate</option>
+                      <option value="North">North</option>
+                      <option value="South">South</option>
+                      <option value="Bekaa">Bekaa</option>
+                      <option value="Mount Lebanon">Mount Lebanon</option>
+                      <option value="Beirut">Beirut</option>
+                      <option value="Akkar">Akkar</option>
+                      <option value="Baalbek-Hermel">Baalbek-Hermel</option>
+                      <option value="Nabatieh">Nabatieh</option>
+                    </select>
+
 
                     <label htmlFor="joinedAt">Joined at:</label>
                     <input

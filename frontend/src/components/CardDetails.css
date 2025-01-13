@@ -126,73 +126,17 @@
     margin-left: 50px;
   }
   
-
-  .addButton {
-    background-color: #647060;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-left: 10px;
-  }
-  
-  .addButton:hover {
-    background-color: #c9543a;
-  }
-  
-
-  /* CardDetails.css */
-
-/* Styles for the form container */
-.formContainer {
-    position: fixed;
-    top: 10vh;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    height: 100vh;
-    width: 100%;
-    pointer-events: none; /* Make the background non-interactive */
-  }
-  
-  .formContainer form {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    pointer-events: all; /* Allow interactions with the form */
-  }
-  
-  .formContainer input,
-  .formContainer button {
-    min-width: 80%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+  .majorList button {
+    padding: 10px 15px;
     font-size: 16px;
-  }
-  
-  .formContainer button[type="submit"] {
     background-color: #647060;
-    color: white;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
   }
   
-  .formContainer button[type="button"] {
+  .majorList button:hover {
     background-color: #c9543a;
-    color: white;
-    cursor: pointer;
-  }
-  
-  
+  } 

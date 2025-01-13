@@ -201,6 +201,59 @@ exports.logout = async (req, res) => {
     }
 };
 
+exports.updateProfile = async (req, res) => {
+    try {
+      const userId = req.params.id; // Assuming the user ID comes from an authenticated token
+      const { name, username, email, gender, governorate } = req.body;
+  
+      // Validate required fields
+      if (!name || !username || !email) {
+        return res.status(400).json({ message: "Name, Username, and Email are required." });
+      }
+
+        // Check if the username is taken by another user
+        const existingUsername = await User.findOne({ username, _id: { $ne: userId } });
+        if (existingUsername) {
+        return res.status(400).json({ message: "Username is already taken!" });
+        }
+
+        // Check if the email is taken by another user
+        const existingEmail = await User.findOne({ email, _id: { $ne: userId } });
+        if (existingEmail) {
+        return res.status(400).json({ message: "Email is already in use!" });
+        }
+  
+      // Find user by ID and update their profile
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            name,
+            username,
+            email,
+            "roleData.data.gender": gender,
+            "roleData.data.governorate": governorate,
+          },
+        },
+        { new: true }
+      );
+  
+      // If user not found
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found." });
+      }
+  
+      return res.status(200).json({
+        message: "Profile updated successfully.",
+        user: updatedUser,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        message: err.message,
+      });
+    }
+  };
+  
 
 exports.forgotPassword = async (req, res) => {
     try {

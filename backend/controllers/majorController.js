@@ -18,6 +18,22 @@ exports.getMajors = async (req, res) => {
     }
 }
 
+exports.getMajorDetails = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const major = await Major.findById(id);
+        if (!major)
+            return res.status(404).json({
+                message: "No majors found"
+            });
+        return res.status(200).json(major);
+    } catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
 exports.getMajorsByUniversity = async (req, res) => {
     try {
         const university = await University.findById(req.params.universityId);

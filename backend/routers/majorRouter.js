@@ -6,6 +6,9 @@ const majorController = require('../controllers/majorController');
 // Get all majors
 router.get('/', majorController.getMajors);
 
+//Get major by ID
+router.get('/details/:id', majorController.getMajorDetails)
+
 // Get majors by university ID
 router.get('/university/:universityId', majorController.getMajorsByUniversity);
 

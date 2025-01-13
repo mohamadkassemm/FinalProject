@@ -8,6 +8,8 @@ router.post('/login', anyUser.logIn);
 
 router.post('/completeProfile', anyUser.completeProfile);
 
+router.put('/editProfile/:id', anyUser.updateProfile)
+
 router.patch('/updatePassword/:userID', anyUser.updatePassword);
 
 router.patch('/forgotPassword/', anyUser.forgotPassword);

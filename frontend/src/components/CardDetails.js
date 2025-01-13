@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import MajorDetails from './MajorDetails';
 import './CardDetails.css';
 
 const DetailsPage = ({ items }) => {
@@ -11,15 +12,7 @@ const DetailsPage = ({ items }) => {
   const [item, setItem] = useState({});
   const [userData, setUserData] = useState({});
   const [majorNames, setMajorNames] = useState([]);
-  const [showMajorForm, setShowMajorForm] = useState(false);
-  const [majorData, setMajorData] = useState({
-    name: '',
-    description: '',
-    courseCount: '',
-    totalCost: '',
-    studentCount: '',
-    nbOfSemester: '',
-  });
+  const [selectedMajor, setSelectedMajor] = useState(null); // For showing MajorDetails modal
 
   // Fetch major names
   const fetchMajorName = async (id) => {
@@ -30,24 +23,6 @@ const DetailsPage = ({ items }) => {
       console.error(`Error fetching major name for ID ${id}:`, error);
       return 'Unknown Major';
     }
-  };
-
-  const handleMajorSubmit = async (majorData) => {
-    try {
-      const response = await axios.post('http://localhost:3001/api/v1/major', majorData);
-      console.log('Major successfully submitted:', response.data);
-      setShowMajorForm(false);
-    } catch (error) {
-      console.error('Error submitting major:', error);
-    }
-  };
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setMajorData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
   };
 
   // Fetch item details
@@ -92,17 +67,20 @@ const DetailsPage = ({ items }) => {
     fetchMajors();
   }, [item.availableMajors]);
 
-  // Function to handle adding a new major
-  const handleAddMajor = () => {
-    setShowMajorForm(true);
+  // Handle click on a major to show details
+  const handleMajorClick = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/api/v1/major/details/${id}`);
+      setSelectedMajor(response.data);
+    } catch (error) {
+      console.error('Error fetching major details:', error);
+    }
   };
 
-  // Function to handle adding a new position
-  const handleAddPosition = () => {
-    console.log('Add Position button clicked');
+  // Close the MajorDetails modal
+  const handleCloseModal = () => {
+    setSelectedMajor(null);
   };
-
-  console.log(userData, item);
 
   return (
     <div className="detailsPage">
@@ -127,80 +105,22 @@ const DetailsPage = ({ items }) => {
 
         {majorNames.length > 0 && (
           <div className="majorContent">
-            <h3>
-              Available Majors: 
-              <button className="addButton" onClick={handleAddMajor}>+ Add</button>
-            </h3>
+            <h3>Available Majors:</h3>
             <ul className="majorList">
               {majorNames.map((name, index) => (
-                <li key={index}>{name}</li>
+                <li key={index}>
+                  <button onClick={() => handleMajorClick(item.availableMajors[index])}>
+                    {name}
+                  </button>
+                </li>
               ))}
             </ul>
-
-            {showMajorForm && (
-              <div className="formContainer">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleMajorSubmit(majorData);
-                  }}
-                >
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Enter major name"
-                    value={majorData.name}
-                    onChange={handleInputChange}
-                  />
-                  <input
-                    type="text"
-                    name="description"
-                    placeholder="Enter description"
-                    value={majorData.description}
-                    onChange={handleInputChange}
-                  />
-                  <input
-                    type="number"
-                    name="courseCount"
-                    placeholder="Enter course count"
-                    value={majorData.courseCount}
-                    onChange={handleInputChange}
-                  />
-                  <input
-                    type="number"
-                    name="totalCost"
-                    placeholder="Enter total cost"
-                    value={majorData.totalCost}
-                    onChange={handleInputChange}
-                  />
-                  <input
-                    type="number"
-                    name="studentCount"
-                    placeholder="Enter student count"
-                    value={majorData.studentCount}
-                    onChange={handleInputChange}
-                  />
-                  <input
-                    type="number"
-                    name="nbOfSemester"
-                    placeholder="Enter number of semesters"
-                    value={majorData.nbOfSemester}
-                    onChange={handleInputChange}
-                  />
-                  <button type="submit">Submit Major</button>
-                  <button type="button" onClick={() => setShowMajorForm(false)}>Cancel</button>
-                </form>
-              </div>
-            )}
           </div>
         )}
 
         {item?.availablePositions?.length > 0 && (
           <div className="positionContent">
-            <h3>
-              Available Positions: 
-              <button className="addButton" onClick={handleAddPosition}>+ Add</button>
-            </h3>
+            <h3>Available Positions:</h3>
             <ul className="majorList">
               {item.availablePositions.map((pos, index) => (
                 <li key={index}>{pos}</li>
@@ -209,6 +129,11 @@ const DetailsPage = ({ items }) => {
           </div>
         )}
       </div>
+
+      {/* MajorDetails Modal */}
+      {selectedMajor && (
+        <MajorDetails course={selectedMajor} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };
