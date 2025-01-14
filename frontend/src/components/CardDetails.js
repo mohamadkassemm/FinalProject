@@ -30,6 +30,7 @@ const DetailsPage = ({ items }) => {
     const getItemDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:3001/api/v1/${type}/${id}`);
+        console.log(response)
         setItem(response.data);
       } catch (err) {
         console.error(err.message);
@@ -82,6 +83,7 @@ const DetailsPage = ({ items }) => {
     setSelectedMajor(null);
   };
 
+  console.log(item)
   return (
     <div className="detailsPage">
       {userData && (
@@ -93,16 +95,15 @@ const DetailsPage = ({ items }) => {
             alt={item.abbreviation || item.name}
           />
           <p>Official Website: <a href={item.website}>{item.website}</a></p>
+          {item?.numberOfBranches > 0 && (
+          <div className="branchesContent">
+            <p>Number of Branches: <a href={item.website}>{item.numberOfBranches}</a></p>
+          </div>
+        )}
         </div>
       )}
 
       <div>
-        {item?.numberOfBranches > 0 && (
-          <div className="branchesContent">
-            <h3>Number of Branches: {item.numberOfBranches}</h3>
-          </div>
-        )}
-
         {majorNames.length > 0 && (
           <div className="majorContent">
             <h3>Available Majors:</h3>
@@ -119,14 +120,23 @@ const DetailsPage = ({ items }) => {
         )}
 
         {item?.availablePositions?.length > 0 && (
-          <div className="positionContent">
+        <div className="positionContent">
             <h3>Available Positions:</h3>
+            <p>
+            For applying, just send us your Resume via email:&nbsp;&nbsp;   
+            <a 
+                href={`mailto:${userData.email}?subject=Application for Available Position&body=Dear Hiring Team,%0D%0A%0D%0APlease find my resume attached for your consideration.`} 
+                className="emailLink"
+            >
+                {userData.email}
+            </a>
+            </p>
             <ul className="majorList">
-              {item.availablePositions.map((pos, index) => (
+            {item.availablePositions.map((pos, index) => (
                 <li key={index}>{pos}</li>
-              ))}
+            ))}
             </ul>
-          </div>
+        </div>
         )}
       </div>
 

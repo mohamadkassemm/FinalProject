@@ -140,3 +140,20 @@
   .majorList button:hover {
     background-color: #c9543a;
   } 
+
+  .positionContent p{
+    color: black;
+  }
+
+  .emailLink {
+    color: #c9543a;            /* Nice blue color for the link */
+    text-decoration: none;     /* Remove underline */
+    font-weight: bold;         /* Make it stand out */
+  }
+  
+  .emailLink:hover {
+    text-decoration: underline; /* Underline on hover for clarity */
+    color: #ca4426;             /* Darker blue on hover */
+    cursor: pointer;            /* Pointer cursor to indicate it's clickable */
+  }
+  

@@ -29,12 +29,10 @@ const jobModel = new Schema({
         required: true,
         min: 1,
     },
-    companyID: {
-        type: Number,
-        required: true,
-        min: 1,
-        ref: 'Company'
-    }
+    cuID: {
+        universities: [{ type: mongoose.Schema.Types.ObjectId, ref: 'University' }],
+        companies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Company' }],
+      }
 });
 
 module.exports = mongoose.model('Job', jobModel);

@@ -15,6 +15,7 @@ const CompleteProfile = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarType, setSnackbarType] = useState('success'); // 'success' or 'error'
   const [majors, setMajors] = useState([]);
+  const [unis, setUnis] = useState([]);
   const [selectedMajors, setSelectedMajors] = useState([]); // Store selected majors
   const [isLoading, setIsLoading] = useState(true); // To handle the loading state
   const location = useLocation();
@@ -70,9 +71,19 @@ const CompleteProfile = () => {
       }
     };
 
+    const fetchUnis = async ()=>{
+      try {
+        const response = await axios.get('http://localhost:3001/api/v1/university'); // Fetch majors
+        setUnis(response.data); // Assuming majors is an array of major objects
+      } catch (err) {
+        console.error('Error fetching majors:', err);
+      }
+    }
+
     checkIfCompleted();
     fetchUserRole();
     fetchMajors();
+    fetchUnis()
   }, [navigate, userID]);
 
   const handleSnackbar = (type, message) => {
@@ -128,7 +139,6 @@ const CompleteProfile = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
-
   const renderFields = () => {
     switch (role) {
       case 'student':
@@ -192,8 +202,31 @@ const CompleteProfile = () => {
               <option value="Self-employed">Self-employed</option>
             </select>
 
-            <label>University:</label>
-            <input type="text" name="university" placeholder="University" onChange={handleChange} />
+            <label htmlFor="university">University:</label>
+            <select
+              name="university"
+              id="university"
+              onChange={(e) => handleChange(e.target.name, e.target.value)}
+            >
+              <option value="" hidden>Select your university</option>
+              {unis.map((uni) => (
+                <option key={uni._id} value={uni.abbreviation}>
+                  {uni.abbreviation}
+                </option>
+              ))}
+              <option value="other">Other (Type your own)</option>
+            </select>
+
+            {/* Show the input field if "Other" is selected */}
+            {unis.university === 'other' && (
+              <input
+                type="text"
+                name="university"
+                placeholder="Enter your university"
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
+              />
+            )}
+
             <label>LinkedIn Profile:</label>
             <input type="url" name="linkedIn" placeholder="LinkedIn URL" onChange={handleChange} />
           </>
