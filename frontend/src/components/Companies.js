@@ -2,10 +2,12 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import './Companies.css'
 
 const Companies = () => {
+    const navigate= useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const userID = queryParams.get('userid');
@@ -92,17 +94,18 @@ const Companies = () => {
   return (
     <div className='companiesContainer'>
         <h2>Companies</h2>
-        {companies.length > 0 && (
+        {companies.length > 0 &&  (
         <>
           <div className="compsContainer">
             {companies.map((company) => (
-              <div className="compCard" key={company.userID}>
+              <div className="compCard" key={company.userID} onClick={() => navigate(`/details/company/${company._id}?userID=${userID}`)}
+              style={{ cursor: "pointer" }} >
                 <img 
                   src={company.logo || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} 
                   alt={company.linkedIn} 
                 />
                 <h4>{names[company._id] || "loading..."}</h4>
-                <button className="starButton" onClick={() => toggleFav(company._id, "Company")}>
+                <button className="starButton" onClick={(e) =>{e.stopPropagation(); toggleFav(company._id, "Company")}}>
                 <i
                   className={`fas fa-star ${
                     favorites.some((fav) => fav.item === company._id && fav.itemType === "Company")

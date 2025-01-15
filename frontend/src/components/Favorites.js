@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import './favorites.css';
 
 const Favorites = () => {
+  const navigate = useNavigate()
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const userID = queryParams.get('userid');
@@ -97,7 +99,8 @@ const Favorites = () => {
       <h2>Favorites</h2>
       <div className="favCardContainer">
         {favoritesDetails.map((favorite) =>  (
-          <div className="favCard" key={favorite._id}>
+          <div className="favCard" key={favorite._id} onClick={() => navigate(`/details/${favorite.itemType}/${favorite._id}?userID=${userID}`)}
+          style={{ cursor: "pointer" }}>
             <img
               src={
                 favorite.logo ||
@@ -107,15 +110,16 @@ const Favorites = () => {
             />
             <h4>{names[favorite._id] || favorite.abbreviation || "loading name!"}</h4>
             <p>{favorite.description || favorite.abbreviation}</p>
-            <button className="favButton" onClick={() => removeFav(favorite._id, favorite.itemType)}>
+            <button className="favButton" onClick={(e) => {
+                    e.stopPropagation();
+                    removeFav(favorite._id, favorite.itemType);
+                  }}>
                 <i
                   className={`fas fa-star ${
-                    favorites.some((fav) => fav.item === fav._id)
-                      ? "active"
-                      : ""
+                    favorites.some((fav) => fav.item === favorite._id) ? "active" : ""
                   }`}
-                ></i>
-                </button>
+                />
+            </button>
           </div>
         ))}
       </div>

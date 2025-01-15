@@ -2,10 +2,12 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import './Universities.css'
 
 const Universities = () => {
+    const navigate=useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const userID = queryParams.get('userid');
@@ -96,13 +98,16 @@ const Universities = () => {
         <>
           <div className="unisContainer">
             {universities.map((university) => (
-              <div className="uniCard" key={university.userID}>
+              <div className="uniCard" key={university.userID} onClick={() => navigate(`/details/company/${university._id}?userID=${userID}`)}
+              style={{ cursor: "pointer" }}>
                 <img 
                   src={university.logo || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} 
                   alt={university.linkedIn} 
                 />
                 <h4>{names[university._id] || "loading..."}</h4>
-                <button className="starButton" onClick={() => toggleFav(university._id, "University")}>
+                <button className="starButton" onClick={(e) =>{
+                  e.stopPropagation();
+                  toggleFav(university._id, "University")}}>
                 <i
                   className={`fas fa-star ${
                     favorites.some((fav) => fav.item === university._id && fav.itemType === "University")

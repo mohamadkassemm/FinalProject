@@ -101,8 +101,8 @@ const Card = (props) => {
                   alt={university.abbreviation} 
                 />
                 <h4>{names[university._id] || "Loading..."}</h4>
-                
-                <button className="starButton" onClick={() => toggleFav(university._id, "University")}>
+                 
+                <button className="starButton" onClick={(e) =>{e.stopPropagation(); toggleFav(university._id, "University")}}>
                 <i
                   className={`fas fa-star ${
                     favorites.some((fav) => fav.item === university._id && fav.itemType === "University")
@@ -129,7 +129,7 @@ const Card = (props) => {
                   alt={company.linkedIn} 
                 />
                 <h4>{names[company._id] || "loading..."}</h4>
-                <button className="starButton" onClick={() => toggleFav(company._id, "Company")}>
+                <button className="starButton" onClick={(e) =>{e.stopPropagation(); toggleFav(company._id, "Company")}}>
                 <i
                   className={`fas fa-star ${
                     favorites.some((fav) => fav.item === company._id && fav.itemType === "Company")
