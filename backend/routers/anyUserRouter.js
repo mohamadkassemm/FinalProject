@@ -18,7 +18,7 @@ router.patch('/resetPassword/:token', anyUser.resetPassword);
 
 router.post('/logout/:id', anyUser.logout);
 
-router.get('/role', anyUser.isAuthenticated, anyUser.getUserRole);
+router.get('/role/:id', anyUser.getUserRole);
 
 router.get('/completedStatus', anyUser.isAuthenticated, anyUser.getCompletedStatus)
 

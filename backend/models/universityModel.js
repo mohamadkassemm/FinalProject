@@ -34,9 +34,15 @@ const universityModel = new Schema({
         type: [Schema.Types.ObjectId],
         ref: 'Major',
     },
-    availablePositions:{
-        type: [String],
-        default:[],
+    availablePositions: {
+        type: [
+            {
+                name: { type: String, required: true },
+                description: { type: String, required: true },
+                expectedSalary: { type: Number, required: true },
+            }
+        ],
+        default: [],
     },
     ranking:{
         type: Number,
@@ -49,6 +55,16 @@ const universityModel = new Schema({
     },
     website:{
         type:String
+    },
+    favorites: {
+        type: [{
+            item: { type: mongoose.Schema.Types.ObjectId, required: true },
+            itemType: {
+                type: String,
+                enum: ['University', 'Bootcamp', 'Event', 'Company','Job'],
+            }
+        }],
+        default: [] 
     }
 });
 

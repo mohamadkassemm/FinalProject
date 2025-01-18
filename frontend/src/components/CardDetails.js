@@ -82,8 +82,8 @@ const DetailsPage = ({ items }) => {
   const handleCloseModal = () => {
     setSelectedMajor(null);
   };
+  console.log("availablePositions:", item?.availablePositions);
 
-  console.log(item)
   return (
     <div className="detailsPage">
       {userData && (
@@ -92,7 +92,11 @@ const DetailsPage = ({ items }) => {
           <h1>{userData.name}</h1>
           <img
             src={item.logo || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-            alt={item.abbreviation || item.name}
+            alt="Logo"
+            onError={(e) => {
+              e.target.onerror = null; // Prevent infinite loop
+              e.target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+            }}
           />
           <p>Official Website: <a href={item.website}>{item.website}</a></p>
           {item?.numberOfBranches > 0 && (
@@ -133,7 +137,9 @@ const DetailsPage = ({ items }) => {
             </p>
             <ul className="majorList">
             {item.availablePositions.map((pos, index) => (
-                <li key={index}>{pos}</li>
+                <li key={index}>
+                  <button>{pos.name}</button>
+                </li>
             ))}
             </ul>
         </div>

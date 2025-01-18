@@ -386,7 +386,6 @@ exports.isAuthenticated = async (req, res, next) => {
         if (!token) {
             return res.status(401).json({ message: 'Unauthorized token' });
         }
-
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id); 
         if (!user) {
@@ -402,13 +401,9 @@ exports.isAuthenticated = async (req, res, next) => {
 
 exports.getUserRole = async (req, res)=>{
     try {
-        if (!req.user) {
-            return res.status(401).json({
-                message: 'Unauthorized access',
-            });
-        }
+        const id = req.params.id;
 
-        const user = await User.findById(req.user._id);
+        const user = await User.findById(id);
 
         if (!user) {
             return res.status(404).json({
@@ -467,6 +462,13 @@ exports.getName = async (req, res) => {
           path: 'userID',
           select: 'name', // Select only the `name` field from the User model
         });
+      }
+
+      if(!name){
+        name= await Student.findById(id).populate({
+            path:'userID',
+            select:'name'
+        })
       }
   
       // If still not found, return a 404 response

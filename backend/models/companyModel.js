@@ -37,17 +37,36 @@ const companyModel = new Schema({
         instagram: { type: String }
     },
     availablePositions: {
-        type: [String],
-        default:[]
+        type: [
+            {
+                name: { type: String, required: true },
+                description: { type: String, required: true },
+                expectedSalary: { type: Number, required: true },
+            }
+        ],
+        default: [],
     },
     bootcampOffers: {
-        type: [String],
-        default:[]
+        type: [
+            {
+                name: { type: String, required: true },
+                description: { type: String, required: true },
+                expectedSalary: { type: Number, required: true },
+            }
+        ],
+        default: [],
     },
     internshipOffers: {
-        type: [String],
-        default:[]
+        type: [
+            {
+                name: { type: String, required: true },
+                description: { type: String, required: true },
+                expectedSalary: { type: Number, required: true },
+            }
+        ],
+        default: [],
     },
+    
     linkedIn: {
         type: String,
     },
@@ -55,6 +74,16 @@ const companyModel = new Schema({
         type:[Schema.Types.ObjectId],
         ref:'User',
         default:[]
+    },
+    favorites: {
+        type: [{
+            item: { type: mongoose.Schema.Types.ObjectId, required: true },
+            itemType: {
+                type: String,
+                enum: ['University', 'Bootcamp', 'Event', 'Company','Job'],
+            }
+        }],
+        default: [] 
     }
 });
 

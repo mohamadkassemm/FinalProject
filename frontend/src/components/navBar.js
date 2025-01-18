@@ -43,6 +43,7 @@ const NavBar = (props) => {
         <p onClick={()=> navigate(`/home?userid=${userID}`)}>961EduWay</p>
       </div>
       <div className='rightNav'>
+        <button onClick={()=>navigate(`/students?userid=${userID}`)}>Students</button>
         <button onClick={()=>navigate(`/companies?userid=${userID}`)}>Companies</button>
         <button onClick={()=>navigate(`/universities?userid=${userID}`)}>Universities</button>
         <button onClick={()=>navigate(`/favorites?userid=${userID}`)}>Favorites</button>

@@ -12,6 +12,7 @@ const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const [favoritesDetails, setFavoritesDetails] = useState([]);
   const [names, setNames] = useState({});
+  const [role, setRole] = useState('')
   
   const removeFav = async (item, itemType)=>{
     const response = await axios.delete(
@@ -33,20 +34,37 @@ const Favorites = () => {
   }
 
   useEffect(() => {
-    const fetchFavorites = async () => {
+    const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Token not found');
+        }
+        const fetchUserType = async ()=>{
+          const response = await axios.get(`http://localhost:3001/api/v1/user/role/${userID}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const roleData = response.data.role.toLowerCase();
+          setRole(roleData);
+        }
+        fetchUserType();
+
+    if(role){
+      const fetchFavorites = async () => {
         try {
           const { data: favoritesData } = await axios.get(
-            `http://localhost:3001/api/v1/student/${userID}/favorites`
+            `http://localhost:3001/api/v1/${role}/${userID}/favorites`
           );
           setFavorites(favoritesData.favorites);
         } catch (err) {
           console.error(err.response?.data?.message || 'Error fetching favorites');
         }
       };
-    if (userID) {
-      fetchFavorites();
+      if (userID) {
+        fetchFavorites();
+      }
     }
-  }, [userID]);
+
+    
+  }, [userID, role]);
 
   useEffect(() => {
     const fetchFavoritesDetails = async () => {
@@ -62,7 +80,13 @@ const Favorites = () => {
                 `http://localhost:3001/api/v1/company/${favorite.item}`
               );
               return { ...companyDetails, itemType: 'Company' };
+            } else if(favorite.itemType === 'Student'){
+              const { data: studentDetails } = await axios.get(
+                `http://localhost:3001/api/v1/student/${favorite.item}`
+              );
+              return {...studentDetails, itemType:'Student'}
             }
+            
             return null;
           });
           const details = await Promise.all(detailsPromises);
@@ -72,7 +96,7 @@ const Favorites = () => {
         }
       };
 
-    if (favorites.length > 0) {
+    if (favorites?.length > 0) {
       fetchFavoritesDetails();
     }
 
@@ -88,7 +112,7 @@ const Favorites = () => {
           console.error(error);
         }
       }
-      favorites.forEach((favorite) => {
+      favorites?.forEach((favorite) => {
         if (!names[favorite.item]) {
           getName(favorite.item);
         }
@@ -106,7 +130,11 @@ const Favorites = () => {
                 favorite.logo ||
                 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
               }
-              alt={favorite.abbreviation || "No logo found!"}
+              alt={"No logo found!"}
+              onError={(e) => {
+                e.target.onerror = null; // Prevent infinite loop
+                e.target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+              }} 
             />
             <h4>{names[favorite._id] || favorite.abbreviation || "loading name!"}</h4>
             <p>{favorite.description || favorite.abbreviation}</p>

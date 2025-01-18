@@ -13,6 +13,7 @@ const Companies = () => {
     const userID = queryParams.get('userid');
     const [companies, setCompanies] = useState([]);
     const [names, setNames] = useState({});
+    const [role, setRole] = useState('');
     const [favorites, setFavorites] = useState([  ]);
 
     const toggleFav = async (item, itemType) => {
@@ -23,7 +24,7 @@ const Companies = () => {
           );
           if (!isFavorite) {
             const response = await axios.post(
-              `http://localhost:3001/api/v1/student/${userID}/favorites`,
+              `http://localhost:3001/api/v1/${role}/${userID}/favorites`,
               {
                 item,
                 itemType,
@@ -34,7 +35,7 @@ const Companies = () => {
             setFavorites((prevFavorites) => [...prevFavorites, { item, itemType }]); 
           } else {
             const response = await axios.delete(
-              `http://localhost:3001/api/v1/student/${userID}/favorites`,
+              `http://localhost:3001/api/v1/${role}/${userID}/favorites`,
               {
                 params: {
                   item,
@@ -66,16 +67,33 @@ const Companies = () => {
       }
 
     useEffect(() => {   
-        const fetchFavorites = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Token not found');
+        }
+        const fetchUserType = async ()=>{
+          const response = await axios.get(`http://localhost:3001/api/v1/user/role/${userID}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const roleData = response.data.role.toLowerCase();
+          setRole(roleData);
+        }
+        fetchUserType();
+        if(role){
+          const fetchFavorites = async () => {
             try {
               const { data: currentFavorites } = await axios.get(
-                `http://localhost:3001/api/v1/student/${userID}/favorites`
+                `http://localhost:3001/api/v1/${role}/${userID}/favorites`
               );
               setFavorites(currentFavorites.favorites);
             } catch (err) {
               console.error(err.response?.data?.message || "Error fetching favorites");
             }
           };
+
+          fetchFavorites();
+        }
+        
 
         axios
         .get('http://localhost:3001/api/v1/company') 
@@ -88,8 +106,7 @@ const Companies = () => {
             }
           })    
 
-          fetchFavorites()
-      }, [companies, names, userID]);
+      }, [companies, names, userID, role]);
 
   return (
     <div className='companiesContainer'>
@@ -108,7 +125,7 @@ const Companies = () => {
                 <button className="starButton" onClick={(e) =>{e.stopPropagation(); toggleFav(company._id, "Company")}}>
                 <i
                   className={`fas fa-star ${
-                    favorites.some((fav) => fav.item === company._id && fav.itemType === "Company")
+                    favorites?.some((fav) => fav.item === company._id && fav.itemType === "Company")
                       ? "active"
                       : ""
                   }`}

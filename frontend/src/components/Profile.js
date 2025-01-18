@@ -10,6 +10,7 @@ const Profile = () => {
   const [userData, setUserData] = useState({});
   const [initialUserData, setInitialUserData] = useState({});
   const [activeTab, setActiveTab] = useState('personal');
+  const [role, setRole] = useState('');
   const [userRoleData, setUserRoleData] = useState({});
   const [initialUserRoleData, setInitialUserRoleData] = useState({});
   const [majorName, setMajorName] = useState('');
@@ -42,6 +43,18 @@ const Profile = () => {
 
   // ✅ Fetch role-specific data
   useEffect(() => {
+    const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Token not found');
+        }
+        const fetchUserType = async ()=>{
+          const response = await axios.get(`http://localhost:3001/api/v1/user/role/${userID}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const roleData = response.data.role.toLowerCase();
+          setRole(roleData);
+        }
+        fetchUserType();
     const fetchRoleData = async () => {
       try {
         if (initialUserData.role && userID) {
@@ -150,12 +163,16 @@ const Profile = () => {
           >
             Personal
           </li>
-          <li
-            className={activeTab === 'educational' ? 'active' : ''}
-            onClick={() => handleTabClick('educational')}
-          >
-            Educational
-          </li>
+          {
+            role==='Student' && (
+              <li
+                className={activeTab === 'educational' ? 'active' : ''}
+                onClick={() => handleTabClick('educational')}
+              >
+                Educational
+              </li>
+            )
+          }
         </ul>
       </div>
 
@@ -234,7 +251,7 @@ const Profile = () => {
           </div>
         )}
 
-        {activeTab === 'educational' && (
+        {activeTab === 'educational' &&(
           <div className="dataContainer">
             <h2>Educational Details</h2>
             <p className='note'><i className='fa fa-warning'>Note:</i> Select the highest educational level please!</p>

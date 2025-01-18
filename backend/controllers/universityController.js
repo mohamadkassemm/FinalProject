@@ -283,3 +283,15 @@ exports.getCompanyID = async (req, res)=>{
             return res.status(500).json({message:err.message})
         }
 }
+
+exports.getFavs = async (req, res) => {
+    try{
+        const uniID = req.params.id;
+        const uni = await University.findOne({userID:uniID});
+        if(!uni)
+            return res.status(404).json({message:"User not found!"})
+        return res.status(202).json(uni.favorites)
+    }catch(err){
+        return res.status(500).json({message:err.message})
+    }
+}

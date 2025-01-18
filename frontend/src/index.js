@@ -11,6 +11,7 @@ import CompleteProfilePage from './pages/CompleteProfile';
 import FavoritesPage from './pages/Favorites';
 import CompaniesPage from './pages/Companies';
 import UniversitiesPage from './pages/University'
+import StudentsPage from './pages/Students';
 import ProfilePage from './pages/Profile'
 import CardDetailsPage from './pages/CardDetails';
 
@@ -28,6 +29,7 @@ root.render(
         <Route path="/favorites" element={<FavoritesPage/>} />
         <Route path="/companies" element={<CompaniesPage/>} />
         <Route path='/universities' element={<UniversitiesPage/>} />
+        <Route path='/students' element={<StudentsPage/>} />
         <Route path='/profile' element={<ProfilePage/>} />
         <Route path='/details/:type/:id' element={<CardDetailsPage/>} />
       </Routes>

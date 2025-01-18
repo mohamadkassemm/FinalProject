@@ -4,6 +4,8 @@ const uni = require('../controllers/universityController');
 
 router.get('/', uni.getUniversities);
 
+router.get('/:id/favorites', uni.getFavs);
+
 router.get('/:id', uni.getUniversityByID);
 
 router.get('/major/:major', uni.getUniversitiesByMajor);

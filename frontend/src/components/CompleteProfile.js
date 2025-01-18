@@ -50,7 +50,7 @@ const CompleteProfile = () => {
         if (!token) {
           throw new Error('Token not found');
         }
-        const response = await axios.get('http://localhost:3001/api/v1/user/role', {
+        const response = await axios.get(`http://localhost:3001/api/v1/user/role/${userID}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const roleData = response.data.role.toLowerCase();

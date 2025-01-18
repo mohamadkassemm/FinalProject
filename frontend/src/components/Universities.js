@@ -13,17 +13,18 @@ const Universities = () => {
     const userID = queryParams.get('userid');
     const [universities, setUniversities] = useState([]);
     const [names, setNames] = useState({});
+    const [role, setRole] = useState('');
     const [favorites, setFavorites] = useState([  ]);
 
     const toggleFav = async (item, itemType) => {
         try {
           // Check if the item is already a favorite
-          const isFavorite = favorites.some(
+          const isFavorite = favorites?.some(
             (fav) => fav.item=== item && fav.itemType === itemType
           );
           if (!isFavorite) {
             const response = await axios.post(
-              `http://localhost:3001/api/v1/student/${userID}/favorites`,
+              `http://localhost:3001/api/v1/${role}/${userID}/favorites`,
               {
                 item,
                 itemType,
@@ -34,7 +35,7 @@ const Universities = () => {
             setFavorites((prevFavorites) => [...prevFavorites, { item, itemType }]); 
           } else {
             const response = await axios.delete(
-              `http://localhost:3001/api/v1/student/${userID}/favorites`,
+              `http://localhost:3001/api/v1/${role}/${userID}/favorites`,
               {
                 params: {
                   item,
@@ -66,16 +67,33 @@ const Universities = () => {
       }
 
     useEffect(() => {   
-        const fetchFavorites = async () => {
+      const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Token not found');
+        }
+        const fetchUserType = async ()=>{
+          const response = await axios.get(`http://localhost:3001/api/v1/user/role/${userID}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const roleData = response.data.role.toLowerCase();
+          setRole(roleData);
+        }
+        fetchUserType();
+        if(role){
+          const fetchFavorites = async () => {
             try {
               const { data: currentFavorites } = await axios.get(
-                `http://localhost:3001/api/v1/student/${userID}/favorites`
+                `http://localhost:3001/api/v1/${role}/${userID}/favorites`
               );
               setFavorites(currentFavorites.favorites);
             } catch (err) {
               console.error(err.response?.data?.message || "Error fetching favorites");
             }
           };
+
+          fetchFavorites();
+        }
+        
 
           axios
           .get('http://localhost:3001/api/v1/university')
@@ -88,8 +106,7 @@ const Universities = () => {
             }
           });    
 
-          fetchFavorites()
-      }, [universities, names, userID]);
+      }, [universities, names, userID, role]);
 
   return (
     <div className='universitiesContainer'>
@@ -98,11 +115,15 @@ const Universities = () => {
         <>
           <div className="unisContainer">
             {universities.map((university) => (
-              <div className="uniCard" key={university.userID} onClick={() => navigate(`/details/company/${university._id}?userID=${userID}`)}
+              <div className="uniCard" key={university.userID} onClick={() => navigate(`/details/university/${university._id}?userID=${userID}`)}
               style={{ cursor: "pointer" }}>
                 <img 
                   src={university.logo || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} 
                   alt={university.linkedIn} 
+                  onError={(e) => {
+                    e.target.onerror = null; // Prevent infinite loop
+                    e.target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+                  }} 
                 />
                 <h4>{names[university._id] || "loading..."}</h4>
                 <button className="starButton" onClick={(e) =>{
@@ -110,7 +131,7 @@ const Universities = () => {
                   toggleFav(university._id, "University")}}>
                 <i
                   className={`fas fa-star ${
-                    favorites.some((fav) => fav.item === university._id && fav.itemType === "University")
+                    favorites?.some((fav) => fav.item === university._id && fav.itemType === "University")
                       ? "active"
                       : ""
                   }`}
