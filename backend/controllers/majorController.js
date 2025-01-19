@@ -80,7 +80,11 @@ exports.getMajorsByStudent = async (req, res) => {
 
 exports.createMajor = async (req, res) => {
     try {
-        
+        const uniid = req.params.id;
+        const uni = await University.findById(uniid);
+        if(!uni)
+            return res.status(404).json({message:"University not found!"})
+
         const { name, description, courseCount, totalCost, studentCount, nbOfSemester } = req.body;
         const majorData = {
             name: name, 
@@ -90,13 +94,13 @@ exports.createMajor = async (req, res) => {
             studentCount: studentCount , 
             nbOfSemester: nbOfSemester , 
         };
-
         const major = new Major(majorData);
 
         await major.save();
-
+        uni.availableMajors.push(major._id)
+        await uni.save();
         return res.status(201).json({
-            message: "Major created successfully",
+            message: "Major created and added successfully",
             major: major
         });
 

@@ -16,7 +16,7 @@ router.get('/university/:universityId', majorController.getMajorsByUniversity);
 router.get('/student/:studentId', majorController.getMajorsByStudent);
 
 // Create a new major
-router.post('/', majorController.createMajor);
+router.post('/:id', majorController.createMajor);
 
 // Get recommended majors for a student
 router.get('/recommended/:studentId', majorController.recommendedMajors);

@@ -14,6 +14,14 @@ const Profile = () => {
   const [userRoleData, setUserRoleData] = useState({});
   const [initialUserRoleData, setInitialUserRoleData] = useState({});
   const [majorName, setMajorName] = useState('');
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    courseCount: "",
+    totalCost: "",
+    studentCount: "",
+    nbOfSemester: 6, // Default value from your schema
+  })
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const userID = queryParams.get('userid');
@@ -88,6 +96,15 @@ const Profile = () => {
     
   }, [initialUserData.role, userID, token]);
 
+  const handleFormChange = (event) => {
+    const { id, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value, // Dynamically update the corresponding field
+    }));
+  };
+  
+
   // ✅ Handle input changes
   const handleChange = (field, value) => {
     // Detect which data type the field belongs to and update accordingly
@@ -96,16 +113,39 @@ const Profile = () => {
         ...prevData,
         [field]: value,
       }));
-    } else if (field in initialUserRoleData?.data) {
+    } else if (field in initialUserRoleData) {
+      console.log(initialUserRoleData)
       setUserRoleData((prevData) => ({
         ...prevData,
-        data: {
-          ...prevData.data,
-          [field]: value,
-        },
+        [field]: value,
       }));
+      console.log(userRoleData)
     }
   };
+
+  const handleFormSubmit = async(e) => {
+    try{
+      e.preventDefault();
+      const response = await axios.post(`http://localhost:3001/api/v1/major/${userRoleData._id}`, {
+        name: formData.name,
+        description: formData.description,
+        courseCount: formData.courseCount,
+        totalCost: formData.totalCost,
+        studentCount: formData.studentCount,
+        nbOfSemester: formData.nbOfSemester,
+      });
+      if(response){
+        console.log("Success")
+      }
+    }catch(err){
+      console.error('Error saving data:', err.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong while saving your data!',
+      });
+    }
+  }
 
   // ✅ Handle form submission
   const handleSubmit = async (e) => {
@@ -152,7 +192,6 @@ const Profile = () => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
-
   return (
     <div className="profilePage">
       <div className="leftSidebar">
@@ -163,16 +202,12 @@ const Profile = () => {
           >
             Personal
           </li>
-          {
-            role==='Student' && (
-              <li
-                className={activeTab === 'educational' ? 'active' : ''}
-                onClick={() => handleTabClick('educational')}
-              >
-                Educational
-              </li>
-            )
-          }
+          <li
+            className={activeTab === 'educational' ? 'active' : ''}
+            onClick={() => handleTabClick('educational')}
+          >
+            Educational
+          </li>
         </ul>
       </div>
 
@@ -207,15 +242,22 @@ const Profile = () => {
                 onChange={(e) => handleChange('email', e.target.value)}
               />
 
-              <label htmlFor="gender">Gender:</label>
-              <select
-                id="gender"
-                value={initialUserRoleData?.data?.gender || ''}
-                onChange={(e) => handleChange('gender', e.target.value)}
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
+              {
+                role==='student' && (
+                <>
+                  <label htmlFor="gender">Gender:</label>
+                <select
+                  id="gender"
+                  value={initialUserRoleData?.data?.gender || ''}
+                  onChange={(e) => handleChange('gender', e.target.value)}
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+                </>
+                )
+              }
+          
 
               <label htmlFor="governorate">Governorate:</label>
                     <select
@@ -223,7 +265,6 @@ const Profile = () => {
                       id="governorate"
                       value={initialUserRoleData?.data?.governorate || ''}
                       onChange={(e) => handleChange('governorate', e.target.value)}
-                      required
                     >
                       <option value="" hidden>Select Governorate</option>
                       <option value="North">North</option>
@@ -251,7 +292,7 @@ const Profile = () => {
           </div>
         )}
 
-        {activeTab === 'educational' &&(
+        {activeTab === 'educational' && role === 'student' && (
           <div className="dataContainer">
             <h2>Educational Details</h2>
             <p className='note'><i className='fa fa-warning'>Note:</i> Select the highest educational level please!</p>
@@ -283,6 +324,78 @@ const Profile = () => {
               <button type="submit" disabled={!userChanged && !roleChanged}>
                 Save
               </button>
+            </form>
+          </div>
+        )}
+
+        {activeTab === 'educational' && role === 'university' && (
+          <div className="dataContainer">
+            <h2>Educational Details</h2>
+            <h4>Add Major</h4>
+            <form onSubmit={handleFormSubmit}>
+              <label htmlFor="name">Name:</label>
+              <input
+                type="text"
+                id="name"
+                value={formData.name}
+                onChange={handleFormChange}
+                placeholder="Enter Major Name"
+                required
+              />
+
+              <label htmlFor="description">Description:</label>
+              <textarea
+                id="description"
+                value={formData.description}
+                onChange={handleFormChange}
+                placeholder="Enter Major Description"
+                style={{ width: "100%", height: "100px" }}
+              />
+
+              <label htmlFor="courseCount">Number of Courses:</label>
+              <input
+                type="number"
+                id="courseCount"
+                value={formData.courseCount}
+                onChange={handleFormChange}
+                placeholder="Enter Number of Courses"
+                required
+                min="1"
+              />
+
+              <label htmlFor="totalCost">Total Cost:</label>
+              <input
+                type="number"
+                id="totalCost"
+                value={formData.totalCost}
+                onChange={handleFormChange}
+                placeholder="Enter Total Cost"
+                required
+                min="0"
+              />
+
+              <label htmlFor="studentCount">Number of Students:</label>
+              <input
+                type="number"
+                id="studentCount"
+                value={formData.studentCount}
+                onChange={handleFormChange}
+                placeholder="Enter Student Count"
+                min="0"
+              />
+
+              <label htmlFor="nbOfSemester">Number of Semesters:</label>
+              <input
+                type="number"
+                id="nbOfSemester"
+                value={formData.nbOfSemester}
+                onChange={handleFormChange}
+                placeholder="Enter Number of Semesters"
+                min="6"
+                max="14"
+              />
+
+              <button type="submit">Add Major</button>
             </form>
           </div>
         )}

@@ -80,7 +80,7 @@ const companyModel = new Schema({
             item: { type: mongoose.Schema.Types.ObjectId, required: true },
             itemType: {
                 type: String,
-                enum: ['University', 'Bootcamp', 'Event', 'Company','Job'],
+                enum: ['University', 'Bootcamp', 'Event', 'Company','Job', 'Student'],
             }
         }],
         default: [] 
