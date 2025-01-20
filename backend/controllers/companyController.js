@@ -167,25 +167,28 @@ exports.removeInternshipFromCompany = async (req, res)=>{
 
 exports.addCompanyJob = async (req, res) => {
     try {
-        const company = await Company.findByIdAndUpdate(req.body.id, {
-            $push: {
-                availablePositions: { $each: req.body.availablePositions }
-            }
-        }, {
-            new: true
-        });
-        if (!company)
-            return res.status(404).json({
-                message: "Company not found"
-            });
+        const { id, availablePositions } = req.body;
+
+        // Validate input
+        if (!id || !availablePositions || !Array.isArray(availablePositions)) {
+            return res.status(400).json({ message: "Invalid input" });
+        }
+
+        // Update the company's available positions
+        const company = await Company.findById(id)
+
+        if (!company) {
+            return res.status(404).json({ message: "Company not found" });
+        }
+
+        company.availablePositions = availablePositions;
         await company.save();
         return res.status(200).json(company);
     } catch (error) {
-        return res.status(500).json({
-            message: error.message
-        });
+        return res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 exports.removeJobFromCompany = async (req, res)=>{
     try{

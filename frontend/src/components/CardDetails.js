@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import MajorDetails from './MajorDetails';
+import JobDetails from './JobDetails';
 import './CardDetails.css';
 
 const DetailsPage = ({ items }) => {
@@ -13,6 +14,7 @@ const DetailsPage = ({ items }) => {
   const [userData, setUserData] = useState({});
   const [majorNames, setMajorNames] = useState([]);
   const [selectedMajor, setSelectedMajor] = useState(null); // For showing MajorDetails modal
+  const [selectedJob, setSelectedJob] = useState(null);
 
   // Fetch major names
   const fetchMajorName = async (id) => {
@@ -30,7 +32,6 @@ const DetailsPage = ({ items }) => {
     const getItemDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:3001/api/v1/${type}/${id}`);
-        console.log(response)
         setItem(response.data);
       } catch (err) {
         console.error(err.message);
@@ -78,11 +79,22 @@ const DetailsPage = ({ items }) => {
     }
   };
 
+  const handleJobClick = async (position)=>{
+    try{
+      setSelectedJob(position)
+    }catch(error){
+      console.error('Error fetching major details:', error);
+    }
+  }
+
+  const handleCloseJob = () => {
+    setSelectedJob(null);
+  }
+
   // Close the MajorDetails modal
   const handleCloseModal = () => {
     setSelectedMajor(null);
   };
-  console.log("availablePositions:", item?.availablePositions);
 
   return (
     <div className="detailsPage">
@@ -98,7 +110,7 @@ const DetailsPage = ({ items }) => {
               e.target.src = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
             }}
           />
-          <p>Official Website: <a href={item.website}>{item.website}</a></p>
+          {item?.website && (<p>Official Website: <a href={item.website}>{item.website}</a></p>)}
           {item?.numberOfBranches > 0 && (
           <div className="branchesContent">
             <p>Number of Branches: <a href={item.website}>{item.numberOfBranches}</a></p>
@@ -138,7 +150,7 @@ const DetailsPage = ({ items }) => {
             <ul className="majorList">
             {item.availablePositions.map((pos, index) => (
                 <li key={index}>
-                  <button>{pos.name}</button>
+                  <button onClick={() => handleJobClick(pos)}>{pos.name}</button>
                 </li>
             ))}
             </ul>
@@ -149,6 +161,10 @@ const DetailsPage = ({ items }) => {
       {/* MajorDetails Modal */}
       {selectedMajor && (
         <MajorDetails course={selectedMajor} onClose={handleCloseModal} />
+      )}
+
+      {selectedJob && (
+        <JobDetails position={selectedJob} onClose={handleCloseJob} />
       )}
     </div>
   );

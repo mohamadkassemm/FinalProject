@@ -31,7 +31,7 @@ router.put('/internships', companyController.addCompanyInternship);
 router.delete('/internship',  companyController.removeInternshipFromCompany);
 
 // Route to add a new job to a company
-router.put('/jobs', companyController.addCompanyJob);
+router.post('/jobs', companyController.addCompanyJob);
 
 // Route to remove job from company
 router.delete('/job',  companyController.removeJobFromCompany);
