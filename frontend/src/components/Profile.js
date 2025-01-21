@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import EditForms from './editForms';
+import PersonalForm from './PersonalForm';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import _ from 'lodash';
 import { useLocation } from 'react-router-dom';
 import './Profile.css';
 
@@ -26,8 +27,8 @@ const Profile = () => {
   const queryParams = new URLSearchParams(location.search);
   const userID = queryParams.get('userid');
   const token = localStorage.getItem('token');
-  const userChanged = !_.isEqual(userData, initialUserData);
-  const roleChanged = !_.isEqual(userRoleData, initialUserRoleData);
+  const [editEducationForm, setEditForm] = useState(false)
+  const [editPersonalForm, setEditPersonalForm] = useState(false)
 
   // ✅ Fetch user details
   useEffect(() => {
@@ -51,18 +52,19 @@ const Profile = () => {
 
   // ✅ Fetch role-specific data
   useEffect(() => {
-    const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('Token not found');
-        }
-        const fetchUserType = async ()=>{
-          const response = await axios.get(`http://localhost:3001/api/v1/user/role/${userID}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const roleData = response.data.role.toLowerCase();
-          setRole(roleData);
-        }
-        fetchUserType();
+    const fetchUserType = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/api/v1/user/role/${userID}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const roleData = response.data.role.toLowerCase();
+        setRole(roleData);
+      } catch (error) {
+        console.error('Error fetching user role:', error.message);
+      }
+    };
+    fetchUserType();
+
     const fetchRoleData = async () => {
       try {
         if (initialUserData.role && userID) {
@@ -72,28 +74,24 @@ const Profile = () => {
               headers: { Authorization: `Bearer ${token}` },
             }
           );
+          const roleData = await axios.get(
+            `http://localhost:3001/api/v1/${initialUserData.role}/${response.data}`
+          );
+          setUserRoleData(roleData.data);
+          setInitialUserRoleData(roleData.data);
 
-          if (response) {
-            const output = await axios.get(
-              `http://localhost:3001/api/v1/${initialUserData.role}/${response.data}`
+          if (roleData?.data?.data?.major) {
+            const majorResponse = await axios.get(
+              `http://localhost:3001/api/v1/major/${roleData.data.data.major}`
             );
-            setUserRoleData(output.data);
-            setInitialUserRoleData(output.data);
-            if (output?.data?.data?.major) {
-              const majorResponse = await axios.get(
-                `http://localhost:3001/api/v1/major/${output.data.data.major}`
-              );
-              setMajorName(majorResponse.data);
-            }
+            if (majorResponse) setMajorName(majorResponse.data);
           }
         }
       } catch (error) {
         console.error('Error fetching role data:', error.message);
       }
     };
-
     fetchRoleData();
-    
   }, [initialUserData.role, userID, token]);
 
   const handleFormChange = (event) => {
@@ -103,95 +101,62 @@ const Profile = () => {
       [id]: value, // Dynamically update the corresponding field
     }));
   };
-  
 
-  // ✅ Handle input changes
-  const handleChange = (field, value) => {
-    // Detect which data type the field belongs to and update accordingly
-    if (field in initialUserData) {
-      setUserData((prevData) => ({
-        ...prevData,
-        [field]: value,
-      }));
-    } else if (field in initialUserRoleData) {
-      console.log(initialUserRoleData)
-      setUserRoleData((prevData) => ({
-        ...prevData,
-        [field]: value,
-      }));
-      console.log(userRoleData)
-    }
-  };
-
-  const handleFormSubmit = async(e) => {
-    try{
-      e.preventDefault();
-      const response = await axios.post(`http://localhost:3001/api/v1/major/${userRoleData._id}`, {
-        name: formData.name,
-        description: formData.description,
-        courseCount: formData.courseCount,
-        totalCost: formData.totalCost,
-        studentCount: formData.studentCount,
-        nbOfSemester: formData.nbOfSemester,
-      });
-      if(response){
-        console.log("Success")
-      }
-    }catch(err){
-      console.error('Error saving data:', err.message);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Something went wrong while saving your data!',
-      });
-    }
-  }
-
-  // ✅ Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleFormSave = async (data) => {
     try {
-      // Update user data if changed
-      if (userChanged) {
-        await axios.put(`http://localhost:3001/api/v1/user/editProfile/${userID}`, userData, {
+      // Perform the API request to save the form data
+      const response = await axios.put(
+        `http://localhost:3001/api/v1/${role}/${userID}`,
+        data,
+        {
           headers: { Authorization: `Bearer ${token}` },
-        });
+        }
+      );
+      if (response.status === 200) {
+        setUserData(response.data); // Update the user data after saving
+        setInitialUserData(response.data);
+        setEditForm(false); // Close the edit form
+        Swal.fire({
+          icon: 'success',          // Sets the success icon
+          title: 'Success!',        // Title of the alert
+          text: 'Your changes have been saved.', // Message body
+          confirmButtonText: 'OK',  // Text for the confirm button
+        }).then(() => {
+          window.location.reload(); // Refresh the page after user acknowledges success
+        });;
+        
       }
-
-      // Update role data if changed
-      if (roleChanged) {
-        await axios.put(
-          `http://localhost:3001/api/v1/${initialUserData.role}/${initialUserRoleData.data._id}`,
-          userRoleData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-      }
-
-      // Show success alert
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Data has been saved successfully!',
-        showConfirmButton: false,
-        timer: 3000,
-      });
     } catch (error) {
-      console.error('Error saving data:', error.message);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Something went wrong while saving your data!',
-      });
+      console.error('Error saving form data:', error.message);
     }
   };
+
+  const handlePersonalSave = (updatedData) => {
+    // You can now send updatedData to your API to save it
+    setUserData(updatedData); // Update local state with the saved data
+  };
+
+  const showEducationalForm = () => {
+    setEditForm(true);
+  };
+
+  const showPersonalForm = ()=>{
+    setEditPersonalForm(true)
+  }
 
   // ✅ Handle tab click
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
+  const handleCloseForm = ()=>{
+    setEditForm(false)
+  }
+
+  const handleClosePersonalForm = ()=>{
+    setEditPersonalForm(false)
+  }
+
   return (
     <div className="profilePage">
       <div className="leftSidebar">
@@ -208,22 +173,29 @@ const Profile = () => {
           >
             Educational
           </li>
+          {role !== 'student' && (
+            <li
+              className={activeTab === 'work' ? 'active' : ''}
+              onClick={() => handleTabClick('work')}
+            >
+              Work
+            </li>
+          )}
         </ul>
       </div>
-
       <div className="profileContent">
         <h2>Hello {userName}</h2>
 
         {activeTab === 'personal' && (
           <div className="dataContainer">
             <h2>Personal Details</h2>
-            <form onSubmit={handleSubmit}>
+            <form>
               <label htmlFor="fullName">Full Name:</label>
               <input
                 type="text"
                 id="fullName"
                 value={userData?.name || ''}
-                onChange={(e) => handleChange('name', e.target.value)}
+                disabled
               />
 
               <label htmlFor="username">Username:</label>
@@ -231,7 +203,7 @@ const Profile = () => {
                 type="text"
                 id="username"
                 value={userData?.username || ''}
-                onChange={(e) => handleChange('username', e.target.value)}
+                disabled
               />
 
               <label htmlFor="email">Email:</label>
@@ -239,55 +211,39 @@ const Profile = () => {
                 type="email"
                 id="email"
                 value={userData?.email || ''}
-                onChange={(e) => handleChange('email', e.target.value)}
+                disabled
               />
 
-              {
-                role==='student' && (
+              {role === 'student' && (
                 <>
                   <label htmlFor="gender">Gender:</label>
-                <select
-                  id="gender"
-                  value={initialUserRoleData?.data?.gender || ''}
-                  onChange={(e) => handleChange('gender', e.target.value)}
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
+                  <input
+                    id="gender"
+                    value={initialUserRoleData?.data?.gender || ''}
+                    disabled
+                  />
                 </>
-                )
-              }
-          
+              )}
 
               <label htmlFor="governorate">Governorate:</label>
-                    <select
-                      name="governorate"
-                      id="governorate"
-                      value={initialUserRoleData?.data?.governorate || ''}
-                      onChange={(e) => handleChange('governorate', e.target.value)}
-                    >
-                      <option value="" hidden>Select Governorate</option>
-                      <option value="North">North</option>
-                      <option value="South">South</option>
-                      <option value="Bekaa">Bekaa</option>
-                      <option value="Mount Lebanon">Mount Lebanon</option>
-                      <option value="Beirut">Beirut</option>
-                      <option value="Akkar">Akkar</option>
-                      <option value="Baalbek-Hermel">Baalbek-Hermel</option>
-                      <option value="Nabatieh">Nabatieh</option>
-                    </select>
+              <input
+                id="governorate"
+                value={initialUserRoleData?.data?.governorate || ''}
+                disabled
+              />
 
-                    <label htmlFor="joinedAt">Joined at:</label>
-                    <input
-                      type="text"
-                      id="joinedAt"
-                      value={initialUserData?.createdAt || ''}
-                      disabled
-                    />
+              <label htmlFor="joinedAt">Joined at:</label>
+              <input
+                type="text"
+                id="joinedAt"
+                value={initialUserData?.createdAt || ''}
+                disabled
+              />
 
-              <button type="submit" disabled={!userChanged && !roleChanged}>
-                Save
+              <button type="button" onClick={showPersonalForm}>
+                Edit
               </button>
+              
             </form>
           </div>
         )}
@@ -295,34 +251,31 @@ const Profile = () => {
         {activeTab === 'educational' && role === 'student' && (
           <div className="dataContainer">
             <h2>Educational Details</h2>
-            <p className='note'><i className='fa fa-warning'>Note:</i> Select the highest educational level please!</p>
-            <form onSubmit={handleSubmit}>
+            <p className="note">
+              <i className="fa fa-warning">Note:</i> Select the highest educational level please!
+            </p>
+            <form>
               <label htmlFor="degree">Degree:</label>
               <input
                 type="text"
                 id="degree"
                 value={userRoleData?.data?.degree || ''}
-                onChange={(e) => handleChange('degree', e.target.value)}
+                disabled
               />
 
               <label htmlFor="major">Major:</label>
-              <input
-                type="text"
-                id="major"
-                value={majorName || ''}
-                onChange={(e) => handleChange('major', e.target.value)}
-              />
+              <input type="text" id="major" value={majorName || ''} disabled />
 
               <label htmlFor="university">University:</label>
               <input
                 type="text"
                 id="university"
                 value={userRoleData?.data?.university || ''}
-                onChange={(e) => handleChange('university', e.target.value)}
+                disabled
               />
 
-              <button type="submit" disabled={!userChanged && !roleChanged}>
-                Save
+              <button type="button" onClick={showEducationalForm}>
+                Edit
               </button>
             </form>
           </div>
@@ -332,7 +285,7 @@ const Profile = () => {
           <div className="dataContainer">
             <h2>Educational Details</h2>
             <h4>Add Major</h4>
-            <form onSubmit={handleFormSubmit}>
+            <form>
               <label htmlFor="name">Name:</label>
               <input
                 type="text"
@@ -400,6 +353,28 @@ const Profile = () => {
           </div>
         )}
       </div>
+
+      {editEducationForm && (
+      <EditForms
+        formData={{
+          degree: userRoleData?.data?.degree,
+          major: majorName,
+          university: userRoleData?.data?.university,
+        }}
+        onSave={handleFormSave}
+        onClose={handleCloseForm}
+        onChange={(id, value) => console.log(id, value)} // Optional for real-time updates
+      />
+    )}
+
+    {
+      editPersonalForm && (
+        <PersonalForm userData={userData}
+         initialUserRoleData={initialUserRoleData} 
+         role={role} onSave={handlePersonalSave} 
+         onClose={handleClosePersonalForm}/>
+      )
+    }
     </div>
   );
 };

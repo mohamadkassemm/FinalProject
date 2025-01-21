@@ -74,6 +74,10 @@ const studentModel = new Schema({
     },
     career:{
         type:String,
+    },
+    resume: {
+        type: String,
+        required: false,
     }
 });
 

@@ -33,13 +33,15 @@ exports.getStudentById = async (req, res) => {
 
 exports.updateStudent = async (req, res) => {
     try {
-        const student = await Student.findByIdAndUpdate(req.params.id, req.body, {
-            new: true
-        });
+        console.log(req.params.id, req.body)
+        const student = await Student.findOne({userID: req.params.id})
         if (!student)
             return res.status(404).json({
                 message: "Student not found"
             });
+        student.gender=req.body.gender;
+        student.degree=req.body.degree;
+        await student.save()
         return res.status(200).json(student);
     } catch (err) {
         return res.status(500).json({
@@ -375,6 +377,22 @@ exports.getStudentID = async (req, res) => {
         if(!student)
             return res.status(404).json({message:"User not found!"})
         return res.status(202).json(student._id)
+    }catch(err){
+        return res.status(500).json({message:err.message})
+    }
+}
+
+exports.checkIfCompleted = async (req, res) => {
+    try{
+        console.log("hello")
+        const id = req.params.id;
+        const student = await Student.findById(id);
+
+        if(!student)
+            return res.status(404).json({message:"User not found!"})
+
+        console.log(student)
+
     }catch(err){
         return res.status(500).json({message:err.message})
     }

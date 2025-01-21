@@ -31,7 +31,6 @@ const CompleteProfile = () => {
         const response = await axios.get('http://localhost:3001/api/v1/user/completedStatus', {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         if (response.data.status === true ) {
           navigate(`/home?userid=${userID}`); // Redirect to home if the profile is complete
         } else {
