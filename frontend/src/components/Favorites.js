@@ -122,7 +122,7 @@ const Favorites = () => {
     <div className="favsContainer">
       <h2>Favorites</h2>
       <div className="favCardContainer">
-        {favorites.length === 0 ? (
+        {favorites && favorites.length === 0 ? (
           <p style={{ fontSize: "1.2em", textAlign: "center", color: "gray" }}>
             No favorites yet.
           </p>

@@ -28,6 +28,7 @@ const NavBar = (props) => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+        console.log(response)
         const roleData = response.data.role.toLowerCase();
         setRole(roleData);
       }
