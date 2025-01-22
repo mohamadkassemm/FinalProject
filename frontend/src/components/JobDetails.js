@@ -9,7 +9,7 @@ const JobDetails = ({ position, onClose, email}) => {
   const [role, setRole] = useState('');
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const userID = queryParams.get('userID');
+  const userID = queryParams.get('userid');
 
   useEffect(()=>{
     const fetchUserType = async () => {

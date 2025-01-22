@@ -11,7 +11,7 @@ const NavBar = (props) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const userID = queryParams.get('userID');
+  const userID = queryParams.get('userid');
   const toggleMenu = () => {  
     setIsOpen(prevState => !prevState);
   };
@@ -70,7 +70,7 @@ const NavBar = (props) => {
         <p onClick={()=> navigate(`/home?userid=${userID}`)}>961EduWay</p>
       </div>
       <div className='rightNav'>
-        {role!=='student' && (<button onClick={()=>navigate(`/students?userid=${userID}`)}>Students</button>)}
+        {role && role!=='student' && (<button onClick={()=>navigate(`/students?userid=${userID}`)}>Students</button>)}
         <button onClick={()=>navigate(`/companies?userid=${userID}`)}>Companies</button>
         <button onClick={()=>navigate(`/universities?userid=${userID}`)}>Universities</button>
         <button onClick={()=>navigate(`/favorites?userid=${userID}`)}>Favorites</button>

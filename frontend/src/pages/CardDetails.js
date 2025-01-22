@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom'
 const CardDetailsPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const userID = queryParams.get('userID');
+  const userID = queryParams.get('userid');
 
   return (
     <div>

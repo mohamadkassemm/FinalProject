@@ -173,7 +173,7 @@ const Profile = () => {
           >
             Educational
           </li>
-          {role !== 'student' && (
+          {role && role !== 'student' && (
             <li
               className={activeTab === 'work' ? 'active' : ''}
               onClick={() => handleTabClick('work')}
