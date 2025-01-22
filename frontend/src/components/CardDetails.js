@@ -160,11 +160,11 @@ const DetailsPage = ({ items }) => {
 
       {/* MajorDetails Modal */}
       {selectedMajor && (
-        <MajorDetails course={selectedMajor} onClose={handleCloseModal} />
+        <MajorDetails course={selectedMajor} onClose={handleCloseModal} website={item?.website}/>
       )}
 
       {selectedJob && (
-        <JobDetails position={selectedJob} onClose={handleCloseJob} />
+        <JobDetails position={selectedJob} onClose={handleCloseJob} email={userData.email}/>
       )}
     </div>
   );

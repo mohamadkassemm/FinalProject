@@ -1,7 +1,7 @@
 import React from 'react';
 import './MajorDetails.css';
 
-const MajorDetails = ({ course, onClose }) => {
+const MajorDetails = ({ course, onClose, website }) => {
     console.log(course)
   if (!course) return null;
 
@@ -29,7 +29,9 @@ const MajorDetails = ({ course, onClose }) => {
         <label>Number of Semesters:</label>
         <p>{course.nbOfSemester}</p>
         </div>
-
+        <a href={`${website}`}>
+          Register
+        </a>
       </div>
     </div>
   );

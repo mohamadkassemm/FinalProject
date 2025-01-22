@@ -156,7 +156,7 @@ const Profile = () => {
   const handleClosePersonalForm = ()=>{
     setEditPersonalForm(false)
   }
-
+  console.log(initialUserData)
   return (
     <div className="profilePage">
       <div className="leftSidebar">
