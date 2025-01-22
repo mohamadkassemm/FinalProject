@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './NavBar.css';
 import {useNavigate} from 'react-router-dom'
+import { useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
@@ -8,7 +9,9 @@ import axios from 'axios';
 const NavBar = (props) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const userID = props.userID;
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const userID = queryParams.get('userID');
   const toggleMenu = () => {  
     setIsOpen(prevState => !prevState);
   };
