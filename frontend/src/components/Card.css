@@ -9,6 +9,8 @@
 
 .cardsContainer h2{
   animation: textActive 2s ease-in-out infinite, letterMovement 1.5s alternate infinite;
+  text-align: start;
+  margin-top: 100px;
 }
 
 /* Container for Universities and Companies */

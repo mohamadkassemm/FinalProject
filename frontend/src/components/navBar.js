@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './NavBar.css';
 import {useNavigate} from 'react-router-dom'
 import Swal from 'sweetalert2';
@@ -12,6 +12,30 @@ const NavBar = (props) => {
   const toggleMenu = () => {  
     setIsOpen(prevState => !prevState);
   };
+  const [role, setRole] = useState('');
+ useEffect(()=>{
+  const fetchUserType = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Token not found');
+
+      const response = await axios.get(
+        `http://localhost:3001/api/v1/user/role/${userID}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const roleData = response.data.role.toLowerCase();
+      setRole(roleData);
+    } catch (error) {
+      console.error('Error fetching user role:', error.message);
+    }
+  };
+
+  fetchUserType();
+
+ },[userID])
+  
 
   const handleLogout = async()=>{
     try{
@@ -36,14 +60,13 @@ const NavBar = (props) => {
       console.error("Try again,", err.message)
     }
   }
-
   return (
     <div className={`navBar ${isOpen ? 'open' : ''}`}>
       <div>
         <p onClick={()=> navigate(`/home?userid=${userID}`)}>961EduWay</p>
       </div>
       <div className='rightNav'>
-        <button onClick={()=>navigate(`/students?userid=${userID}`)}>Students</button>
+        {role!=='student' && (<button onClick={()=>navigate(`/students?userid=${userID}`)}>Students</button>)}
         <button onClick={()=>navigate(`/companies?userid=${userID}`)}>Companies</button>
         <button onClick={()=>navigate(`/universities?userid=${userID}`)}>Universities</button>
         <button onClick={()=>navigate(`/favorites?userid=${userID}`)}>Favorites</button>
