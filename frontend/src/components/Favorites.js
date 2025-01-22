@@ -134,7 +134,7 @@ const Favorites = () => {
               className="favCard"
               key={favorite._id}
               onClick={() =>
-                navigate(`/details/${favorite.itemType}/${favorite._id}?userID=${userID}`)
+                navigate(`/details/${favorite.itemType}/${favorite._id}?userid=${userID}`)
               }
               style={{ cursor: "pointer" }}
             >
