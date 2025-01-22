@@ -50,7 +50,7 @@ const Students = () => {
             <div
               className='studentCard'
               key={student._id}
-              onClick={() => navigate(`/details/student/${student._id}?userID=${userID}`)}
+              onClick={() => navigate(`/studentDetails/${student._id}?userID=${userID}`)}
               style={{ cursor: 'pointer' }}
             >
               <img

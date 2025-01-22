@@ -18,15 +18,16 @@ const NavBar = (props) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Token not found');
-
-      const response = await axios.get(
-        `http://localhost:3001/api/v1/user/role/${userID}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const roleData = response.data.role.toLowerCase();
-      setRole(roleData);
+      if(userID){
+        const response = await axios.get(
+          `http://localhost:3001/api/v1/user/role/${userID}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const roleData = response.data.role.toLowerCase();
+        setRole(roleData);
+      }
     } catch (error) {
       console.error('Error fetching user role:', error.message);
     }

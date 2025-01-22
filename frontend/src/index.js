@@ -14,6 +14,7 @@ import UniversitiesPage from './pages/University'
 import StudentsPage from './pages/Students';
 import ProfilePage from './pages/Profile'
 import CardDetailsPage from './pages/CardDetails';
+import StudentDetailsPage from './pages/StudentDetails';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -32,6 +33,7 @@ root.render(
         <Route path='/students' element={<StudentsPage/>} />
         <Route path='/profile' element={<ProfilePage/>} />
         <Route path='/details/:type/:id' element={<CardDetailsPage/>} />
+        <Route path='/studentDetails/:studentid' element={<StudentDetailsPage/>} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
